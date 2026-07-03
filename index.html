@@ -7,188 +7,138 @@
 <title>FLC Esport — Reporting Direction</title>
 <style>
 /* =========================================================================
-   FLC ESPORT — Site de reporting interne
-   Thème sombre néon. Piliers : Suivi (émeraude) · Besoins (violet) · Données (corail)
+   FLC ESPORT — Site de reporting interne (édition dans le navigateur)
+   Piliers : Suivi (émeraude) · Besoins (violet) · Calendrier (cyan) · Données (corail)
    ========================================================================= */
 :root{
-  --bg:#0A0E13;
-  --bg-grad-1:#0C141A;
-  --surface:#131A23;
-  --surface-2:#18212C;
-  --line:#232E3A;
-  --line-soft:#1C2531;
-  --text:#E7EEF5;
-  --muted:#8593A3;
-  --faint:#5C6b7a;
-
-  --emeraude:#22E0A6;
-  --violet:#8B7CF6;
-  --corail:#FF5C7A;
-
-  --ok:#3FD98B;
-  --warn:#F5B944;
-  --crit:#FF5670;
-
-  --radius:14px;
-  --radius-sm:10px;
+  --bg:#0A0E13; --surface:#131A23; --surface-2:#18212C;
+  --line:#232E3A; --line-soft:#1C2531;
+  --text:#E7EEF5; --muted:#8593A3; --faint:#5C6b7a;
+  --emeraude:#22E0A6; --violet:#8B7CF6; --corail:#FF5C7A; --cyan:#38BDF8;
+  --ok:#3FD98B; --warn:#F5B944; --crit:#FF5670;
+  --radius:14px; --radius-sm:10px;
   --shadow:0 18px 40px -24px rgba(0,0,0,.8);
-  --mono:"SF Mono","JetBrains Mono","Cascadia Code",Consolas,ui-monospace,monospace;
   --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
-  font-family:var(--sans);
-  color:var(--text);
+  font-family:var(--sans);color:var(--text);
   background:
     radial-gradient(1200px 600px at 100% -10%, rgba(34,224,166,.06), transparent 55%),
     radial-gradient(900px 500px at -10% 110%, rgba(139,124,246,.05), transparent 55%),
     var(--bg);
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
+  min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
 }
 button{font-family:inherit}
 ::selection{background:rgba(34,224,166,.28)}
-
 .tnum{font-variant-numeric:tabular-nums}
-.eyebrow{
-  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--faint);font-weight:700;
-}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:700}
 
-/* ---------- Portail (mot de passe) ---------- */
-.gate{
-  position:fixed;inset:0;z-index:50;
-  display:flex;align-items:center;justify-content:center;padding:24px;
-  background:
-    radial-gradient(800px 500px at 50% -10%, rgba(34,224,166,.10), transparent 60%),
-    var(--bg);
-}
+/* ---------- Portail ---------- */
+.gate{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(800px 500px at 50% -10%, rgba(34,224,166,.10), transparent 60%),var(--bg)}
 .gate.hidden{display:none}
-.gate-card{
-  width:100%;max-width:380px;
-  background:linear-gradient(180deg,var(--surface),#10171F);
-  border:1px solid var(--line);border-radius:18px;
-  padding:34px 30px 30px;box-shadow:var(--shadow);
-}
+.gate-card{width:100%;max-width:380px;background:linear-gradient(180deg,var(--surface),#10171F);
+  border:1px solid var(--line);border-radius:18px;padding:34px 30px 30px;box-shadow:var(--shadow)}
 .gate-logo{display:flex;align-items:center;gap:10px;margin-bottom:22px}
-.gate-logo .mark{
-  font-weight:800;font-size:20px;letter-spacing:.02em;
-  color:var(--emeraude);
-}
+.gate-logo .mark{font-weight:800;font-size:20px;color:var(--emeraude)}
 .gate-logo .sub{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
 .gate h1{font-size:19px;margin:0 0 6px;letter-spacing:-.01em}
 .gate p{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 22px}
-.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px;letter-spacing:.02em}
-.field input{
-  width:100%;padding:12px 14px;border-radius:var(--radius-sm);
-  background:#0D141B;border:1px solid var(--line);color:var(--text);
-  font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s;
-}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+.field input{width:100%;padding:12px 14px;border-radius:var(--radius-sm);background:#0D141B;border:1px solid var(--line);
+  color:var(--text);font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s}
 .field input:focus{border-color:var(--emeraude);box-shadow:0 0 0 3px rgba(34,224,166,.15)}
-.gate button{
-  margin-top:16px;width:100%;padding:12px;border:none;border-radius:var(--radius-sm);
-  background:var(--emeraude);color:#062017;font-weight:700;font-size:14px;cursor:pointer;
-  transition:filter .15s,transform .05s;
-}
+.gate button{margin-top:16px;width:100%;padding:12px;border:none;border-radius:var(--radius-sm);
+  background:var(--emeraude);color:#062017;font-weight:700;font-size:14px;cursor:pointer;transition:filter .15s,transform .05s}
 .gate button:hover{filter:brightness(1.06)}
 .gate button:active{transform:translateY(1px)}
 .gate .err{color:var(--crit);font-size:12.5px;margin-top:12px;min-height:16px}
 .gate .foot{margin-top:22px;font-size:11px;color:var(--faint);line-height:1.5}
 
-/* ---------- Structure app ---------- */
+/* ---------- Structure ---------- */
 .app{display:none;grid-template-columns:244px 1fr;min-height:100vh}
 .app.show{display:grid}
-
-.sidebar{
-  border-right:1px solid var(--line-soft);
-  padding:22px 16px;position:sticky;top:0;height:100vh;
-  display:flex;flex-direction:column;gap:6px;
-  background:linear-gradient(180deg,rgba(19,26,35,.6),rgba(10,14,19,.2));
-}
+.sidebar{border-right:1px solid var(--line-soft);padding:22px 16px;position:sticky;top:0;height:100vh;
+  display:flex;flex-direction:column;gap:6px;background:linear-gradient(180deg,rgba(19,26,35,.6),rgba(10,14,19,.2))}
 .brand{display:flex;align-items:center;gap:11px;padding:6px 8px 20px}
-.brand .mark{font-weight:800;font-size:22px;color:var(--emeraude);letter-spacing:.01em}
+.brand .mark{font-weight:800;font-size:22px;color:var(--emeraude)}
 .brand .brand-txt{display:flex;flex-direction:column;line-height:1.1}
 .brand .brand-txt .t{font-weight:700;font-size:13.5px}
 .brand .brand-txt .s{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-
 .nav-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);padding:14px 10px 6px}
-.nav-item{
-  display:flex;align-items:center;gap:11px;
-  padding:10px 12px;border-radius:10px;cursor:pointer;
-  color:var(--muted);font-size:13.5px;font-weight:500;
-  border:1px solid transparent;transition:background .15s,color .15s,border-color .15s;
-  text-align:left;background:none;width:100%;
-}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;
+  color:var(--muted);font-size:13.5px;font-weight:500;border:1px solid transparent;
+  transition:background .15s,color .15s,border-color .15s;text-align:left;background:none;width:100%}
 .nav-item .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.55;flex:none}
 .nav-item:hover{background:var(--surface);color:var(--text)}
 .nav-item.active{background:var(--surface-2);color:var(--text);border-color:var(--line)}
 .nav-item.active .dot{opacity:1}
 .nav-item[data-accent="emeraude"].active{color:var(--emeraude)}
 .nav-item[data-accent="violet"].active{color:var(--violet)}
+.nav-item[data-accent="cyan"].active{color:var(--cyan)}
 .nav-item[data-accent="corail"].active{color:var(--corail)}
 .nav-item[data-accent="emeraude"] .dot{color:var(--emeraude)}
 .nav-item[data-accent="violet"] .dot{color:var(--violet)}
+.nav-item[data-accent="cyan"] .dot{color:var(--cyan)}
 .nav-item[data-accent="corail"] .dot{color:var(--corail)}
 .nav-item[data-accent="neutre"] .dot{color:var(--muted)}
-
 .side-foot{margin-top:auto;padding:12px 10px 4px;border-top:1px solid var(--line-soft);font-size:11px;color:var(--faint)}
-.logout{
-  margin-top:10px;width:100%;padding:9px 12px;border-radius:9px;cursor:pointer;
-  background:none;border:1px solid var(--line);color:var(--muted);font-size:12.5px;
-  transition:border-color .15s,color .15s;
-}
+.side-actions{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.mini-btn{background:var(--surface);border:1px solid var(--line);color:var(--muted);padding:6px 10px;border-radius:8px;font-size:11.5px;cursor:pointer;transition:color .15s,border-color .15s}
+.mini-btn:hover{color:var(--text);border-color:var(--faint)}
+.mini-btn.danger{color:var(--crit);border-color:rgba(255,86,112,.3)}
+.logout{margin-top:4px;width:100%;padding:9px 12px;border-radius:9px;cursor:pointer;background:none;
+  border:1px solid var(--line);color:var(--muted);font-size:12.5px;transition:border-color .15s,color .15s}
 .logout:hover{color:var(--text);border-color:var(--faint)}
 
-/* ---------- Zone principale ---------- */
+/* ---------- Main ---------- */
 .main{min-width:0;padding:26px 34px 60px;max-width:1160px}
-.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:20px}
 .topbar h1{font-size:24px;margin:0;letter-spacing:-.02em;text-wrap:balance}
 .topbar .lead{color:var(--muted);font-size:13.5px;margin-top:5px;max-width:60ch;line-height:1.5}
 .topbar-right{display:flex;align-items:center;gap:10px}
-.saison-badge{
-  font-size:12px;color:var(--muted);border:1px solid var(--line);
-  padding:7px 12px;border-radius:999px;background:var(--surface);white-space:nowrap;
-}
+.saison-badge{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:7px 12px;border-radius:999px;background:var(--surface);white-space:nowrap}
+
+.edit-banner{display:none;margin-bottom:18px;padding:12px 16px;border-radius:10px;background:rgba(34,224,166,.07);
+  border:1px solid rgba(34,224,166,.25);font-size:12.5px;color:var(--muted);line-height:1.5}
+body.editing .edit-banner{display:block}
+.edit-banner b{color:var(--emeraude)}
 
 .view{display:none;animation:fade .25s ease both}
 .view.active{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.view{animation:none}}
 
-.section-title{display:flex;align-items:center;gap:10px;margin:30px 0 14px}
-.section-title h2{font-size:15px;margin:0;font-weight:700;letter-spacing:.01em}
+.section-title{display:flex;align-items:center;gap:10px;margin:30px 0 14px;flex-wrap:wrap}
+.section-title h2{font-size:15px;margin:0;font-weight:700}
 .section-title .rail{width:20px;height:2px;border-radius:2px;background:var(--emeraude)}
 .section-title.violet .rail{background:var(--violet)}
+.section-title.cyan .rail{background:var(--cyan)}
 .section-title.corail .rail{background:var(--corail)}
 .section-title .count{font-size:12px;color:var(--faint);margin-left:2px}
 
 /* ---------- Stat tiles ---------- */
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.tile{
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);
-  padding:16px 16px 15px;position:relative;overflow:hidden;
-}
+.tile{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);padding:16px 16px 15px;position:relative;overflow:hidden}
 .tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--emeraude);opacity:.9}
 .tile[data-accent="violet"]::before{background:var(--violet)}
 .tile[data-accent="corail"]::before{background:var(--corail)}
 .tile[data-accent="warn"]::before{background:var(--warn)}
-.tile .k-label{font-size:11.5px;color:var(--muted);letter-spacing:.02em}
+.tile .k-label{font-size:11.5px;color:var(--muted)}
 .tile .k-val{font-size:30px;font-weight:800;margin-top:8px;letter-spacing:-.02em;line-height:1}
 .tile .k-sub{font-size:12px;color:var(--faint);margin-top:7px}
 
-/* ---------- Cards grid (pôles) ---------- */
+/* ---------- Cards ---------- */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.card{
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);
-  padding:18px;display:flex;flex-direction:column;gap:14px;
-  transition:border-color .15s,transform .15s;
-}
+.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);padding:18px;
+  display:flex;flex-direction:column;gap:14px;transition:border-color .15s,transform .15s}
 .card:hover{border-color:var(--line);transform:translateY(-2px)}
 .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .card-head .jeu{font-size:16px;font-weight:700;letter-spacing:-.01em}
 .card-head .mgr{font-size:12.5px;color:var(--muted);margin-top:3px}
+.card-head .ch-right{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
 .card-meta{display:flex;gap:18px;font-size:12px;color:var(--muted);border-top:1px solid var(--line-soft);padding-top:12px}
 .card-meta b{color:var(--text);font-weight:600}
 .pt-list{display:flex;flex-direction:column;gap:7px}
@@ -198,26 +148,21 @@ button{font-family:inherit}
 .pt.up .b{background:var(--ok)}
 .pt.down .b{background:var(--crit)}
 
-/* ---------- Pills / chips ---------- */
-.pill{
-  display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
-  padding:5px 10px;border-radius:999px;white-space:nowrap;line-height:1;
-  border:1px solid transparent;
-}
+/* ---------- Pills ---------- */
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:999px;white-space:nowrap;line-height:1;border:1px solid transparent}
 .pill .d{width:6px;height:6px;border-radius:50%;background:currentColor}
 .pill.ok{color:var(--ok);background:rgba(63,217,139,.10);border-color:rgba(63,217,139,.25)}
 .pill.warn{color:var(--warn);background:rgba(245,185,68,.10);border-color:rgba(245,185,68,.25)}
 .pill.crit{color:var(--crit);background:rgba(255,86,112,.10);border-color:rgba(255,86,112,.28)}
 .pill.neutre{color:var(--muted);background:var(--surface-2);border-color:var(--line)}
 .pill.violet{color:var(--violet);background:rgba(139,124,246,.10);border-color:rgba(139,124,246,.28)}
+.pill.emeraude{color:var(--emeraude);background:rgba(34,224,166,.10);border-color:rgba(34,224,166,.28)}
 
-/* ---------- Table (besoins) ---------- */
+/* ---------- Table ---------- */
 .table-wrap{overflow-x:auto;border:1px solid var(--line-soft);border-radius:var(--radius);background:var(--surface)}
 table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
-thead th{
-  text-align:left;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
-  font-weight:700;padding:13px 16px;border-bottom:1px solid var(--line);white-space:nowrap;
-}
+thead th{text-align:left;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+  font-weight:700;padding:13px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
 tbody td{padding:14px 16px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:rgba(255,255,255,.015)}
@@ -225,12 +170,8 @@ tbody tr:hover{background:rgba(255,255,255,.015)}
 .type-tag{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:12.5px}
 .type-tag .ic{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:12px;background:var(--surface-2);border:1px solid var(--line)}
 .remonter-flag{color:var(--corail);font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:6px}
-.remonter-flag .a{font-size:13px}
 .filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.filter-btn{
-  padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);
-  color:var(--muted);font-size:12.5px;cursor:pointer;transition:all .15s;
-}
+.filter-btn{padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:12.5px;cursor:pointer;transition:all .15s}
 .filter-btn:hover{color:var(--text)}
 .filter-btn.active{background:var(--surface-2);color:var(--text);border-color:var(--faint)}
 
@@ -248,39 +189,74 @@ tbody tr:hover{background:rgba(255,255,255,.015)}
 .meter .track{height:7px;border-radius:4px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line-soft)}
 .meter .fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--emeraude),#5df0c4)}
 .meter .mlabel{font-size:10.5px;color:var(--faint);margin-top:4px;text-align:right}
-.tend{font-size:12px;font-weight:700;width:52px;text-align:right;flex:none}
-.tend.up{color:var(--ok)}
-.tend.down{color:var(--crit)}
-.tend.flat{color:var(--muted)}
-
-.ind-list{display:flex;flex-direction:column;gap:2px}
-.ind{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft)}
+.tend{font-size:12px;font-weight:700;width:44px;text-align:right;flex:none}
+.tend.up{color:var(--ok)}.tend.down{color:var(--crit)}.tend.flat{color:var(--muted)}
+.ind{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft)}
 .ind:last-child{border-bottom:none}
 .ind .il{font-size:13px;color:var(--muted)}
 .ind .iv{font-size:17px;font-weight:800;letter-spacing:-.01em}
 
-.callout{
-  display:flex;gap:14px;align-items:flex-start;
-  background:linear-gradient(180deg,rgba(255,92,122,.06),transparent);
-  border:1px solid rgba(255,92,122,.25);border-radius:var(--radius);padding:16px 18px;margin-top:2px;
-}
-.callout .ci{color:var(--corail);font-size:20px;line-height:1;margin-top:1px}
+/* ---------- Calendrier / Historique ---------- */
+.cal-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line-soft)}
+.cal-row:last-child{border-bottom:none}
+.dateblock{width:52px;text-align:center;flex:none;border:1px solid var(--line);border-radius:10px;padding:6px 0;background:var(--surface-2)}
+.dateblock .d{font-size:18px;font-weight:800;line-height:1}
+.dateblock .m{font-size:10px;letter-spacing:.06em;color:var(--muted);margin-top:2px}
+.cal-main{flex:1;min-width:0}
+.cal-main .c-comp{font-weight:600;font-size:13.5px}
+.cal-main .c-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ---------- Callout ---------- */
+.callout{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(180deg,rgba(255,92,122,.06),transparent);
+  border:1px solid rgba(255,92,122,.25);border-radius:var(--radius);padding:16px 18px}
+.callout .ci{color:var(--corail);font-size:18px;line-height:1;margin-top:1px}
 .callout .ct{font-size:13px;line-height:1.55;color:var(--text)}
 .callout .ct b{color:var(--corail)}
-
 .empty{color:var(--faint);font-size:13px;padding:24px;text-align:center}
+.mission-note{font-size:12.5px;color:var(--muted);line-height:1.55;border-left:2px solid var(--line);padding-left:14px;margin:0 0 4px;max-width:70ch}
 
-.mission-note{
-  font-size:12.5px;color:var(--muted);line-height:1.55;
-  border-left:2px solid var(--line);padding-left:14px;margin:0 0 4px;max-width:70ch;
-}
+/* ---------- Boutons édition ---------- */
+.btn-primary{background:var(--emeraude);color:#062017;border:none;padding:10px 16px;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-ghost{background:none;border:1px solid var(--line);color:var(--muted);padding:9px 14px;border-radius:9px;font-size:13px;cursor:pointer}
+.btn-ghost:hover{color:var(--text);border-color:var(--faint)}
+.btn-danger{background:none;border:1px solid rgba(255,86,112,.4);color:var(--crit);padding:9px 14px;border-radius:9px;font-size:13px;cursor:pointer}
+.btn-edit{background:var(--surface-2);border:1px solid var(--line);color:var(--text);padding:9px 14px;border-radius:9px;font-size:13px;cursor:pointer;white-space:nowrap}
+.btn-edit.on{background:rgba(34,224,166,.12);border-color:rgba(34,224,166,.4);color:var(--emeraude)}
+.add-btn{background:none;border:1px dashed var(--line);color:var(--muted);padding:6px 12px;border-radius:8px;font-size:12.5px;cursor:pointer}
+.add-btn:hover{color:var(--text);border-color:var(--faint)}
+.ic-btn{background:var(--surface-2);border:1px solid var(--line);color:var(--muted);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:12px;display:inline-grid;place-items:center}
+.ic-btn:hover{color:var(--text)}
+.ic-btn.del:hover{color:var(--crit);border-color:rgba(255,86,112,.4)}
+.item-actions{display:inline-flex;gap:6px}
+
+.edit-only{display:none}
+body.editing span.item-actions.edit-only,body.editing .card-head .item-actions.edit-only{display:inline-flex}
+body.editing .add-btn.edit-only{display:inline-block}
+body.editing .btn-ghost.edit-only,body.editing .mini-btn.edit-only{display:inline-block}
+body.editing th.edit-only,body.editing td.edit-only{display:table-cell}
+
+/* ---------- Modal ---------- */
+.modal-backdrop{position:fixed;inset:0;z-index:60;background:rgba(4,7,10,.72);display:none;align-items:center;justify-content:center;padding:24px}
+.modal-backdrop.show{display:flex}
+.modal{width:100%;max-width:460px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);max-height:88vh;display:flex;flex-direction:column}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line-soft)}
+.modal-head h3{margin:0;font-size:15px}
+.modal-x{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1}
+#modal-form{padding:18px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld label{font-size:12px;color:var(--muted)}
+.fld input,.fld select,.fld textarea{width:100%;padding:10px 12px;border-radius:9px;background:#0D141B;border:1px solid var(--line);color:var(--text);font-size:13.5px;font-family:inherit;outline:none}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--emeraude)}
+.fld textarea{resize:vertical}
+.modal-foot{display:flex;align-items:center;gap:10px;padding:16px 20px;border-top:1px solid var(--line-soft)}
+.modal-foot .spacer{flex:1}
 
 @media (max-width:820px){
   .app.show{grid-template-columns:1fr}
   .sidebar{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;border-right:none;border-bottom:1px solid var(--line-soft)}
   .brand{padding:6px 8px}
-  .nav-label{display:none}
-  .side-foot{display:none}
+  .nav-label,.side-foot{display:none}
   .kpis{grid-template-columns:repeat(2,1fr)}
   .main{padding:22px 18px 48px}
 }
@@ -291,9 +267,7 @@ tbody tr:hover{background:rgba(255,255,255,.015)}
 <!-- ===================== PORTAIL ===================== -->
 <div class="gate" id="gate">
   <div class="gate-card">
-    <div class="gate-logo">
-      <span class="mark">FLC</span><span class="sub">Esport</span>
-    </div>
+    <div class="gate-logo"><span class="mark">FLC</span><span class="sub">Esport</span></div>
     <h1>Accès réservé</h1>
     <p>Espace interne de reporting esport. Réservé à la direction et à la coordination.</p>
     <div class="field">
@@ -313,17 +287,21 @@ tbody tr:hover{background:rgba(255,255,255,.015)}
       <span class="mark">FLC</span>
       <span class="brand-txt"><span class="t">Esport</span><span class="s">Reporting</span></span>
     </div>
-
     <div class="nav-label">Direction</div>
     <button class="nav-item active" data-view="apercu" data-accent="neutre"><span class="dot"></span>Vue d'ensemble</button>
-
     <div class="nav-label">Les 3 missions</div>
     <button class="nav-item" data-view="poles" data-accent="emeraude"><span class="dot"></span>Suivi des pôles</button>
     <button class="nav-item" data-view="besoins" data-accent="violet"><span class="dot"></span>Besoins &amp; arbitrage</button>
     <button class="nav-item" data-view="reporting" data-accent="corail"><span class="dot"></span>Données &amp; reporting</button>
-
+    <div class="nav-label">Compétitions</div>
+    <button class="nav-item" data-view="calendrier" data-accent="cyan"><span class="dot"></span>Calendrier &amp; historique</button>
     <div class="side-foot">
       Connecté — coordination esport
+      <div class="side-actions">
+        <button class="mini-btn" id="btn-export">Exporter</button>
+        <button class="mini-btn" id="btn-import">Importer</button>
+        <button class="mini-btn danger edit-only" id="btn-reset">Réinitialiser</button>
+      </div>
       <button class="logout" id="logout">Se déconnecter</button>
     </div>
   </aside>
@@ -336,8 +314,15 @@ tbody tr:hover{background:rgba(255,255,255,.015)}
         <div class="lead" id="tb-lead"></div>
       </div>
       <div class="topbar-right">
+        <button class="btn-ghost edit-only" id="btn-settings">Paramètres</button>
         <span class="saison-badge" id="saison-badge"></span>
+        <button class="btn-edit" id="edit-toggle">✎ Mode édition</button>
       </div>
+    </div>
+
+    <div class="edit-banner">
+      <b>Mode édition actif.</b> Vos modifications sont enregistrées automatiquement dans ce navigateur.
+      Utilisez <b>Exporter</b> (barre latérale) pour sauvegarder un fichier et retrouver vos données sur un autre poste.
     </div>
 
     <!-- VUE D'ENSEMBLE -->
@@ -345,6 +330,8 @@ tbody tr:hover{background:rgba(255,255,255,.015)}
       <div class="kpis" id="kpis"></div>
       <div class="section-title corail"><span class="rail"></span><h2>À remonter à la direction</h2></div>
       <div id="callouts"></div>
+      <div class="section-title cyan"><span class="rail"></span><h2>Prochaines compétitions</h2></div>
+      <div class="panel" id="apercu-cal"></div>
       <div class="section-title"><span class="rail"></span><h2>Pôles nécessitant un point</h2></div>
       <div class="cards" id="apercu-poles"></div>
     </section>
@@ -352,14 +339,16 @@ tbody tr:hover{background:rgba(255,255,255,.015)}
     <!-- SUIVI DES PÔLES -->
     <section class="view" id="view-poles">
       <p class="mission-note">Coordination transversale : points réguliers avec chaque pôle, harmonisation des pratiques entre les jeux, et remontée des blocages comme des avancées.</p>
-      <div class="section-title"><span class="rail"></span><h2>Pôles de jeu</h2><span class="count" id="poles-count"></span></div>
+      <div class="section-title"><span class="rail"></span><h2>Pôles de jeu</h2><span class="count" id="poles-count"></span>
+        <button class="add-btn edit-only" onclick="openForm('poles',null)">+ Ajouter un pôle</button></div>
       <div class="cards" id="poles-cards"></div>
     </section>
 
     <!-- BESOINS -->
     <section class="view" id="view-besoins">
       <p class="mission-note">Cadrage &amp; arbitrage : identifier les manques (staff, matériel, budget), prioriser avec une vision d'ensemble et faire remonter à la direction ce qui doit être arbitré.</p>
-      <div class="section-title violet"><span class="rail"></span><h2>Besoins des pôles</h2><span class="count" id="besoins-count"></span></div>
+      <div class="section-title violet"><span class="rail"></span><h2>Besoins des pôles</h2><span class="count" id="besoins-count"></span>
+        <button class="add-btn edit-only" onclick="openForm('besoins',null)">+ Ajouter un besoin</button></div>
       <div class="filters" id="besoins-filters">
         <button class="filter-btn active" data-f="tous">Tous</button>
         <button class="filter-btn" data-f="remonter">À remonter</button>
@@ -368,12 +357,9 @@ tbody tr:hover{background:rgba(255,255,255,.015)}
         <button class="filter-btn" data-f="budget">Budget</button>
       </div>
       <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>Pôle</th><th>Type</th><th>Besoin</th><th>Priorité</th><th>Statut</th><th>Direction</th>
-          </tr></thead>
-          <tbody id="besoins-body"></tbody>
-        </table>
+        <table><thead><tr>
+          <th>Pôle</th><th>Type</th><th>Besoin</th><th>Priorité</th><th>Statut</th><th>Direction</th><th class="edit-only">Actions</th>
+        </tr></thead><tbody id="besoins-body"></tbody></table>
       </div>
     </section>
 
@@ -383,251 +369,469 @@ tbody tr:hover{background:rgba(255,255,255,.015)}
       <div class="section-title corail"><span class="rail"></span><h2>Lecture consolidée</h2></div>
       <div class="report-grid">
         <div class="panel">
-          <h3>Résultats par pôle</h3>
-          <p class="h-sub">Dernière échéance compétitive · forme sur les 5 dernières rencontres</p>
+          <div class="section-title" style="margin:0 0 4px"><h3 style="font-size:13.5px;margin:0">Résultats par pôle</h3>
+            <button class="add-btn edit-only" onclick="openForm('resultats',null)">+ Ajouter</button></div>
+          <p class="h-sub">Forme sur les dernières rencontres (0 à 100)</p>
           <div id="report-rows"></div>
         </div>
         <div class="panel">
-          <h3>Indicateurs clés</h3>
+          <div class="section-title" style="margin:0 0 4px"><h3 style="font-size:13.5px;margin:0">Indicateurs clés</h3>
+            <button class="add-btn edit-only" onclick="openForm('indicateurs',null)">+ Ajouter</button></div>
           <p class="h-sub">Agrégés sur l'ensemble des pôles</p>
-          <div class="ind-list" id="report-inds"></div>
+          <div id="report-inds"></div>
         </div>
       </div>
+    </section>
+
+    <!-- CALENDRIER & HISTORIQUE -->
+    <section class="view" id="view-calendrier">
+      <p class="mission-note">Le calendrier des compétitions à venir et l'historique des résultats passés, rassemblés pour donner à la direction une vision claire de l'agenda esport.</p>
+      <div class="section-title cyan"><span class="rail"></span><h2>Prochaines compétitions</h2><span class="count" id="cal-count"></span>
+        <button class="add-btn edit-only" onclick="openForm('calendrier',null)">+ Ajouter une compétition</button></div>
+      <div class="panel" id="cal-list"></div>
+      <div class="section-title corail"><span class="rail"></span><h2>Historique des compétitions</h2><span class="count" id="hist-count"></span>
+        <button class="add-btn edit-only" onclick="openForm('historique',null)">+ Ajouter un résultat</button></div>
+      <div class="panel" id="hist-list"></div>
     </section>
   </main>
 </div>
 
+<!-- ===================== MODAL ===================== -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-title"></h3><button class="modal-x" id="modal-x">×</button></div>
+    <form id="modal-form" onsubmit="return false"></form>
+    <div class="modal-foot">
+      <button class="btn-danger" id="modal-del" style="display:none">Supprimer</button>
+      <span class="spacer"></span>
+      <button class="btn-ghost" id="modal-cancel">Annuler</button>
+      <button class="btn-primary" id="modal-save">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="import-file" accept="application/json" style="display:none" />
+
 <script>
 /* =========================================================================
-   DONNÉES — À MODIFIER ICI
-   Pour mettre le site à jour, éditez uniquement l'objet DATA ci-dessous.
-   Aucun autre changement de code n'est nécessaire.
+   DONNÉES PAR DÉFAUT
+   Ce sont les données de départ. Une fois le site utilisé, vos modifications
+   (via le « Mode édition ») sont enregistrées dans le navigateur et priment.
    ========================================================================= */
-const DATA = {
-  org: "FLC Esport",
-  saison: "Saison 2025–2026",
-  motDePasse: "flc-esport",   // <-- changez ce mot de passe
+const DEFAULTS = {
+  org:"FLC Esport",
+  saison:"Saison 2025–2026",
+  motDePasse:"flc-esport",
 
-  // --- Pôles de jeu (un manager par pôle) ---
-  poles: [
-    {
-      jeu:"League of Legends", manager:"Léa Moreau", joueurs:5,
-      statut:"a-jour", dernierPoint:"30 juin",
-      avancees:["Qualification pour les playoffs régionaux","Nouveau coach analyste intégré"],
-      blocages:[]
-    },
-    {
-      jeu:"Valorant", manager:"Tom Alvarez", joueurs:5,
-      statut:"attention", dernierPoint:"27 juin",
-      avancees:["3 victoires consécutives en ligue"],
-      blocages:["Un titulaire en fin de contrat le mois prochain"]
-    },
-    {
-      jeu:"Rocket League", manager:"Nina Kaczmarek", joueurs:3,
-      statut:"a-jour", dernierPoint:"1 juil.",
-      avancees:["Podium au tournoi open du week-end"],
-      blocages:[]
-    },
-    {
-      jeu:"EA FC", manager:"Yanis Berkane", joueurs:2,
-      statut:"bloque", dernierPoint:"18 juin",
-      avancees:[],
-      blocages:["Pas de point depuis 2 semaines","Setup de stream en panne"]
-    },
-    {
-      jeu:"Counter-Strike 2", manager:"Sacha Petit", joueurs:5,
-      statut:"attention", dernierPoint:"29 juin",
-      avancees:["Bootcamp planifié fin juillet"],
-      blocages:["Budget déplacement à valider"]
-    }
+  poles:[
+    {jeu:"League of Legends", manager:"Léa Moreau", joueurs:5, statut:"a-jour", dernierPoint:"30 juin",
+     avancees:["Qualification pour les playoffs régionaux","Nouveau coach analyste intégré"], blocages:[]},
+    {jeu:"Valorant", manager:"Tom Alvarez", joueurs:5, statut:"attention", dernierPoint:"27 juin",
+     avancees:["3 victoires consécutives en ligue"], blocages:["Un titulaire en fin de contrat le mois prochain"]},
+    {jeu:"Rocket League", manager:"Nina Kaczmarek", joueurs:3, statut:"a-jour", dernierPoint:"1 juil.",
+     avancees:["Podium au tournoi open du week-end"], blocages:[]},
+    {jeu:"EA FC", manager:"Yanis Berkane", joueurs:2, statut:"bloque", dernierPoint:"18 juin",
+     avancees:[], blocages:["Pas de point depuis 2 semaines","Setup de stream en panne"]},
+    {jeu:"Counter-Strike 2", manager:"Sacha Petit", joueurs:5, statut:"attention", dernierPoint:"29 juin",
+     avancees:["Bootcamp planifié fin juillet"], blocages:["Budget déplacement à valider"]}
   ],
 
-  // --- Besoins remontés par les pôles ---
-  // type: "staff" | "materiel" | "budget" · priorite: "haute" | "moyenne" | "basse"
-  // statut: "nouveau" | "cadre" | "remonte" | "traite" · aRemonter: true/false
-  besoins: [
-    { pole:"EA FC", type:"materiel", libelle:"Remplacement du setup de streaming", priorite:"haute", statut:"remonte", aRemonter:true },
-    { pole:"Counter-Strike 2", type:"budget", libelle:"Budget déplacement bootcamp (5 joueurs)", priorite:"haute", statut:"cadre", aRemonter:true },
-    { pole:"Valorant", type:"staff", libelle:"Recrutement d'un remplaçant titulaire", priorite:"haute", statut:"cadre", aRemonter:true },
-    { pole:"League of Legends", type:"staff", libelle:"Renfort préparateur mental (mi-temps)", priorite:"moyenne", statut:"nouveau", aRemonter:false },
-    { pole:"Rocket League", type:"materiel", libelle:"2 écrans 240 Hz supplémentaires", priorite:"basse", statut:"nouveau", aRemonter:false },
-    { pole:"Counter-Strike 2", type:"materiel", libelle:"Casques audio pro (x5)", priorite:"moyenne", statut:"traite", aRemonter:false }
+  besoins:[
+    {pole:"EA FC", type:"materiel", libelle:"Remplacement du setup de streaming", priorite:"haute", statut:"remonte", aRemonter:true},
+    {pole:"Counter-Strike 2", type:"budget", libelle:"Budget déplacement bootcamp (5 joueurs)", priorite:"haute", statut:"cadre", aRemonter:true},
+    {pole:"Valorant", type:"staff", libelle:"Recrutement d'un remplaçant titulaire", priorite:"haute", statut:"cadre", aRemonter:true},
+    {pole:"League of Legends", type:"staff", libelle:"Renfort préparateur mental (mi-temps)", priorite:"moyenne", statut:"nouveau", aRemonter:false},
+    {pole:"Rocket League", type:"materiel", libelle:"2 écrans 240 Hz supplémentaires", priorite:"basse", statut:"nouveau", aRemonter:false},
+    {pole:"Counter-Strike 2", type:"materiel", libelle:"Casques audio pro (x5)", priorite:"moyenne", statut:"traite", aRemonter:false}
   ],
 
-  // --- Reporting : résultats + forme (0 à 100) + tendance ---
-  resultats: [
-    { jeu:"League of Legends", desc:"Qualifiés playoffs — 4e/16", forme:78, tendance:"up" },
-    { jeu:"Valorant", desc:"7e de ligue, série en cours", forme:64, tendance:"up" },
-    { jeu:"Rocket League", desc:"Podium tournoi open (3e)", forme:71, tendance:"flat" },
-    { jeu:"EA FC", desc:"Éliminés au 2e tour", forme:38, tendance:"down" },
-    { jeu:"Counter-Strike 2", desc:"Milieu de classement", forme:55, tendance:"flat" }
+  resultats:[
+    {jeu:"League of Legends", desc:"Qualifiés playoffs — 4e/16", forme:78, tendance:"up"},
+    {jeu:"Valorant", desc:"7e de ligue, série en cours", forme:64, tendance:"up"},
+    {jeu:"Rocket League", desc:"Podium tournoi open (3e)", forme:71, tendance:"flat"},
+    {jeu:"EA FC", desc:"Éliminés au 2e tour", forme:38, tendance:"down"},
+    {jeu:"Counter-Strike 2", desc:"Milieu de classement", forme:55, tendance:"flat"}
   ],
 
-  // --- Indicateurs agrégés pour la direction ---
-  indicateurs: [
-    { label:"Pôles actifs", valeur:"5" },
-    { label:"Joueurs sous contrat", valeur:"20" },
-    { label:"Managers coordonnés", valeur:"5" },
-    { label:"Compétitions en cours", valeur:"5" },
-    { label:"Taux de qualification", valeur:"60 %" }
+  indicateurs:[
+    {label:"Pôles actifs", valeur:"5"},
+    {label:"Joueurs sous contrat", valeur:"20"},
+    {label:"Managers coordonnés", valeur:"5"},
+    {label:"Compétitions en cours", valeur:"5"},
+    {label:"Taux de qualification", valeur:"60 %"}
+  ],
+
+  calendrier:[
+    {date:"2026-07-05", jeu:"Rocket League", competition:"Summer Open — Qualifications", format:"BO5 · en ligne", statut:"confirme"},
+    {date:"2026-07-12", jeu:"Valorant", competition:"Ligue régionale — Journée 7", format:"BO3 · en ligne", statut:"confirme"},
+    {date:"2026-07-19", jeu:"League of Legends", competition:"Playoffs régionaux — 1/4 de finale", format:"BO5 · LAN, Lyon", statut:"a-confirmer"},
+    {date:"2026-07-26", jeu:"Counter-Strike 2", competition:"Bootcamp + scrims", format:"Bootcamp · Paris", statut:"confirme"},
+    {date:"2026-08-02", jeu:"EA FC", competition:"Coupe d'été — Tour 1", format:"BO3 · en ligne", statut:"a-confirmer"}
+  ],
+
+  historique:[
+    {date:"2026-06-28", jeu:"Rocket League", competition:"Open Summer Cup", resultat:"3e / 24", issue:"podium"},
+    {date:"2026-06-21", jeu:"Valorant", competition:"Ligue régionale — Journée 6", resultat:"Victoire 2–0", issue:"victoire"},
+    {date:"2026-06-15", jeu:"League of Legends", competition:"Qualifications playoffs", resultat:"Qualifiés (4e/16)", issue:"podium"},
+    {date:"2026-06-10", jeu:"EA FC", competition:"Coupe de printemps", resultat:"Éliminé au 2e tour", issue:"elimine"},
+    {date:"2026-06-07", jeu:"Counter-Strike 2", competition:"Ligue — Journée 5", resultat:"Défaite 1–2", issue:"participation"}
   ]
 };
 
+/* ---------- Persistance (navigateur) ---------- */
+const STORE_KEY = "flc-esport-data-v1";
+let DATA = loadData();
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function loadData(){
+  try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ return Object.assign(clone(DEFAULTS), JSON.parse(raw)); } }catch(e){}
+  return clone(DEFAULTS);
+}
+function persist(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(DATA)); }catch(e){} }
+
+/* ---------- Référentiels d'affichage ---------- */
+const STATUT={"a-jour":{label:"À jour",cls:"ok"},"attention":{label:"À suivre",cls:"warn"},"bloque":{label:"Bloqué",cls:"crit"}};
+const PRIORITE={haute:{label:"Haute",cls:"crit"},moyenne:{label:"Moyenne",cls:"warn"},basse:{label:"Basse",cls:"neutre"}};
+const BESOIN_STATUT={nouveau:{label:"Nouveau",cls:"neutre"},cadre:{label:"Cadré",cls:"violet"},remonte:{label:"Remonté",cls:"warn"},traite:{label:"Traité",cls:"ok"}};
+const CAL_STATUT={confirme:{l:"Confirmé",c:"ok"},"a-confirmer":{l:"À confirmer",c:"warn"}};
+const ISSUE={victoire:{l:"Victoire",c:"ok"},podium:{l:"Podium",c:"emeraude"},elimine:{l:"Éliminé",c:"crit"},participation:{l:"Participation",c:"neutre"}};
+const TYPE_IC={staff:"👥",materiel:"🖥",budget:"€"};
+const TYPE_LABEL={staff:"Staff",materiel:"Matériel",budget:"Budget"};
+const TEND={up:{s:"▲",c:"up"},down:{s:"▼",c:"down"},flat:{s:"—",c:"flat"}};
+const MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function pill(cls,label){ return `<span class="pill ${cls}"><span class="d"></span>${esc(label)}</span>`; }
+function dparts(iso){
+  if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return {d:"?",m:""};
+  const p=iso.split("-"); const day=Number(p[2])||"";
+  return {d:day, m:(MOIS[(Number(p[1])||1)-1]||"").replace(".","").toUpperCase().slice(0,4)};
+}
+
 /* =========================================================================
-   LOGIQUE — normalement, rien à modifier en dessous
+   SCHÉMAS DE FORMULAIRES (pilotent le mode édition)
    ========================================================================= */
-const STATUT = {
-  "a-jour":  {label:"À jour",   cls:"ok"},
-  "attention":{label:"À suivre", cls:"warn"},
-  "bloque":  {label:"Bloqué",   cls:"crit"}
-};
-const PRIORITE = {
-  haute:  {label:"Haute",   cls:"crit"},
-  moyenne:{label:"Moyenne", cls:"warn"},
-  basse:  {label:"Basse",   cls:"neutre"}
-};
-const BESOIN_STATUT = {
-  nouveau:{label:"Nouveau", cls:"neutre"},
-  cadre:  {label:"Cadré",   cls:"violet"},
-  remonte:{label:"Remonté", cls:"warn"},
-  traite: {label:"Traité",  cls:"ok"}
-};
-const TYPE_IC = {staff:"👥", materiel:"🖥", budget:"€"};
-const TYPE_LABEL = {staff:"Staff", materiel:"Matériel", budget:"Budget"};
-const TEND = {up:{s:"▲",c:"up"}, down:{s:"▼",c:"down"}, flat:{s:"—",c:"flat"}};
+const SEL_STATUT=[["a-jour","À jour"],["attention","À suivre"],["bloque","Bloqué"]];
+const SEL_TYPE=[["staff","Staff"],["materiel","Matériel"],["budget","Budget"]];
+const SEL_PRIO=[["haute","Haute"],["moyenne","Moyenne"],["basse","Basse"]];
+const SEL_BSTAT=[["nouveau","Nouveau"],["cadre","Cadré"],["remonte","Remonté"],["traite","Traité"]];
+const SEL_BOOL=[["true","Oui"],["false","Non"]];
+const SEL_CAL=[["confirme","Confirmé"],["a-confirmer","À confirmer"]];
+const SEL_ISSUE=[["victoire","Victoire"],["podium","Podium"],["elimine","Éliminé"],["participation","Participation"]];
+const SEL_TEND=[["up","En hausse ▲"],["flat","Stable —"],["down","En baisse ▼"]];
 
-const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SCHEMAS={
+  poles:{titre:"pôle", coll:"poles", champs:[
+    {k:"jeu",l:"Jeu",t:"text",req:true},
+    {k:"manager",l:"Manager",t:"text"},
+    {k:"joueurs",l:"Nombre de joueurs",t:"number"},
+    {k:"statut",l:"Statut",t:"select",opts:SEL_STATUT},
+    {k:"dernierPoint",l:"Dernier point (ex. 30 juin)",t:"text"},
+    {k:"avancees",l:"Avancées (une par ligne)",t:"lines"},
+    {k:"blocages",l:"Blocages (une par ligne)",t:"lines"}
+  ]},
+  besoins:{titre:"besoin", coll:"besoins", champs:[
+    {k:"pole",l:"Pôle concerné",t:"text",req:true},
+    {k:"type",l:"Type",t:"select",opts:SEL_TYPE},
+    {k:"libelle",l:"Besoin",t:"text"},
+    {k:"priorite",l:"Priorité",t:"select",opts:SEL_PRIO},
+    {k:"statut",l:"Statut",t:"select",opts:SEL_BSTAT},
+    {k:"aRemonter",l:"À remonter à la direction ?",t:"bool"}
+  ]},
+  resultats:{titre:"résultat", coll:"resultats", champs:[
+    {k:"jeu",l:"Jeu",t:"text",req:true},
+    {k:"desc",l:"Dernier résultat",t:"text"},
+    {k:"forme",l:"Forme (0 à 100)",t:"number"},
+    {k:"tendance",l:"Tendance",t:"select",opts:SEL_TEND}
+  ]},
+  indicateurs:{titre:"indicateur", coll:"indicateurs", champs:[
+    {k:"label",l:"Libellé",t:"text",req:true},
+    {k:"valeur",l:"Valeur",t:"text"}
+  ]},
+  calendrier:{titre:"compétition", coll:"calendrier", champs:[
+    {k:"date",l:"Date",t:"date",req:true},
+    {k:"jeu",l:"Jeu",t:"text"},
+    {k:"competition",l:"Compétition",t:"text"},
+    {k:"format",l:"Format / lieu (ex. BO3 · en ligne)",t:"text"},
+    {k:"statut",l:"Statut",t:"select",opts:SEL_CAL}
+  ]},
+  historique:{titre:"résultat", coll:"historique", champs:[
+    {k:"date",l:"Date",t:"date",req:true},
+    {k:"jeu",l:"Jeu",t:"text"},
+    {k:"competition",l:"Compétition",t:"text"},
+    {k:"resultat",l:"Résultat (ex. 3e / 24)",t:"text"},
+    {k:"issue",l:"Issue",t:"select",opts:SEL_ISSUE}
+  ]},
+  parametres:{titre:"paramètres", root:true, champs:[
+    {k:"org",l:"Nom de l'organisation",t:"text"},
+    {k:"saison",l:"Saison",t:"text"},
+    {k:"motDePasse",l:"Mot de passe d'accès",t:"text"}
+  ]}
+};
 
-/* ---- Portail ---- */
-const gate = document.getElementById('gate');
-const app  = document.getElementById('app');
+/* =========================================================================
+   PORTAIL
+   ========================================================================= */
+const gate=document.getElementById('gate'), app=document.getElementById('app');
 function unlock(){ gate.classList.add('hidden'); app.classList.add('show'); render(); }
 function tryUnlock(){
-  const v = document.getElementById('pw').value;
-  if(v === DATA.motDePasse){ sessionStorage.setItem('flc-ok','1'); unlock(); }
-  else { document.getElementById('gate-err').textContent = "Mot de passe incorrect."; }
+  const v=document.getElementById('pw').value;
+  if(v===DATA.motDePasse){ sessionStorage.setItem('flc-ok','1'); unlock(); }
+  else{ document.getElementById('gate-err').textContent="Mot de passe incorrect."; }
 }
-document.getElementById('gate-btn').addEventListener('click', tryUnlock);
-document.getElementById('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
-document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage.removeItem('flc-ok'); location.reload(); });
-if(sessionStorage.getItem('flc-ok')==='1'){ unlock(); } else { document.getElementById('pw').focus(); }
+document.getElementById('gate-btn').addEventListener('click',tryUnlock);
+document.getElementById('pw').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
+document.getElementById('logout').addEventListener('click',()=>{ sessionStorage.removeItem('flc-ok'); location.reload(); });
 
-/* ---- Navigation ---- */
-const VIEWS = {
-  apercu:  {title:"Vue d'ensemble", eyebrow:"Fiche direction", lead:"Le pivot entre les pôles de jeu et la direction : l'information circule, les besoins sont cadrés, la donnée est lisible."},
-  poles:   {title:"Suivi des pôles", eyebrow:"Mission 01 · Coordination transversale", lead:"État de chaque pôle de jeu, avancées et blocages remontés par les managers."},
-  besoins: {title:"Besoins & arbitrage", eyebrow:"Mission 02 · Cadrage & arbitrage", lead:"Les manques identifiés par les pôles, priorisés et cadrés avant remontée à la direction."},
-  reporting:{title:"Données & reporting", eyebrow:"Mission 03 · Reporting & lisibilité", lead:"Résultats et indicateurs consolidés de tous les pôles, en une lecture claire."}
+/* =========================================================================
+   NAVIGATION
+   ========================================================================= */
+const VIEWS={
+  apercu:{title:"Vue d'ensemble",eyebrow:"Fiche direction",lead:"Le pivot entre les pôles de jeu et la direction : l'information circule, les besoins sont cadrés, la donnée est lisible."},
+  poles:{title:"Suivi des pôles",eyebrow:"Mission 01 · Coordination transversale",lead:"État de chaque pôle de jeu, avancées et blocages remontés par les managers."},
+  besoins:{title:"Besoins & arbitrage",eyebrow:"Mission 02 · Cadrage & arbitrage",lead:"Les manques identifiés par les pôles, priorisés et cadrés avant remontée à la direction."},
+  reporting:{title:"Données & reporting",eyebrow:"Mission 03 · Reporting & lisibilité",lead:"Résultats et indicateurs consolidés de tous les pôles, en une lecture claire."},
+  calendrier:{title:"Calendrier & historique",eyebrow:"Compétitions",lead:"Agenda des compétitions à venir et historique des résultats passés."}
 };
 document.querySelectorAll('.nav-item').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
+  btn.addEventListener('click',()=>{
     document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-    const v = btn.dataset.view;
+    const v=btn.dataset.view;
     document.querySelectorAll('.view').forEach(s=>s.classList.remove('active'));
     document.getElementById('view-'+v).classList.add('active');
-    const meta = VIEWS[v];
-    document.getElementById('tb-title').textContent = meta.title;
-    document.getElementById('tb-eyebrow').textContent = meta.eyebrow;
-    document.getElementById('tb-lead').textContent = meta.lead;
-    document.querySelector('.main').scrollTo?.(0,0);
+    const m=VIEWS[v];
+    document.getElementById('tb-title').textContent=m.title;
+    document.getElementById('tb-eyebrow').textContent=m.eyebrow;
+    document.getElementById('tb-lead').textContent=m.lead;
     window.scrollTo(0,0);
   });
 });
 
-/* ---- Rendu ---- */
-function pill(cls,label){ return `<span class="pill ${cls}"><span class="d"></span>${esc(label)}</span>`; }
+/* =========================================================================
+   RENDU
+   ========================================================================= */
+function editBtns(key,i){
+  return `<span class="item-actions edit-only">
+    <button class="ic-btn" onclick="openForm('${key}',${i})" title="Modifier">✎</button>
+    <button class="ic-btn del" onclick="removeItem('${key}',${i})" title="Supprimer">🗑</button></span>`;
+}
 
 function render(){
-  document.getElementById('saison-badge').textContent = DATA.saison;
-  document.getElementById('tb-lead').textContent = VIEWS.apercu.lead;
+  document.getElementById('saison-badge').textContent=DATA.saison;
 
   /* KPIs */
-  const aJour = DATA.poles.filter(p=>p.statut==='a-jour').length;
-  const aRemonter = DATA.besoins.filter(b=>b.aRemonter).length;
-  const blocages = DATA.poles.reduce((n,p)=>n+p.blocages.length,0);
-  document.getElementById('kpis').innerHTML = `
+  const aJour=DATA.poles.filter(p=>p.statut==='a-jour').length;
+  const aRemonter=DATA.besoins.filter(b=>b.aRemonter).length;
+  const blocages=DATA.poles.reduce((n,p)=>n+(p.blocages?p.blocages.length:0),0);
+  document.getElementById('kpis').innerHTML=`
     <div class="tile"><div class="k-label">Pôles suivis</div><div class="k-val tnum">${DATA.poles.length}</div><div class="k-sub">${aJour} à jour</div></div>
     <div class="tile" data-accent="warn"><div class="k-label">Points à faire</div><div class="k-val tnum">${DATA.poles.length-aJour}</div><div class="k-sub">pôles à recontacter</div></div>
     <div class="tile" data-accent="violet"><div class="k-label">Besoins ouverts</div><div class="k-val tnum">${DATA.besoins.filter(b=>b.statut!=='traite').length}</div><div class="k-sub">${aRemonter} à remonter</div></div>
     <div class="tile" data-accent="corail"><div class="k-label">Blocages actifs</div><div class="k-val tnum">${blocages}</div><div class="k-sub">à débloquer</div></div>`;
 
-  /* Callouts à remonter */
-  const rem = DATA.besoins.filter(b=>b.aRemonter);
-  document.getElementById('callouts').innerHTML = rem.length ? rem.map(b=>`
-    <div class="callout" style="margin-bottom:10px">
-      <div class="ci">↗</div>
-      <div class="ct"><b>${esc(TYPE_LABEL[b.type])} · ${esc(b.pole)}</b> — ${esc(b.libelle)}
-      &nbsp; ${pill(PRIORITE[b.priorite].cls, 'Priorité '+PRIORITE[b.priorite].label.toLowerCase())}</div>
+  /* Callouts */
+  const rem=DATA.besoins.filter(b=>b.aRemonter);
+  document.getElementById('callouts').innerHTML=rem.length? rem.map(b=>`
+    <div class="callout" style="margin-bottom:10px"><div class="ci">↗</div>
+      <div class="ct"><b>${esc(TYPE_LABEL[b.type]||b.type)} · ${esc(b.pole)}</b> — ${esc(b.libelle)}
+      &nbsp; ${pill(PRIORITE[b.priorite]?PRIORITE[b.priorite].cls:'neutre','Priorité '+(PRIORITE[b.priorite]?PRIORITE[b.priorite].label.toLowerCase():b.priorite))}</div>
     </div>`).join('') : `<div class="empty">Aucun besoin en attente de remontée.</div>`;
 
-  /* Aperçu pôles à traiter */
-  const aTraiter = DATA.poles.filter(p=>p.statut!=='a-jour');
-  document.getElementById('apercu-poles').innerHTML = (aTraiter.length?aTraiter:DATA.poles).map(poleCard).join('');
+  /* Prochaines compétitions (aperçu) */
+  const today=new Date().toISOString().slice(0,10);
+  const calSorted=[...DATA.calendrier].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  let up=calSorted.filter(c=>String(c.date)>=today); if(!up.length) up=calSorted;
+  document.getElementById('apercu-cal').innerHTML = up.length? up.slice(0,4).map(c=>calRow(c,false)).join('') : `<div class="empty">Aucune compétition programmée.</div>`;
+
+  /* Pôles à traiter (aperçu) */
+  const aTraiter=DATA.poles.filter(p=>p.statut!=='a-jour');
+  document.getElementById('apercu-poles').innerHTML=(aTraiter.length?aTraiter:DATA.poles).map(poleCard).join('');
 
   /* Suivi des pôles */
-  document.getElementById('poles-count').textContent = DATA.poles.length+' pôles';
-  document.getElementById('poles-cards').innerHTML = DATA.poles.map(poleCard).join('');
+  document.getElementById('poles-count').textContent=DATA.poles.length+' pôles';
+  document.getElementById('poles-cards').innerHTML=DATA.poles.length?DATA.poles.map(poleCard).join(''):`<div class="empty">Aucun pôle. Passez en mode édition pour en ajouter.</div>`;
 
   /* Besoins */
-  document.getElementById('besoins-count').textContent = DATA.besoins.length+' besoins';
-  renderBesoins('tous');
+  document.getElementById('besoins-count').textContent=DATA.besoins.length+' besoins';
+  const af=document.querySelector('#besoins-filters .filter-btn.active');
+  renderBesoins(af?af.dataset.f:'tous');
 
   /* Reporting */
-  document.getElementById('report-rows').innerHTML = DATA.resultats.map(r=>{
-    const t = TEND[r.tendance]||TEND.flat;
-    return `<div class="res-row">
-      <div class="rp-jeu">${esc(r.jeu)}</div>
-      <div class="rp-desc">${esc(r.desc)}</div>
-      <div class="meter"><div class="track"><div class="fill" style="width:${Math.max(0,Math.min(100,r.forme))}%"></div></div><div class="mlabel tnum">forme ${r.forme}</div></div>
-      <div class="tend ${t.c}">${t.s}</div>
-    </div>`;
+  document.getElementById('report-rows').innerHTML=DATA.resultats.length?DATA.resultats.map(r=>{
+    const oi=DATA.resultats.indexOf(r); const t=TEND[r.tendance]||TEND.flat; const f=Math.max(0,Math.min(100,Number(r.forme)||0));
+    return `<div class="res-row"><div class="rp-jeu">${esc(r.jeu)}</div><div class="rp-desc">${esc(r.desc)}</div>
+      <div class="meter"><div class="track"><div class="fill" style="width:${f}%"></div></div><div class="mlabel tnum">forme ${f}</div></div>
+      <div class="tend ${t.c}">${t.s}</div>${editBtns('resultats',oi)}</div>`;
+  }).join(''):`<div class="empty">Aucun résultat.</div>`;
+  document.getElementById('report-inds').innerHTML=DATA.indicateurs.map(i=>{
+    const oi=DATA.indicateurs.indexOf(i);
+    return `<div class="ind"><span class="il">${esc(i.label)}</span><span style="display:flex;align-items:center;gap:10px"><span class="iv tnum">${esc(i.valeur)}</span>${editBtns('indicateurs',oi)}</span></div>`;
   }).join('');
-  document.getElementById('report-inds').innerHTML = DATA.indicateurs.map(i=>`
-    <div class="ind"><span class="il">${esc(i.label)}</span><span class="iv tnum">${esc(i.valeur)}</span></div>`).join('');
+
+  /* Calendrier */
+  document.getElementById('cal-count').textContent=DATA.calendrier.length+' à venir';
+  document.getElementById('cal-list').innerHTML=calSorted.length?calSorted.map(c=>calRow(c,true)).join(''):`<div class="empty">Aucune compétition. Passez en mode édition pour en ajouter.</div>`;
+
+  /* Historique */
+  const hist=[...DATA.historique].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  document.getElementById('hist-count').textContent=DATA.historique.length+' résultats';
+  document.getElementById('hist-list').innerHTML=hist.length?hist.map(h=>histRow(h)).join(''):`<div class="empty">Aucun résultat enregistré.</div>`;
 }
 
 function poleCard(p){
-  const st = STATUT[p.statut]||STATUT.attention;
-  const av = p.avancees.map(a=>`<div class="pt up"><span class="b"></span>${esc(a)}</div>`).join('');
-  const bl = p.blocages.map(b=>`<div class="pt down"><span class="b"></span>${esc(b)}</div>`).join('');
-  let body = '';
-  if(av) body += `<div class="pt-list"><div class="grp-label">Avancées</div>${av}</div>`;
-  if(bl) body += `<div class="pt-list"><div class="grp-label">Blocages</div>${bl}</div>`;
-  if(!body) body = `<div class="pt" style="color:var(--faint)"><span class="b" style="background:var(--faint)"></span>Rien à signaler</div>`;
+  const oi=DATA.poles.indexOf(p);
+  const st=STATUT[p.statut]||STATUT.attention;
+  const av=(p.avancees||[]).map(a=>`<div class="pt up"><span class="b"></span>${esc(a)}</div>`).join('');
+  const bl=(p.blocages||[]).map(b=>`<div class="pt down"><span class="b"></span>${esc(b)}</div>`).join('');
+  let body='';
+  if(av) body+=`<div class="pt-list"><div class="grp-label">Avancées</div>${av}</div>`;
+  if(bl) body+=`<div class="pt-list"><div class="grp-label">Blocages</div>${bl}</div>`;
+  if(!body) body=`<div class="pt" style="color:var(--faint)"><span class="b" style="background:var(--faint)"></span>Rien à signaler</div>`;
   return `<div class="card">
     <div class="card-head">
       <div><div class="jeu">${esc(p.jeu)}</div><div class="mgr">Manager · ${esc(p.manager)}</div></div>
-      ${pill(st.cls, st.label)}
+      <div class="ch-right">${pill(st.cls,st.label)}${editBtns('poles',oi)}</div>
     </div>
     ${body}
-    <div class="card-meta"><span><b>${p.joueurs}</b> joueurs</span><span>Dernier point · <b>${esc(p.dernierPoint)}</b></span></div>
+    <div class="card-meta"><span><b>${esc(p.joueurs)}</b> joueurs</span><span>Dernier point · <b>${esc(p.dernierPoint)}</b></span></div>
+  </div>`;
+}
+
+function calRow(c,withActions){
+  const oi=DATA.calendrier.indexOf(c); const st=CAL_STATUT[c.statut]||CAL_STATUT.confirme; const dp=dparts(c.date);
+  return `<div class="cal-row">
+    <div class="dateblock"><div class="d tnum">${dp.d}</div><div class="m">${dp.m}</div></div>
+    <div class="cal-main"><div class="c-comp">${esc(c.competition)}</div><div class="c-sub">${esc(c.jeu)}${c.format?' · '+esc(c.format):''}</div></div>
+    ${pill(st.c,st.l)}${withActions?editBtns('calendrier',oi):''}
+  </div>`;
+}
+function histRow(h){
+  const oi=DATA.historique.indexOf(h); const is=ISSUE[h.issue]||ISSUE.participation; const dp=dparts(h.date);
+  return `<div class="cal-row">
+    <div class="dateblock"><div class="d tnum">${dp.d}</div><div class="m">${dp.m}</div></div>
+    <div class="cal-main"><div class="c-comp">${esc(h.competition)}</div><div class="c-sub">${esc(h.jeu)}${h.resultat?' · '+esc(h.resultat):''}</div></div>
+    ${pill(is.c,is.l)}${editBtns('historique',oi)}
   </div>`;
 }
 
 function renderBesoins(f){
-  let list = DATA.besoins.slice();
-  if(f==='remonter') list = list.filter(b=>b.aRemonter);
-  else if(f!=='tous') list = list.filter(b=>b.type===f);
-  const order = {haute:0,moyenne:1,basse:2};
-  list.sort((a,b)=>order[a.priorite]-order[b.priorite]);
-  const body = document.getElementById('besoins-body');
-  body.innerHTML = list.length ? list.map(b=>`
-    <tr>
+  let list=DATA.besoins.slice();
+  if(f==='remonter') list=list.filter(b=>b.aRemonter);
+  else if(f&&f!=='tous') list=list.filter(b=>b.type===f);
+  const order={haute:0,moyenne:1,basse:2};
+  list.sort((a,b)=>(order[a.priorite]??9)-(order[b.priorite]??9));
+  const body=document.getElementById('besoins-body');
+  body.innerHTML=list.length?list.map(b=>{
+    const oi=DATA.besoins.indexOf(b);
+    const pr=PRIORITE[b.priorite]||{label:b.priorite,cls:'neutre'};
+    const bs=BESOIN_STATUT[b.statut]||{label:b.statut,cls:'neutre'};
+    return `<tr>
       <td class="td-pole">${esc(b.pole)}</td>
       <td><span class="type-tag"><span class="ic">${TYPE_IC[b.type]||'•'}</span>${esc(TYPE_LABEL[b.type]||b.type)}</span></td>
       <td>${esc(b.libelle)}</td>
-      <td>${pill(PRIORITE[b.priorite].cls, PRIORITE[b.priorite].label)}</td>
-      <td>${pill(BESOIN_STATUT[b.statut].cls, BESOIN_STATUT[b.statut].label)}</td>
-      <td>${b.aRemonter?'<span class="remonter-flag"><span class="a">↗</span>À remonter</span>':'<span style="color:var(--faint)">—</span>'}</td>
-    </tr>`).join('') : `<tr><td colspan="6"><div class="empty">Aucun besoin dans ce filtre.</div></td></tr>`;
+      <td>${pill(pr.cls,pr.label)}</td>
+      <td>${pill(bs.cls,bs.label)}</td>
+      <td>${b.aRemonter?'<span class="remonter-flag">↗ À remonter</span>':'<span style="color:var(--faint)">—</span>'}</td>
+      <td class="edit-only">${editBtns('besoins',oi)}</td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="7"><div class="empty">Aucun besoin dans ce filtre.</div></td></tr>`;
 }
-document.getElementById('besoins-filters').addEventListener('click', e=>{
-  const btn = e.target.closest('.filter-btn'); if(!btn) return;
+document.getElementById('besoins-filters').addEventListener('click',e=>{
+  const btn=e.target.closest('.filter-btn'); if(!btn) return;
   document.querySelectorAll('#besoins-filters .filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderBesoins(btn.dataset.f);
+  btn.classList.add('active'); renderBesoins(btn.dataset.f);
 });
+
+/* =========================================================================
+   MODE ÉDITION + FORMULAIRES
+   ========================================================================= */
+function toggleEdit(){
+  document.body.classList.toggle('editing');
+  const on=document.body.classList.contains('editing');
+  const b=document.getElementById('edit-toggle');
+  b.textContent=on?'✓ Terminer':'✎ Mode édition'; b.classList.toggle('on',on);
+}
+document.getElementById('edit-toggle').addEventListener('click',toggleEdit);
+document.getElementById('btn-settings').addEventListener('click',()=>openForm('parametres',null));
+
+let EDITCTX=null;
+function fieldHTML(f,val){
+  if(f.t==='select'||f.t==='bool'){
+    const opts=(f.t==='bool'?SEL_BOOL:f.opts); const cur=f.t==='bool'?String(!!val):String(val==null?'':val);
+    return `<select name="${f.k}">${opts.map(([ov,ol])=>`<option value="${esc(ov)}"${String(ov)===cur?' selected':''}>${esc(ol)}</option>`).join('')}</select>`;
+  }
+  if(f.t==='lines'){ const txt=Array.isArray(val)?val.join('\n'):(val||''); return `<textarea name="${f.k}" rows="3">${esc(txt)}</textarea>`; }
+  const type=f.t==='number'?'number':(f.t==='date'?'date':'text');
+  return `<input type="${type}" name="${f.k}" value="${esc(val==null?'':val)}" ${f.req?'required':''} />`;
+}
+function openForm(key,index){
+  const sc=SCHEMAS[key]; EDITCTX={key,index};
+  const src=sc.root?DATA:(index==null?{}:DATA[sc.coll][index]);
+  const isNew=!sc.root&&index==null;
+  document.getElementById('modal-title').textContent=(sc.root?'Modifier les ':(isNew?'Ajouter — ':'Modifier — '))+sc.titre;
+  document.getElementById('modal-form').innerHTML=sc.champs.map(f=>`<div class="fld"><label>${esc(f.l)}</label>${fieldHTML(f,src[f.k])}</div>`).join('');
+  document.getElementById('modal-del').style.display=(!sc.root&&index!=null)?'inline-flex':'none';
+  document.getElementById('modal').classList.add('show');
+  const first=document.querySelector('#modal-form input,#modal-form select,#modal-form textarea'); if(first) first.focus();
+}
+function closeModal(){ document.getElementById('modal').classList.remove('show'); EDITCTX=null; }
+function saveForm(){
+  if(!EDITCTX) return;
+  const sc=SCHEMAS[EDITCTX.key], form=document.getElementById('modal-form');
+  const target=sc.root?DATA:(EDITCTX.index==null?{}:Object.assign({},DATA[sc.coll][EDITCTX.index]));
+  for(const f of sc.champs){
+    const el=form.elements[f.k]; if(!el) continue;
+    let v=el.value;
+    if(f.t==='number') v=(v===''?0:Number(v));
+    else if(f.t==='bool') v=(v==='true');
+    else if(f.t==='lines') v=v.split('\n').map(s=>s.trim()).filter(Boolean);
+    else v=v.trim();
+    target[f.k]=v;
+  }
+  if(!sc.root){
+    if(EDITCTX.index==null) DATA[sc.coll].push(target);
+    else DATA[sc.coll][EDITCTX.index]=target;
+  }
+  persist(); closeModal(); render();
+}
+function removeItem(key,index){
+  const sc=SCHEMAS[key];
+  if(!confirm('Supprimer définitivement cet élément ?')) return;
+  DATA[sc.coll].splice(index,1); persist(); render();
+}
+document.getElementById('modal-save').addEventListener('click',saveForm);
+document.getElementById('modal-cancel').addEventListener('click',closeModal);
+document.getElementById('modal-x').addEventListener('click',closeModal);
+document.getElementById('modal-del').addEventListener('click',()=>{ if(EDITCTX&&EDITCTX.index!=null){ const c=EDITCTX; closeModal(); removeItem(c.key,c.index); } });
+document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.getElementById('modal').classList.contains('show')) closeModal(); });
+
+/* =========================================================================
+   EXPORT / IMPORT / RÉINITIALISATION
+   ========================================================================= */
+document.getElementById('btn-export').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify(DATA,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob), a=document.createElement('a');
+  a.href=url; a.download='flc-esport-donnees.json'; a.click(); URL.revokeObjectURL(url);
+});
+document.getElementById('btn-import').addEventListener('click',()=>document.getElementById('import-file').click());
+document.getElementById('import-file').addEventListener('change',e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ const parsed=JSON.parse(r.result); DATA=Object.assign(clone(DEFAULTS),parsed); persist(); render(); alert('Données importées avec succès.'); }
+    catch(err){ alert("Fichier invalide : impossible de lire les données."); } };
+  r.readAsText(file); e.target.value='';
+});
+document.getElementById('btn-reset').addEventListener('click',()=>{
+  if(!confirm('Réinitialiser toutes les données aux valeurs par défaut ? Vos modifications seront perdues.')) return;
+  DATA=clone(DEFAULTS); persist(); render();
+});
+
+/* =========================================================================
+   INITIALISATION (après toutes les déclarations)
+   ========================================================================= */
+document.getElementById('tb-lead').textContent=VIEWS.apercu.lead;
+if(sessionStorage.getItem('flc-ok')==='1') unlock(); else document.getElementById('pw').focus();
 </script>
 </body>
 </html>
