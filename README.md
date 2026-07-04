@@ -45,8 +45,8 @@ Les **avancées** et **blocages** de chaque pôle sont des **entrées datées**.
 la direction »** : le blocage remonte alors dans la section *« À remonter à la direction »* de la vue
 d'ensemble, aux côtés des besoins. Un blocage résolu en sort automatiquement.
 
-> Les données d'exemple sont configurées pour les pôles **Fortnite, FIFA et Delta Force**
-> (managers et staff à renseigner). Remplacez-les par vos informations réelles en mode édition.
+> Le site démarre **vierge** (aucune donnée). Passez en **mode édition** pour créer vos pôles,
+> besoins, compétitions et staff. Pensez à **Exporter** régulièrement pour sauvegarder.
 
 ### Sauvegarder / transférer vos données
 

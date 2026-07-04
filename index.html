@@ -469,88 +469,17 @@ const DEFAULTS = {
   saison:"Saison 2025–2026",
   motDePasse:"flc-esport",
 
-  poles:[
-    {jeu:"Fortnite", manager:"À renseigner", joueurs:3, statut:"a-jour", rythmeJours:7, dernierPoint:"2026-06-27",
-     avancees:[{texte:"Bonne dynamique sur les derniers tournois", date:"2026-06-27"}],
-     blocages:[],
-     points:[
-       {date:"2026-06-27", sujets:"Préparation de la FNCS, rotation des joueurs", decisions:"Inscription validée au prochain cash cup", actions:"Réserver 2 créneaux de scrims par semaine"},
-       {date:"2026-06-20", sujets:"Bilan du dernier tournoi, points d'entraînement", decisions:"", actions:"Travailler les fins de partie"}
-     ]},
-    {jeu:"FIFA", manager:"À renseigner", joueurs:2, statut:"bloque", rythmeJours:7, dernierPoint:"2026-06-20",
-     avancees:[],
-     blocages:[
-       {texte:"Pas de point depuis 2 semaines", date:"2026-06-20", statut:"ouvert", aRemonter:false},
-       {texte:"Setup de stream à remplacer", date:"2026-06-18", statut:"ouvert", aRemonter:true}
-     ],
-     points:[
-       {date:"2026-06-20", sujets:"Bilan de la coupe, forme des joueurs", decisions:"", actions:"Planifier un point de reprise"}
-     ]},
-    {jeu:"Delta Force", manager:"À renseigner", joueurs:4, statut:"attention", rythmeJours:14, dernierPoint:"2026-07-01",
-     avancees:[{texte:"Nouveau pôle en cours de structuration", date:"2026-07-01"}],
-     blocages:[
-       {texte:"Effectif incomplet — recrutement en cours", date:"2026-07-01", statut:"en-cours", aRemonter:true}
-     ],
-     points:[
-       {date:"2026-07-01", sujets:"Constitution de l'effectif, choix des cartes", decisions:"Recruter un joueur supplémentaire", actions:"Tester 2 joueurs en scrim cette semaine"}
-     ]}
-  ],
-
-  besoins:[
-    {pole:"FIFA", type:"materiel", libelle:"Remplacement du setup de streaming", priorite:"haute", statut:"remonte", aRemonter:true},
-    {pole:"Delta Force", type:"staff", libelle:"Recrutement d'un joueur supplémentaire", priorite:"haute", statut:"cadre", aRemonter:true},
-    {pole:"Fortnite", type:"budget", libelle:"Inscriptions tournois + déplacements", priorite:"moyenne", statut:"cadre", aRemonter:true},
-    {pole:"Delta Force", type:"materiel", libelle:"PC supplémentaires pour l'effectif", priorite:"moyenne", statut:"nouveau", aRemonter:false},
-    {pole:"Fortnite", type:"materiel", libelle:"2 écrans 240 Hz supplémentaires", priorite:"basse", statut:"nouveau", aRemonter:false}
-  ],
-
-  resultats:[
-    {jeu:"Fortnite", desc:"Top 15 au dernier cash cup", forme:68, tendance:"up"},
-    {jeu:"FIFA", desc:"Éliminé en coupe (2e tour)", forme:40, tendance:"down"},
-    {jeu:"Delta Force", desc:"Pôle en structuration", forme:50, tendance:"flat"}
-  ],
-
-  indicateurs:[
-    {label:"Pôles actifs", valeur:"3"},
-    {label:"Joueurs au total", valeur:"9"},
-    {label:"Managers coordonnés", valeur:"3"},
-    {label:"Compétitions suivies", valeur:"3"}
-  ],
-
-  calendrier:[
-    {date:"2026-07-05", jeu:"Fortnite", competition:"Cash Cup — Solo", format:"En ligne", statut:"confirme"},
-    {date:"2026-07-12", jeu:"Delta Force", competition:"Scrims inter-équipes", format:"En ligne", statut:"a-confirmer"},
-    {date:"2026-07-19", jeu:"FIFA", competition:"Coupe d'été — Tour 1", format:"En ligne", statut:"a-confirmer"},
-    {date:"2026-07-26", jeu:"Fortnite", competition:"FNCS — Qualifications", format:"En ligne", statut:"confirme"}
-  ],
-
-  historique:[
-    {date:"2026-06-28", jeu:"Fortnite", competition:"Cash Cup", resultat:"Top 15 / 100", issue:"participation"},
-    {date:"2026-06-21", jeu:"FIFA", competition:"Coupe de printemps", resultat:"Éliminé au 2e tour", issue:"elimine"},
-    {date:"2026-06-14", jeu:"Fortnite", competition:"Tournoi communautaire", resultat:"2e place", issue:"podium"},
-    {date:"2026-06-10", jeu:"Delta Force", competition:"Premiers scrims", resultat:"Bilan positif", issue:"participation"}
-  ],
-
-  staff:[
-    {titre:"Fortnite", membres:[
-      {nom:"À renseigner", role:"Manager", notes:"Manager du pôle Fortnite."},
-      {nom:"À renseigner", role:"Coach", notes:""}
-    ]},
-    {titre:"FIFA", membres:[
-      {nom:"À renseigner", role:"Manager", notes:"Manager du pôle FIFA."}
-    ]},
-    {titre:"Delta Force", membres:[
-      {nom:"À renseigner", role:"Manager", notes:"Manager du pôle Delta Force. Pôle en structuration."}
-    ]},
-    {titre:"Staff transverse", membres:[
-      {nom:"À renseigner", role:"Création / Réseaux", notes:"Commun à tous les pôles."},
-      {nom:"À renseigner", role:"Responsable technique", notes:"Setup, stream et matériel de l'ensemble des équipes."}
-    ]}
-  ]
+  poles:[],
+  besoins:[],
+  resultats:[],
+  indicateurs:[],
+  calendrier:[],
+  historique:[],
+  staff:[]
 };
 
 /* ---------- Persistance (navigateur) ---------- */
-const STORE_KEY = "flc-esport-data-v3";
+const STORE_KEY = "flc-esport-data-v4";
 let DATA = loadData();
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function loadData(){
