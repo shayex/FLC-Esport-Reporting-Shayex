@@ -160,6 +160,15 @@ body.editing .edit-banner{display:block}
 .cr-line{font-size:12px;line-height:1.45;color:var(--text)}
 .cr-line b{color:var(--muted);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-right:7px}
 .cr-empty{font-size:12px;color:var(--faint)}
+.ev-group{display:flex;flex-direction:column;gap:8px}
+.ev{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;font-size:13px}
+.ev-main{display:flex;gap:9px;align-items:flex-start;min-width:0}
+.ev-main .b{width:6px;height:6px;border-radius:50%;margin-top:6px;flex:none}
+.ev.up .b{background:var(--ok)}
+.ev.down .b{background:var(--crit)}
+.ev-txt{line-height:1.45;color:var(--text)}
+.ev-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px;font-size:11.5px;color:var(--faint)}
+.ev-meta .pill{padding:3px 8px;font-size:10.5px}
 
 /* ---------- Pills ---------- */
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:999px;white-space:nowrap;line-height:1;border:1px solid transparent}
@@ -462,18 +471,26 @@ const DEFAULTS = {
 
   poles:[
     {jeu:"Fortnite", manager:"À renseigner", joueurs:3, statut:"a-jour", rythmeJours:7, dernierPoint:"2026-06-27",
-     avancees:["Bonne dynamique sur les derniers tournois"], blocages:[],
+     avancees:[{texte:"Bonne dynamique sur les derniers tournois", date:"2026-06-27"}],
+     blocages:[],
      points:[
        {date:"2026-06-27", sujets:"Préparation de la FNCS, rotation des joueurs", decisions:"Inscription validée au prochain cash cup", actions:"Réserver 2 créneaux de scrims par semaine"},
        {date:"2026-06-20", sujets:"Bilan du dernier tournoi, points d'entraînement", decisions:"", actions:"Travailler les fins de partie"}
      ]},
     {jeu:"FIFA", manager:"À renseigner", joueurs:2, statut:"bloque", rythmeJours:7, dernierPoint:"2026-06-20",
-     avancees:[], blocages:["Pas de point depuis 2 semaines","Setup de stream à remplacer"],
+     avancees:[],
+     blocages:[
+       {texte:"Pas de point depuis 2 semaines", date:"2026-06-20", statut:"ouvert", aRemonter:false},
+       {texte:"Setup de stream à remplacer", date:"2026-06-18", statut:"ouvert", aRemonter:true}
+     ],
      points:[
        {date:"2026-06-20", sujets:"Bilan de la coupe, forme des joueurs", decisions:"", actions:"Planifier un point de reprise"}
      ]},
     {jeu:"Delta Force", manager:"À renseigner", joueurs:4, statut:"attention", rythmeJours:14, dernierPoint:"2026-07-01",
-     avancees:["Nouveau pôle en cours de structuration"], blocages:["Effectif incomplet — recrutement en cours"],
+     avancees:[{texte:"Nouveau pôle en cours de structuration", date:"2026-07-01"}],
+     blocages:[
+       {texte:"Effectif incomplet — recrutement en cours", date:"2026-07-01", statut:"en-cours", aRemonter:true}
+     ],
      points:[
        {date:"2026-07-01", sujets:"Constitution de l'effectif, choix des cartes", decisions:"Recruter un joueur supplémentaire", actions:"Tester 2 joueurs en scrim cette semaine"}
      ]}
@@ -533,7 +550,7 @@ const DEFAULTS = {
 };
 
 /* ---------- Persistance (navigateur) ---------- */
-const STORE_KEY = "flc-esport-data-v2";
+const STORE_KEY = "flc-esport-data-v3";
 let DATA = loadData();
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function loadData(){
@@ -546,6 +563,8 @@ function persist(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(DATA)); 
 const STATUT={"a-jour":{label:"À jour",cls:"ok"},"attention":{label:"À suivre",cls:"warn"},"bloque":{label:"Bloqué",cls:"crit"}};
 const PRIORITE={haute:{label:"Haute",cls:"crit"},moyenne:{label:"Moyenne",cls:"warn"},basse:{label:"Basse",cls:"neutre"}};
 const BESOIN_STATUT={nouveau:{label:"Nouveau",cls:"neutre"},cadre:{label:"Cadré",cls:"violet"},remonte:{label:"Remonté",cls:"warn"},traite:{label:"Traité",cls:"ok"}};
+const BLOCAGE_STATUT={ouvert:{label:"Ouvert",cls:"crit"},"en-cours":{label:"En cours",cls:"warn"},resolu:{label:"Résolu",cls:"ok"}};
+function asEntry(x){ return typeof x==='string'?{texte:x}:(x||{}); }
 const CAL_STATUT={confirme:{l:"Confirmé",c:"ok"},"a-confirmer":{l:"À confirmer",c:"warn"}};
 const ISSUE={victoire:{l:"Victoire",c:"ok"},podium:{l:"Podium",c:"emeraude"},elimine:{l:"Éliminé",c:"crit"},participation:{l:"Participation",c:"neutre"}};
 const TYPE_IC={staff:"👥",materiel:"🖥",budget:"€"};
@@ -589,6 +608,7 @@ const SEL_CAL=[["confirme","Confirmé"],["a-confirmer","À confirmer"]];
 const SEL_ISSUE=[["victoire","Victoire"],["podium","Podium"],["elimine","Éliminé"],["participation","Participation"]];
 const SEL_TEND=[["up","En hausse ▲"],["flat","Stable —"],["down","En baisse ▼"]];
 const SEL_RYTHME=[["7","Hebdomadaire"],["14","Toutes les 2 semaines"],["21","Toutes les 3 semaines"],["30","Mensuel"],["0","Ponctuel (sans rythme)"]];
+const SEL_BLOCAGE=[["ouvert","Ouvert"],["en-cours","En cours"],["resolu","Résolu"]];
 
 const SCHEMAS={
   poles:{titre:"pôle", coll:"poles", champs:[
@@ -597,9 +617,7 @@ const SCHEMAS={
     {k:"joueurs",l:"Nombre de joueurs",t:"number"},
     {k:"statut",l:"État du pôle",t:"select",opts:SEL_STATUT},
     {k:"rythmeJours",l:"Rythme des points",t:"select",opts:SEL_RYTHME},
-    {k:"dernierPoint",l:"Date du dernier point",t:"date"},
-    {k:"avancees",l:"Avancées (une par ligne)",t:"lines"},
-    {k:"blocages",l:"Blocages (une par ligne)",t:"lines"}
+    {k:"dernierPoint",l:"Date du dernier point",t:"date"}
   ]},
   besoins:{titre:"besoin", coll:"besoins", champs:[
     {k:"pole",l:"Pôle concerné",t:"text",req:true},
@@ -697,21 +715,27 @@ function render(){
   const enRetard=cads.filter(c=>c.key==='retard').length;
   const aFaire=cads.filter(c=>c.key==='aujourdhui'||c.key==='bientot').length;
   const aJour=cads.filter(c=>c.key==='ajour').length;
-  const aRemonter=DATA.besoins.filter(b=>b.aRemonter).length;
-  const blocages=DATA.poles.reduce((n,p)=>n+(p.blocages?p.blocages.length:0),0);
+  // Éléments à remonter à la direction : blocages flaggés (ouverts) + besoins flaggés
+  const remBlocages=[];
+  DATA.poles.forEach(p=>(p.blocages||[]).forEach(x=>{ const e=asEntry(x); if(e.aRemonter&&e.statut!=='resolu') remBlocages.push({pole:p.jeu,texte:e.texte}); }));
+  const remBesoins=DATA.besoins.filter(b=>b.aRemonter);
+  const aRemonter=remBlocages.length+remBesoins.length;
+  const blocages=DATA.poles.reduce((n,p)=>n+(p.blocages||[]).filter(x=>asEntry(x).statut!=='resolu').length,0);
   document.getElementById('kpis').innerHTML=`
     <div class="tile"><div class="k-label">Pôles suivis</div><div class="k-val tnum">${DATA.poles.length}</div><div class="k-sub">${aJour} à jour sur le rythme</div></div>
     <div class="tile" data-accent="${enRetard?'corail':'warn'}"><div class="k-label">Points à faire</div><div class="k-val tnum">${aFaire+enRetard}</div><div class="k-sub">${enRetard} en retard</div></div>
     <div class="tile" data-accent="violet"><div class="k-label">Besoins ouverts</div><div class="k-val tnum">${DATA.besoins.filter(b=>b.statut!=='traite').length}</div><div class="k-sub">${aRemonter} à remonter</div></div>
     <div class="tile" data-accent="corail"><div class="k-label">Blocages actifs</div><div class="k-val tnum">${blocages}</div><div class="k-sub">à débloquer</div></div>`;
 
-  /* Callouts */
-  const rem=DATA.besoins.filter(b=>b.aRemonter);
-  document.getElementById('callouts').innerHTML=rem.length? rem.map(b=>`
-    <div class="callout" style="margin-bottom:10px"><div class="ci">↗</div>
+  /* Callouts : blocages + besoins à remonter */
+  const remHTML=[
+    ...remBlocages.map(r=>`<div class="callout" style="margin-bottom:10px"><div class="ci">↗</div>
+      <div class="ct"><b>Blocage · ${esc(r.pole)}</b> — ${esc(r.texte)}</div></div>`),
+    ...remBesoins.map(b=>`<div class="callout" style="margin-bottom:10px"><div class="ci">↗</div>
       <div class="ct"><b>${esc(TYPE_LABEL[b.type]||b.type)} · ${esc(b.pole)}</b> — ${esc(b.libelle)}
-      &nbsp; ${pill(PRIORITE[b.priorite]?PRIORITE[b.priorite].cls:'neutre','Priorité '+(PRIORITE[b.priorite]?PRIORITE[b.priorite].label.toLowerCase():b.priorite))}</div>
-    </div>`).join('') : `<div class="empty">Aucun besoin en attente de remontée.</div>`;
+      &nbsp; ${pill(PRIORITE[b.priorite]?PRIORITE[b.priorite].cls:'neutre','Priorité '+(PRIORITE[b.priorite]?PRIORITE[b.priorite].label.toLowerCase():b.priorite))}</div></div>`)
+  ];
+  document.getElementById('callouts').innerHTML=remHTML.length?remHTML.join(''):`<div class="empty">Rien en attente de remontée à la direction.</div>`;
 
   /* Prochaines compétitions (aperçu) */
   const today=new Date().toISOString().slice(0,10);
@@ -791,11 +815,34 @@ function poleCard(p){
   const pi=DATA.poles.indexOf(p);
   const st=STATUT[p.statut]||STATUT.attention;
   const cad=cadence(p);
-  const av=(p.avancees||[]).map(a=>`<div class="pt up"><span class="b"></span>${esc(a)}</div>`).join('');
-  const bl=(p.blocages||[]).map(b=>`<div class="pt down"><span class="b"></span>${esc(b)}</div>`).join('');
-  let body='';
-  if(av) body+=`<div class="pt-list"><div class="grp-label">Avancées</div>${av}</div>`;
-  if(bl) body+=`<div class="pt-list"><div class="grp-label">Blocages</div>${bl}</div>`;
+  const av=(p.avancees||[]).map(a=>{
+    const e=asEntry(a), oi=(p.avancees||[]).indexOf(a);
+    return `<div class="ev up"><div class="ev-main"><span class="b"></span><div>
+        <div class="ev-txt">${esc(e.texte)}</div>${e.date?`<div class="ev-meta">${fdate(e.date)}</div>`:''}
+      </div></div>
+      <span class="item-actions edit-only"><button class="ic-btn" onclick="editAvancee(${pi},${oi})" title="Modifier">✎</button><button class="ic-btn del" onclick="deleteAvancee(${pi},${oi})" title="Supprimer">🗑</button></span>
+    </div>`;
+  }).join('');
+  const bl=(p.blocages||[]).map(x=>{
+    const e=asEntry(x), oi=(p.blocages||[]).indexOf(x);
+    const st=BLOCAGE_STATUT[e.statut]||BLOCAGE_STATUT.ouvert;
+    const meta = e.statut==='resolu' ? (e.date?'Résolu':'') : (e.date?`Ouvert depuis ${Math.max(0,joursEntre(e.date,todayISO()))} j`:'');
+    return `<div class="ev down"><div class="ev-main"><span class="b"></span><div>
+        <div class="ev-txt">${esc(e.texte)}</div>
+        <div class="ev-meta">${pill(st.cls,st.label)}${meta?`<span>${meta}</span>`:''}${e.aRemonter&&e.statut!=='resolu'?'<span class="remonter-flag">↗ À remonter</span>':''}</div>
+      </div></div>
+      <span class="item-actions edit-only"><button class="ic-btn" onclick="editBlocage(${pi},${oi})" title="Modifier">✎</button><button class="ic-btn del" onclick="deleteBlocage(${pi},${oi})" title="Supprimer">🗑</button></span>
+    </div>`;
+  }).join('');
+  const body=`
+    <div class="ev-group">
+      <div class="carnet-head"><span class="grp-label">Avancées</span><button class="add-btn edit-only" onclick="addAvancee(${pi})">+ Avancée</button></div>
+      ${av||'<div class="cr-empty">—</div>'}
+    </div>
+    <div class="ev-group">
+      <div class="carnet-head"><span class="grp-label">Blocages</span><button class="add-btn edit-only" onclick="addBlocage(${pi})">+ Blocage</button></div>
+      ${bl||'<div class="cr-empty">Aucun blocage.</div>'}
+    </div>`;
 
   // Ligne de cadence
   let prochainTxt='—';
@@ -982,6 +1029,30 @@ function editPoint(pi,idx){ openModal('Modifier le compte-rendu',POINT_CHAMPS,DA
   ()=>{ DATA.poles[pi].points[idx]=readForm(POINT_CHAMPS); syncDernierPoint(DATA.poles[pi]); persist(); closeModal(); render(); },
   ()=>{ closeModal(); deletePoint(pi,idx); }); }
 function deletePoint(pi,idx){ if(!confirm('Supprimer ce compte-rendu ?')) return; DATA.poles[pi].points.splice(idx,1); syncDernierPoint(DATA.poles[pi]); persist(); render(); }
+
+/* --- Avancées & blocages : entrées datées avec statut de suivi --- */
+const AVANCEE_CHAMPS=[
+  {k:"texte",l:"Avancée",t:"text",req:true},
+  {k:"date",l:"Date",t:"date"}
+];
+const BLOCAGE_CHAMPS=[
+  {k:"texte",l:"Blocage",t:"text",req:true},
+  {k:"date",l:"Ouvert depuis le",t:"date"},
+  {k:"statut",l:"Statut",t:"select",opts:SEL_BLOCAGE},
+  {k:"aRemonter",l:"À remonter à la direction ?",t:"bool"}
+];
+function addAvancee(pi){ openModal('Ajouter une avancée',AVANCEE_CHAMPS,{date:todayISO()},
+  ()=>{ const p=DATA.poles[pi]; (p.avancees||(p.avancees=[])).push(readForm(AVANCEE_CHAMPS)); persist(); closeModal(); render(); }, null); }
+function editAvancee(pi,idx){ openModal("Modifier l'avancée",AVANCEE_CHAMPS,asEntry(DATA.poles[pi].avancees[idx]),
+  ()=>{ DATA.poles[pi].avancees[idx]=readForm(AVANCEE_CHAMPS); persist(); closeModal(); render(); },
+  ()=>{ closeModal(); deleteAvancee(pi,idx); }); }
+function deleteAvancee(pi,idx){ if(!confirm('Supprimer cette avancée ?')) return; DATA.poles[pi].avancees.splice(idx,1); persist(); render(); }
+function addBlocage(pi){ openModal('Ajouter un blocage',BLOCAGE_CHAMPS,{date:todayISO(),statut:'ouvert'},
+  ()=>{ const p=DATA.poles[pi]; (p.blocages||(p.blocages=[])).push(readForm(BLOCAGE_CHAMPS)); persist(); closeModal(); render(); }, null); }
+function editBlocage(pi,idx){ openModal('Modifier le blocage',BLOCAGE_CHAMPS,asEntry(DATA.poles[pi].blocages[idx]),
+  ()=>{ DATA.poles[pi].blocages[idx]=readForm(BLOCAGE_CHAMPS); persist(); closeModal(); render(); },
+  ()=>{ closeModal(); deleteBlocage(pi,idx); }); }
+function deleteBlocage(pi,idx){ if(!confirm('Supprimer ce blocage ?')) return; DATA.poles[pi].blocages.splice(idx,1); persist(); render(); }
 
 document.getElementById('modal-save').addEventListener('click',()=>{ if(EDITCTX&&EDITCTX.onSave) EDITCTX.onSave(); });
 document.getElementById('modal-del').addEventListener('click',()=>{ if(EDITCTX&&EDITCTX.onDelete) EDITCTX.onDelete(); });

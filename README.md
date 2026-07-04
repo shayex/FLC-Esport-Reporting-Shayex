@@ -40,6 +40,11 @@ déduit le **prochain point** et affiche un badge **À jour / Bientôt / Aujourd
 Le bouton **« + Point »** (mode édition) ajoute un compte-rendu (date, sujets, décisions, actions) et
 met automatiquement à jour la date du dernier point — donc la cadence.
 
+Les **avancées** et **blocages** de chaque pôle sont des **entrées datées**. Un blocage a un **statut**
+(Ouvert → En cours → Résolu) et affiche depuis combien de jours il est ouvert. Cochez **« À remonter à
+la direction »** : le blocage remonte alors dans la section *« À remonter à la direction »* de la vue
+d'ensemble, aux côtés des besoins. Un blocage résolu en sort automatiquement.
+
 > Les données d'exemple sont configurées pour les pôles **Fortnite, FIFA et Delta Force**
 > (managers et staff à renseigner). Remplacez-les par vos informations réelles en mode édition.
 
