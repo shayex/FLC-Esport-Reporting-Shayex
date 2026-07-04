@@ -150,6 +150,16 @@ body.editing .edit-banner{display:block}
 .pt .b{width:6px;height:6px;border-radius:50%;margin-top:6px;flex:none}
 .pt.up .b{background:var(--ok)}
 .pt.down .b{background:var(--crit)}
+.cadence-line{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line-soft);border-radius:9px;padding:9px 12px}
+.cadence-line b{color:var(--text);font-weight:600}
+.carnet{display:flex;flex-direction:column;gap:8px}
+.carnet-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cr{background:var(--surface-2);border:1px solid var(--line-soft);border-left:2px solid var(--emeraude);border-radius:8px;padding:9px 11px;display:flex;flex-direction:column;gap:4px}
+.cr-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cr-date{font-size:11.5px;font-weight:700;color:var(--emeraude)}
+.cr-line{font-size:12px;line-height:1.45;color:var(--text)}
+.cr-line b{color:var(--muted);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-right:7px}
+.cr-empty{font-size:12px;color:var(--faint)}
 
 /* ---------- Pills ---------- */
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:999px;white-space:nowrap;line-height:1;border:1px solid transparent}
@@ -307,7 +317,7 @@ body.editing th.edit-only,body.editing td.edit-only{display:table-cell}
     <div class="nav-label">Direction</div>
     <button class="nav-item active" data-view="apercu" data-accent="neutre"><span class="dot"></span>Vue d'ensemble</button>
     <div class="nav-label">Les 3 missions</div>
-    <button class="nav-item" data-view="poles" data-accent="emeraude"><span class="dot"></span>Suivi des pôles</button>
+    <button class="nav-item" data-view="poles" data-accent="emeraude"><span class="dot"></span>Suivi des managers</button>
     <button class="nav-item" data-view="besoins" data-accent="violet"><span class="dot"></span>Besoins &amp; arbitrage</button>
     <button class="nav-item" data-view="reporting" data-accent="corail"><span class="dot"></span>Données &amp; reporting</button>
     <div class="nav-label">Compétitions</div>
@@ -355,10 +365,10 @@ body.editing th.edit-only,body.editing td.edit-only{display:table-cell}
       <div class="cards" id="apercu-poles"></div>
     </section>
 
-    <!-- SUIVI DES PÔLES -->
+    <!-- SUIVI DES MANAGERS -->
     <section class="view" id="view-poles">
-      <p class="mission-note">Coordination transversale : points réguliers avec chaque pôle, harmonisation des pratiques entre les jeux, et remontée des blocages comme des avancées.</p>
-      <div class="section-title"><span class="rail"></span><h2>Pôles de jeu</h2><span class="count" id="poles-count"></span>
+      <p class="mission-note">Coordination transversale — points réguliers avec chaque pôle. Chaque pôle a un rythme de suivi ; le prochain point et les retards sont calculés automatiquement. Le carnet consigne sujets, décisions et actions de chaque point.</p>
+      <div class="section-title"><span class="rail"></span><h2>Suivi par pôle</h2><span class="count" id="poles-count"></span>
         <button class="add-btn edit-only" onclick="openForm('poles',null)">+ Ajouter un pôle</button></div>
       <div class="cards" id="poles-cards"></div>
     </section>
@@ -451,78 +461,79 @@ const DEFAULTS = {
   motDePasse:"flc-esport",
 
   poles:[
-    {jeu:"League of Legends", manager:"Léa Moreau", joueurs:5, statut:"a-jour", dernierPoint:"30 juin",
-     avancees:["Qualification pour les playoffs régionaux","Nouveau coach analyste intégré"], blocages:[]},
-    {jeu:"Valorant", manager:"Tom Alvarez", joueurs:5, statut:"attention", dernierPoint:"27 juin",
-     avancees:["3 victoires consécutives en ligue"], blocages:["Un titulaire en fin de contrat le mois prochain"]},
-    {jeu:"Rocket League", manager:"Nina Kaczmarek", joueurs:3, statut:"a-jour", dernierPoint:"1 juil.",
-     avancees:["Podium au tournoi open du week-end"], blocages:[]},
-    {jeu:"EA FC", manager:"Yanis Berkane", joueurs:2, statut:"bloque", dernierPoint:"18 juin",
-     avancees:[], blocages:["Pas de point depuis 2 semaines","Setup de stream en panne"]},
-    {jeu:"Counter-Strike 2", manager:"Sacha Petit", joueurs:5, statut:"attention", dernierPoint:"29 juin",
-     avancees:["Bootcamp planifié fin juillet"], blocages:["Budget déplacement à valider"]}
+    {jeu:"Fortnite", manager:"À renseigner", joueurs:3, statut:"a-jour", rythmeJours:7, dernierPoint:"2026-06-27",
+     avancees:["Bonne dynamique sur les derniers tournois"], blocages:[],
+     points:[
+       {date:"2026-06-27", sujets:"Préparation de la FNCS, rotation des joueurs", decisions:"Inscription validée au prochain cash cup", actions:"Réserver 2 créneaux de scrims par semaine"},
+       {date:"2026-06-20", sujets:"Bilan du dernier tournoi, points d'entraînement", decisions:"", actions:"Travailler les fins de partie"}
+     ]},
+    {jeu:"FIFA", manager:"À renseigner", joueurs:2, statut:"bloque", rythmeJours:7, dernierPoint:"2026-06-20",
+     avancees:[], blocages:["Pas de point depuis 2 semaines","Setup de stream à remplacer"],
+     points:[
+       {date:"2026-06-20", sujets:"Bilan de la coupe, forme des joueurs", decisions:"", actions:"Planifier un point de reprise"}
+     ]},
+    {jeu:"Delta Force", manager:"À renseigner", joueurs:4, statut:"attention", rythmeJours:14, dernierPoint:"2026-07-01",
+     avancees:["Nouveau pôle en cours de structuration"], blocages:["Effectif incomplet — recrutement en cours"],
+     points:[
+       {date:"2026-07-01", sujets:"Constitution de l'effectif, choix des cartes", decisions:"Recruter un joueur supplémentaire", actions:"Tester 2 joueurs en scrim cette semaine"}
+     ]}
   ],
 
   besoins:[
-    {pole:"EA FC", type:"materiel", libelle:"Remplacement du setup de streaming", priorite:"haute", statut:"remonte", aRemonter:true},
-    {pole:"Counter-Strike 2", type:"budget", libelle:"Budget déplacement bootcamp (5 joueurs)", priorite:"haute", statut:"cadre", aRemonter:true},
-    {pole:"Valorant", type:"staff", libelle:"Recrutement d'un remplaçant titulaire", priorite:"haute", statut:"cadre", aRemonter:true},
-    {pole:"League of Legends", type:"staff", libelle:"Renfort préparateur mental (mi-temps)", priorite:"moyenne", statut:"nouveau", aRemonter:false},
-    {pole:"Rocket League", type:"materiel", libelle:"2 écrans 240 Hz supplémentaires", priorite:"basse", statut:"nouveau", aRemonter:false},
-    {pole:"Counter-Strike 2", type:"materiel", libelle:"Casques audio pro (x5)", priorite:"moyenne", statut:"traite", aRemonter:false}
+    {pole:"FIFA", type:"materiel", libelle:"Remplacement du setup de streaming", priorite:"haute", statut:"remonte", aRemonter:true},
+    {pole:"Delta Force", type:"staff", libelle:"Recrutement d'un joueur supplémentaire", priorite:"haute", statut:"cadre", aRemonter:true},
+    {pole:"Fortnite", type:"budget", libelle:"Inscriptions tournois + déplacements", priorite:"moyenne", statut:"cadre", aRemonter:true},
+    {pole:"Delta Force", type:"materiel", libelle:"PC supplémentaires pour l'effectif", priorite:"moyenne", statut:"nouveau", aRemonter:false},
+    {pole:"Fortnite", type:"materiel", libelle:"2 écrans 240 Hz supplémentaires", priorite:"basse", statut:"nouveau", aRemonter:false}
   ],
 
   resultats:[
-    {jeu:"League of Legends", desc:"Qualifiés playoffs — 4e/16", forme:78, tendance:"up"},
-    {jeu:"Valorant", desc:"7e de ligue, série en cours", forme:64, tendance:"up"},
-    {jeu:"Rocket League", desc:"Podium tournoi open (3e)", forme:71, tendance:"flat"},
-    {jeu:"EA FC", desc:"Éliminés au 2e tour", forme:38, tendance:"down"},
-    {jeu:"Counter-Strike 2", desc:"Milieu de classement", forme:55, tendance:"flat"}
+    {jeu:"Fortnite", desc:"Top 15 au dernier cash cup", forme:68, tendance:"up"},
+    {jeu:"FIFA", desc:"Éliminé en coupe (2e tour)", forme:40, tendance:"down"},
+    {jeu:"Delta Force", desc:"Pôle en structuration", forme:50, tendance:"flat"}
   ],
 
   indicateurs:[
-    {label:"Pôles actifs", valeur:"5"},
-    {label:"Joueurs sous contrat", valeur:"20"},
-    {label:"Managers coordonnés", valeur:"5"},
-    {label:"Compétitions en cours", valeur:"5"},
-    {label:"Taux de qualification", valeur:"60 %"}
+    {label:"Pôles actifs", valeur:"3"},
+    {label:"Joueurs au total", valeur:"9"},
+    {label:"Managers coordonnés", valeur:"3"},
+    {label:"Compétitions suivies", valeur:"3"}
   ],
 
   calendrier:[
-    {date:"2026-07-05", jeu:"Rocket League", competition:"Summer Open — Qualifications", format:"BO5 · en ligne", statut:"confirme"},
-    {date:"2026-07-12", jeu:"Valorant", competition:"Ligue régionale — Journée 7", format:"BO3 · en ligne", statut:"confirme"},
-    {date:"2026-07-19", jeu:"League of Legends", competition:"Playoffs régionaux — 1/4 de finale", format:"BO5 · LAN, Lyon", statut:"a-confirmer"},
-    {date:"2026-07-26", jeu:"Counter-Strike 2", competition:"Bootcamp + scrims", format:"Bootcamp · Paris", statut:"confirme"},
-    {date:"2026-08-02", jeu:"EA FC", competition:"Coupe d'été — Tour 1", format:"BO3 · en ligne", statut:"a-confirmer"}
+    {date:"2026-07-05", jeu:"Fortnite", competition:"Cash Cup — Solo", format:"En ligne", statut:"confirme"},
+    {date:"2026-07-12", jeu:"Delta Force", competition:"Scrims inter-équipes", format:"En ligne", statut:"a-confirmer"},
+    {date:"2026-07-19", jeu:"FIFA", competition:"Coupe d'été — Tour 1", format:"En ligne", statut:"a-confirmer"},
+    {date:"2026-07-26", jeu:"Fortnite", competition:"FNCS — Qualifications", format:"En ligne", statut:"confirme"}
   ],
 
   historique:[
-    {date:"2026-06-28", jeu:"Rocket League", competition:"Open Summer Cup", resultat:"3e / 24", issue:"podium"},
-    {date:"2026-06-21", jeu:"Valorant", competition:"Ligue régionale — Journée 6", resultat:"Victoire 2–0", issue:"victoire"},
-    {date:"2026-06-15", jeu:"League of Legends", competition:"Qualifications playoffs", resultat:"Qualifiés (4e/16)", issue:"podium"},
-    {date:"2026-06-10", jeu:"EA FC", competition:"Coupe de printemps", resultat:"Éliminé au 2e tour", issue:"elimine"},
-    {date:"2026-06-07", jeu:"Counter-Strike 2", competition:"Ligue — Journée 5", resultat:"Défaite 1–2", issue:"participation"}
+    {date:"2026-06-28", jeu:"Fortnite", competition:"Cash Cup", resultat:"Top 15 / 100", issue:"participation"},
+    {date:"2026-06-21", jeu:"FIFA", competition:"Coupe de printemps", resultat:"Éliminé au 2e tour", issue:"elimine"},
+    {date:"2026-06-14", jeu:"Fortnite", competition:"Tournoi communautaire", resultat:"2e place", issue:"podium"},
+    {date:"2026-06-10", jeu:"Delta Force", competition:"Premiers scrims", resultat:"Bilan positif", issue:"participation"}
   ],
 
   staff:[
-    {titre:"League of Legends", membres:[
-      {nom:"Léa Moreau", role:"Manager", notes:"Manager du pôle. Point hebdo le lundi."},
-      {nom:"David Nguyen", role:"Head Coach", notes:"Arrivé en mai. Très solide sur la macro et la prépa de draft."},
-      {nom:"Amine Cherif", role:"Analyste", notes:"Nouveau — intégré au staff ce mois-ci."}
+    {titre:"Fortnite", membres:[
+      {nom:"À renseigner", role:"Manager", notes:"Manager du pôle Fortnite."},
+      {nom:"À renseigner", role:"Coach", notes:""}
     ]},
-    {titre:"Valorant", membres:[
-      {nom:"Tom Alvarez", role:"Manager", notes:""},
-      {nom:"Chloé Faure", role:"Coach", notes:"Assure aussi la prépa mentale en attendant un renfort dédié."}
+    {titre:"FIFA", membres:[
+      {nom:"À renseigner", role:"Manager", notes:"Manager du pôle FIFA."}
+    ]},
+    {titre:"Delta Force", membres:[
+      {nom:"À renseigner", role:"Manager", notes:"Manager du pôle Delta Force. Pôle en structuration."}
     ]},
     {titre:"Staff transverse", membres:[
-      {nom:"Julie Rousseau", role:"Création / Réseaux", notes:"Commune à tous les pôles. Gère le contenu et les réseaux."},
-      {nom:"Marc Lefèvre", role:"Responsable technique", notes:"Setup, stream et matériel de l'ensemble des équipes."}
+      {nom:"À renseigner", role:"Création / Réseaux", notes:"Commun à tous les pôles."},
+      {nom:"À renseigner", role:"Responsable technique", notes:"Setup, stream et matériel de l'ensemble des équipes."}
     ]}
   ]
 };
 
 /* ---------- Persistance (navigateur) ---------- */
-const STORE_KEY = "flc-esport-data-v1";
+const STORE_KEY = "flc-esport-data-v2";
 let DATA = loadData();
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function loadData(){
@@ -549,6 +560,22 @@ function dparts(iso){
   const p=iso.split("-"); const day=Number(p[2])||"";
   return {d:day, m:(MOIS[(Number(p[1])||1)-1]||"").replace(".","").toUpperCase().slice(0,4)};
 }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function addDays(iso,n){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function fdate(iso){ if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return '—'; const p=iso.split('-'); return Number(p[2])+' '+(MOIS[(Number(p[1])||1)-1]||''); }
+function joursEntre(a,b){ return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000); }
+const RYTHME_LABEL={7:"Hebdo",14:"2 semaines",21:"3 semaines",30:"Mensuel",0:"Ponctuel"};
+function rythmeLabel(r){ return RYTHME_LABEL[Number(r)]||(r?Number(r)+' j':'Ponctuel'); }
+/* Cadence du suivi : calculée à partir du dernier point + rythme */
+function cadence(p){
+  const r=Number(p.rythmeJours)||0;
+  if(!p.dernierPoint||!r) return {key:'aplanifier', label:'À planifier', cls:'neutre', prochain:null};
+  const prochain=addDays(p.dernierPoint,r), t=todayISO();
+  if(prochain<t) return {key:'retard', label:'En retard', cls:'crit', prochain};
+  if(prochain===t) return {key:'aujourdhui', label:"Aujourd'hui", cls:'warn', prochain};
+  if(prochain<=addDays(t,2)) return {key:'bientot', label:'Bientôt', cls:'warn', prochain};
+  return {key:'ajour', label:'À jour', cls:'ok', prochain};
+}
 
 /* =========================================================================
    SCHÉMAS DE FORMULAIRES (pilotent le mode édition)
@@ -561,14 +588,16 @@ const SEL_BOOL=[["true","Oui"],["false","Non"]];
 const SEL_CAL=[["confirme","Confirmé"],["a-confirmer","À confirmer"]];
 const SEL_ISSUE=[["victoire","Victoire"],["podium","Podium"],["elimine","Éliminé"],["participation","Participation"]];
 const SEL_TEND=[["up","En hausse ▲"],["flat","Stable —"],["down","En baisse ▼"]];
+const SEL_RYTHME=[["7","Hebdomadaire"],["14","Toutes les 2 semaines"],["21","Toutes les 3 semaines"],["30","Mensuel"],["0","Ponctuel (sans rythme)"]];
 
 const SCHEMAS={
   poles:{titre:"pôle", coll:"poles", champs:[
     {k:"jeu",l:"Jeu",t:"text",req:true},
     {k:"manager",l:"Manager",t:"text"},
     {k:"joueurs",l:"Nombre de joueurs",t:"number"},
-    {k:"statut",l:"Statut",t:"select",opts:SEL_STATUT},
-    {k:"dernierPoint",l:"Dernier point (ex. 30 juin)",t:"text"},
+    {k:"statut",l:"État du pôle",t:"select",opts:SEL_STATUT},
+    {k:"rythmeJours",l:"Rythme des points",t:"select",opts:SEL_RYTHME},
+    {k:"dernierPoint",l:"Date du dernier point",t:"date"},
     {k:"avancees",l:"Avancées (une par ligne)",t:"lines"},
     {k:"blocages",l:"Blocages (une par ligne)",t:"lines"}
   ]},
@@ -630,7 +659,7 @@ document.getElementById('logout').addEventListener('click',()=>{ sessionStorage.
    ========================================================================= */
 const VIEWS={
   apercu:{title:"Vue d'ensemble",eyebrow:"Fiche direction",lead:"Le pivot entre les pôles de jeu et la direction : l'information circule, les besoins sont cadrés, la donnée est lisible."},
-  poles:{title:"Suivi des pôles",eyebrow:"Mission 01 · Coordination transversale",lead:"État de chaque pôle de jeu, avancées et blocages remontés par les managers."},
+  poles:{title:"Suivi des managers",eyebrow:"Mission 01 · Coordination transversale",lead:"Points réguliers avec chaque pôle : rythme, prochain point, retards et carnet de comptes-rendus."},
   besoins:{title:"Besoins & arbitrage",eyebrow:"Mission 02 · Cadrage & arbitrage",lead:"Les manques identifiés par les pôles, priorisés et cadrés avant remontée à la direction."},
   reporting:{title:"Données & reporting",eyebrow:"Mission 03 · Reporting & lisibilité",lead:"Résultats et indicateurs consolidés de tous les pôles, en une lecture claire."},
   calendrier:{title:"Calendrier & historique",eyebrow:"Compétitions",lead:"Agenda des compétitions à venir et historique des résultats passés."},
@@ -663,13 +692,16 @@ function editBtns(key,i){
 function render(){
   document.getElementById('saison-badge').textContent=DATA.saison;
 
-  /* KPIs */
-  const aJour=DATA.poles.filter(p=>p.statut==='a-jour').length;
+  /* KPIs (cadence du suivi) */
+  const cads=DATA.poles.map(cadence);
+  const enRetard=cads.filter(c=>c.key==='retard').length;
+  const aFaire=cads.filter(c=>c.key==='aujourdhui'||c.key==='bientot').length;
+  const aJour=cads.filter(c=>c.key==='ajour').length;
   const aRemonter=DATA.besoins.filter(b=>b.aRemonter).length;
   const blocages=DATA.poles.reduce((n,p)=>n+(p.blocages?p.blocages.length:0),0);
   document.getElementById('kpis').innerHTML=`
-    <div class="tile"><div class="k-label">Pôles suivis</div><div class="k-val tnum">${DATA.poles.length}</div><div class="k-sub">${aJour} à jour</div></div>
-    <div class="tile" data-accent="warn"><div class="k-label">Points à faire</div><div class="k-val tnum">${DATA.poles.length-aJour}</div><div class="k-sub">pôles à recontacter</div></div>
+    <div class="tile"><div class="k-label">Pôles suivis</div><div class="k-val tnum">${DATA.poles.length}</div><div class="k-sub">${aJour} à jour sur le rythme</div></div>
+    <div class="tile" data-accent="${enRetard?'corail':'warn'}"><div class="k-label">Points à faire</div><div class="k-val tnum">${aFaire+enRetard}</div><div class="k-sub">${enRetard} en retard</div></div>
     <div class="tile" data-accent="violet"><div class="k-label">Besoins ouverts</div><div class="k-val tnum">${DATA.besoins.filter(b=>b.statut!=='traite').length}</div><div class="k-sub">${aRemonter} à remonter</div></div>
     <div class="tile" data-accent="corail"><div class="k-label">Blocages actifs</div><div class="k-val tnum">${blocages}</div><div class="k-sub">à débloquer</div></div>`;
 
@@ -687,8 +719,9 @@ function render(){
   let up=calSorted.filter(c=>String(c.date)>=today); if(!up.length) up=calSorted;
   document.getElementById('apercu-cal').innerHTML = up.length? up.slice(0,4).map(c=>calRow(c,false)).join('') : `<div class="empty">Aucune compétition programmée.</div>`;
 
-  /* Pôles à traiter (aperçu) */
-  const aTraiter=DATA.poles.filter(p=>p.statut!=='a-jour');
+  /* Pôles à recontacter (aperçu, par cadence) */
+  const rank={retard:0,aujourdhui:1,bientot:2};
+  const aTraiter=DATA.poles.filter(p=>rank[cadence(p).key]!==undefined).sort((a,b)=>rank[cadence(a).key]-rank[cadence(b).key]);
   document.getElementById('apercu-poles').innerHTML=(aTraiter.length?aTraiter:DATA.poles).map(poleCard).join('');
 
   /* Suivi des pôles */
@@ -755,21 +788,51 @@ function renderStaff(){
 }
 
 function poleCard(p){
-  const oi=DATA.poles.indexOf(p);
+  const pi=DATA.poles.indexOf(p);
   const st=STATUT[p.statut]||STATUT.attention;
+  const cad=cadence(p);
   const av=(p.avancees||[]).map(a=>`<div class="pt up"><span class="b"></span>${esc(a)}</div>`).join('');
   const bl=(p.blocages||[]).map(b=>`<div class="pt down"><span class="b"></span>${esc(b)}</div>`).join('');
   let body='';
   if(av) body+=`<div class="pt-list"><div class="grp-label">Avancées</div>${av}</div>`;
   if(bl) body+=`<div class="pt-list"><div class="grp-label">Blocages</div>${bl}</div>`;
-  if(!body) body=`<div class="pt" style="color:var(--faint)"><span class="b" style="background:var(--faint)"></span>Rien à signaler</div>`;
+
+  // Ligne de cadence
+  let prochainTxt='—';
+  if(cad.prochain){ const j=joursEntre(todayISO(),cad.prochain); prochainTxt=fdate(cad.prochain)+(j===0?" (aujourd'hui)":j>0?` (dans ${j} j)`:` (retard ${-j} j)`); }
+  const cadLine=`<div class="cadence-line">
+    <span>Rythme · <b>${rythmeLabel(p.rythmeJours)}</b></span>
+    <span>Dernier · <b>${fdate(p.dernierPoint)}</b></span>
+    <span>Prochain · <b>${prochainTxt}</b></span>
+  </div>`;
+
+  // Carnet de points
+  const pts=[...(p.points||[])].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const crHTML=pts.slice(0,3).map(pt=>{
+    const oi=(p.points||[]).indexOf(pt);
+    const line=(lbl,val)=>val?`<div class="cr-line"><b>${lbl}</b>${esc(val).replace(/\n/g,'<br>')}</div>`:'';
+    return `<div class="cr">
+      <div class="cr-head"><span class="cr-date tnum">${fdate(pt.date)}</span>
+        <span class="item-actions edit-only"><button class="ic-btn" onclick="editPoint(${pi},${oi})" title="Modifier">✎</button><button class="ic-btn del" onclick="deletePoint(${pi},${oi})" title="Supprimer">🗑</button></span>
+      </div>
+      ${line('Sujets',pt.sujets)}${line('Décisions',pt.decisions)}${line('Actions',pt.actions)}
+    </div>`;
+  }).join('') || `<div class="cr-empty">Aucun compte-rendu enregistré.</div>`;
+  const carnet=`<div class="carnet">
+    <div class="carnet-head"><span class="grp-label">Carnet de points${pts.length>3?` · 3 sur ${pts.length}`:pts.length?` · ${pts.length}`:''}</span>
+      <button class="add-btn edit-only" onclick="addPoint(${pi})">+ Point</button></div>
+    ${crHTML}
+  </div>`;
+
   return `<div class="card">
     <div class="card-head">
       <div><div class="jeu">${esc(p.jeu)}</div><div class="mgr">Manager · ${esc(p.manager)}</div></div>
-      <div class="ch-right">${pill(st.cls,st.label)}${editBtns('poles',oi)}</div>
+      <div class="ch-right">${pill(cad.cls,cad.label)}${pill(st.cls,st.label)}${editBtns('poles',pi)}</div>
     </div>
+    ${cadLine}
     ${body}
-    <div class="card-meta"><span><b>${esc(p.joueurs)}</b> joueurs</span><span>Dernier point · <b>${esc(p.dernierPoint)}</b></span></div>
+    ${carnet}
+    <div class="card-meta"><span><b>${esc(p.joueurs)}</b> joueurs</span><span>État · <b>${esc(st.label)}</b></span></div>
   </div>`;
 }
 
@@ -904,6 +967,21 @@ function editMember(si,mi){ openModal('Modifier le membre',MEMBER_CHAMPS,DATA.st
   ()=>{ DATA.staff[si].membres[mi]=readForm(MEMBER_CHAMPS); persist(); closeModal(); render(); },
   ()=>{ closeModal(); deleteMember(si,mi); }); }
 function deleteMember(si,mi){ if(!confirm('Supprimer ce membre ?')) return; DATA.staff[si].membres.splice(mi,1); persist(); render(); }
+
+/* --- Carnet de points : comptes-rendus imbriqués dans chaque pôle --- */
+const POINT_CHAMPS=[
+  {k:"date",l:"Date du point",t:"date",req:true},
+  {k:"sujets",l:"Sujets abordés",t:"textarea"},
+  {k:"decisions",l:"Décisions prises",t:"textarea"},
+  {k:"actions",l:"Actions à suivre",t:"textarea"}
+];
+function syncDernierPoint(pole){ if(pole.points&&pole.points.length){ pole.dernierPoint=pole.points.map(x=>x.date).filter(Boolean).sort().slice(-1)[0]||pole.dernierPoint; } }
+function addPoint(pi){ openModal('Ajouter un compte-rendu de point',POINT_CHAMPS,{date:todayISO()},
+  ()=>{ const pole=DATA.poles[pi]; (pole.points||(pole.points=[])).push(readForm(POINT_CHAMPS)); syncDernierPoint(pole); persist(); closeModal(); render(); }, null); }
+function editPoint(pi,idx){ openModal('Modifier le compte-rendu',POINT_CHAMPS,DATA.poles[pi].points[idx],
+  ()=>{ DATA.poles[pi].points[idx]=readForm(POINT_CHAMPS); syncDernierPoint(DATA.poles[pi]); persist(); closeModal(); render(); },
+  ()=>{ closeModal(); deletePoint(pi,idx); }); }
+function deletePoint(pi,idx){ if(!confirm('Supprimer ce compte-rendu ?')) return; DATA.poles[pi].points.splice(idx,1); syncDernierPoint(DATA.poles[pi]); persist(); render(); }
 
 document.getElementById('modal-save').addEventListener('click',()=>{ if(EDITCTX&&EDITCTX.onSave) EDITCTX.onSave(); });
 document.getElementById('modal-del').addEventListener('click',()=>{ if(EDITCTX&&EDITCTX.onDelete) EDITCTX.onDelete(); });

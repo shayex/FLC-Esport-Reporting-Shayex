@@ -3,7 +3,8 @@
 Site interne (privé) qui donne à la **direction** une lecture claire de l'activité esport,
 structuré autour du rôle de **Directeur Esport — le pivot** :
 
-1. **Suivi des pôles** — coordination transversale (points réguliers, avancées, blocages)
+1. **Suivi des managers** — coordination transversale : rythme de points par pôle, prochain point
+   et retards calculés automatiquement, et un **carnet de comptes-rendus** (sujets, décisions, actions)
 2. **Besoins & arbitrage** — cadrage des manques (staff, matériel, budget) avant remontée
 3. **Données & reporting** — résultats et indicateurs consolidés, en une lecture exploitable
 
@@ -33,6 +34,14 @@ Plus besoin d'éditer le code : cliquez sur **« ✎ Mode édition »** (en haut
 Dans l'onglet **Staff**, en mode édition, vous pouvez **créer des sections** (« + Ajouter une section » —
 par exemple un pôle, ou un staff transverse), puis **ajouter des membres** (« + Membre ») avec leur rôle
 et des **notes de suivi** libres (multi-lignes).
+
+Dans l'onglet **Suivi des managers**, chaque pôle a un **rythme** (hebdo, quinzaine…). Le site en
+déduit le **prochain point** et affiche un badge **À jour / Bientôt / Aujourd'hui / En retard**.
+Le bouton **« + Point »** (mode édition) ajoute un compte-rendu (date, sujets, décisions, actions) et
+met automatiquement à jour la date du dernier point — donc la cadence.
+
+> Les données d'exemple sont configurées pour les pôles **Fortnite, FIFA et Delta Force**
+> (managers et staff à renseigner). Remplacez-les par vos informations réelles en mode édition.
 
 ### Sauvegarder / transférer vos données
 
