@@ -7,7 +7,8 @@ structuré autour du rôle de **Directeur Esport — le pivot** :
 2. **Besoins & arbitrage** — cadrage des manques (staff, matériel, budget) avant remontée
 3. **Données & reporting** — résultats et indicateurs consolidés, en une lecture exploitable
 
-En complément : un **Calendrier des compétitions** à venir et un **Historique** des résultats passés.
+En complément : un **Calendrier des compétitions** à venir, un **Historique** des résultats passés,
+et un onglet **Staff** listant l'encadrement de chaque pôle (sections créées librement + notes de suivi).
 
 Le tout tient dans **un seul fichier** : `index.html`. Aucune installation requise.
 
@@ -28,6 +29,10 @@ Plus besoin d'éditer le code : cliquez sur **« ✎ Mode édition »** (en haut
   indicateurs, compétitions à venir, historique).
 - Le bouton **« Paramètres »** permet de changer le nom, la saison et le mot de passe.
 - Les modifications sont **enregistrées automatiquement dans votre navigateur** (localStorage).
+
+Dans l'onglet **Staff**, en mode édition, vous pouvez **créer des sections** (« + Ajouter une section » —
+par exemple un pôle, ou un staff transverse), puis **ajouter des membres** (« + Membre ») avec leur rôle
+et des **notes de suivi** libres (multi-lignes).
 
 ### Sauvegarder / transférer vos données
 

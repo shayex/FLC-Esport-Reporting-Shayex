@@ -14,7 +14,7 @@
   --bg:#0A0E13; --surface:#131A23; --surface-2:#18212C;
   --line:#232E3A; --line-soft:#1C2531;
   --text:#E7EEF5; --muted:#8593A3; --faint:#5C6b7a;
-  --emeraude:#22E0A6; --violet:#8B7CF6; --corail:#FF5C7A; --cyan:#38BDF8;
+  --emeraude:#22E0A6; --violet:#8B7CF6; --corail:#FF5C7A; --cyan:#38BDF8; --gold:#E6B34D;
   --ok:#3FD98B; --warn:#F5B944; --crit:#FF5670;
   --radius:14px; --radius-sm:10px;
   --shadow:0 18px 40px -24px rgba(0,0,0,.8);
@@ -79,10 +79,12 @@ button{font-family:inherit}
 .nav-item[data-accent="violet"].active{color:var(--violet)}
 .nav-item[data-accent="cyan"].active{color:var(--cyan)}
 .nav-item[data-accent="corail"].active{color:var(--corail)}
+.nav-item[data-accent="gold"].active{color:var(--gold)}
 .nav-item[data-accent="emeraude"] .dot{color:var(--emeraude)}
 .nav-item[data-accent="violet"] .dot{color:var(--violet)}
 .nav-item[data-accent="cyan"] .dot{color:var(--cyan)}
 .nav-item[data-accent="corail"] .dot{color:var(--corail)}
+.nav-item[data-accent="gold"] .dot{color:var(--gold)}
 .nav-item[data-accent="neutre"] .dot{color:var(--muted)}
 .side-foot{margin-top:auto;padding:12px 10px 4px;border-top:1px solid var(--line-soft);font-size:11px;color:var(--faint)}
 .side-actions{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
@@ -117,6 +119,7 @@ body.editing .edit-banner{display:block}
 .section-title.violet .rail{background:var(--violet)}
 .section-title.cyan .rail{background:var(--cyan)}
 .section-title.corail .rail{background:var(--corail)}
+.section-title.gold .rail{background:var(--gold)}
 .section-title .count{font-size:12px;color:var(--faint);margin-left:2px}
 
 /* ---------- Stat tiles ---------- */
@@ -205,6 +208,20 @@ tbody tr:hover{background:rgba(255,255,255,.015)}
 .cal-main{flex:1;min-width:0}
 .cal-main .c-comp{font-weight:600;font-size:13.5px}
 .cal-main .c-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ---------- Staff ---------- */
+.staff-section{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);padding:18px;margin-bottom:16px}
+.staff-sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
+.staff-sec-head h3{margin:0;font-size:15px;display:flex;align-items:center;gap:10px}
+.staff-sec-head .actions-inline{display:flex;align-items:center;gap:8px}
+.sec-count{font-size:11px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-weight:600}
+.staff-members{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px}
+.staff-member{display:flex;justify-content:space-between;gap:10px;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px}
+.sm-main{min-width:0}
+.sm-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sm-nom{font-weight:600;font-size:13.5px}
+.sm-role{font-size:11px;color:var(--gold);background:rgba(230,179,77,.10);border:1px solid rgba(230,179,77,.28);border-radius:999px;padding:3px 9px;font-weight:600}
+.sm-notes{font-size:12px;color:var(--muted);line-height:1.5;margin-top:7px}
 
 /* ---------- Callout ---------- */
 .callout{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(180deg,rgba(255,92,122,.06),transparent);
@@ -295,6 +312,8 @@ body.editing th.edit-only,body.editing td.edit-only{display:table-cell}
     <button class="nav-item" data-view="reporting" data-accent="corail"><span class="dot"></span>Données &amp; reporting</button>
     <div class="nav-label">Compétitions</div>
     <button class="nav-item" data-view="calendrier" data-accent="cyan"><span class="dot"></span>Calendrier &amp; historique</button>
+    <div class="nav-label">Organisation</div>
+    <button class="nav-item" data-view="staff" data-accent="gold"><span class="dot"></span>Staff des pôles</button>
     <div class="side-foot">
       Connecté — coordination esport
       <div class="side-actions">
@@ -393,6 +412,14 @@ body.editing th.edit-only,body.editing td.edit-only{display:table-cell}
         <button class="add-btn edit-only" onclick="openForm('historique',null)">+ Ajouter un résultat</button></div>
       <div class="panel" id="hist-list"></div>
     </section>
+
+    <!-- STAFF -->
+    <section class="view" id="view-staff">
+      <p class="mission-note">L'équipe encadrante de chaque pôle : coachs, analystes, managers, création… Créez librement des sections (un pôle, un staff transverse…) et ajoutez des notes de suivi sur chaque membre.</p>
+      <div class="section-title gold"><span class="rail"></span><h2>Staff par section</h2><span class="count" id="staff-count"></span>
+        <button class="add-btn edit-only" onclick="addSection()">+ Ajouter une section</button></div>
+      <div id="staff-list"></div>
+    </section>
   </main>
 </div>
 
@@ -475,6 +502,22 @@ const DEFAULTS = {
     {date:"2026-06-15", jeu:"League of Legends", competition:"Qualifications playoffs", resultat:"Qualifiés (4e/16)", issue:"podium"},
     {date:"2026-06-10", jeu:"EA FC", competition:"Coupe de printemps", resultat:"Éliminé au 2e tour", issue:"elimine"},
     {date:"2026-06-07", jeu:"Counter-Strike 2", competition:"Ligue — Journée 5", resultat:"Défaite 1–2", issue:"participation"}
+  ],
+
+  staff:[
+    {titre:"League of Legends", membres:[
+      {nom:"Léa Moreau", role:"Manager", notes:"Manager du pôle. Point hebdo le lundi."},
+      {nom:"David Nguyen", role:"Head Coach", notes:"Arrivé en mai. Très solide sur la macro et la prépa de draft."},
+      {nom:"Amine Cherif", role:"Analyste", notes:"Nouveau — intégré au staff ce mois-ci."}
+    ]},
+    {titre:"Valorant", membres:[
+      {nom:"Tom Alvarez", role:"Manager", notes:""},
+      {nom:"Chloé Faure", role:"Coach", notes:"Assure aussi la prépa mentale en attendant un renfort dédié."}
+    ]},
+    {titre:"Staff transverse", membres:[
+      {nom:"Julie Rousseau", role:"Création / Réseaux", notes:"Commune à tous les pôles. Gère le contenu et les réseaux."},
+      {nom:"Marc Lefèvre", role:"Responsable technique", notes:"Setup, stream et matériel de l'ensemble des équipes."}
+    ]}
   ]
 };
 
@@ -590,7 +633,8 @@ const VIEWS={
   poles:{title:"Suivi des pôles",eyebrow:"Mission 01 · Coordination transversale",lead:"État de chaque pôle de jeu, avancées et blocages remontés par les managers."},
   besoins:{title:"Besoins & arbitrage",eyebrow:"Mission 02 · Cadrage & arbitrage",lead:"Les manques identifiés par les pôles, priorisés et cadrés avant remontée à la direction."},
   reporting:{title:"Données & reporting",eyebrow:"Mission 03 · Reporting & lisibilité",lead:"Résultats et indicateurs consolidés de tous les pôles, en une lecture claire."},
-  calendrier:{title:"Calendrier & historique",eyebrow:"Compétitions",lead:"Agenda des compétitions à venir et historique des résultats passés."}
+  calendrier:{title:"Calendrier & historique",eyebrow:"Compétitions",lead:"Agenda des compétitions à venir et historique des résultats passés."},
+  staff:{title:"Staff des pôles",eyebrow:"Organisation",lead:"Le staff de chaque pôle, organisé en sections, avec des notes de suivi sur chaque membre."}
 };
 document.querySelectorAll('.nav-item').forEach(btn=>{
   btn.addEventListener('click',()=>{
@@ -676,6 +720,38 @@ function render(){
   const hist=[...DATA.historique].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
   document.getElementById('hist-count').textContent=DATA.historique.length+' résultats';
   document.getElementById('hist-list').innerHTML=hist.length?hist.map(h=>histRow(h)).join(''):`<div class="empty">Aucun résultat enregistré.</div>`;
+
+  /* Staff */
+  document.getElementById('staff-count').textContent=DATA.staff.length+(DATA.staff.length>1?' sections':' section');
+  renderStaff();
+}
+
+function renderStaff(){
+  const wrap=document.getElementById('staff-list');
+  if(!DATA.staff.length){ wrap.innerHTML=`<div class="empty">Aucune section. Passez en mode édition pour créer une section (ex. un pôle).</div>`; return; }
+  wrap.innerHTML=DATA.staff.map((sec,si)=>{
+    const membres=(sec.membres||[]).map((m,mi)=>`
+      <div class="staff-member">
+        <div class="sm-main">
+          <div class="sm-head"><span class="sm-nom">${esc(m.nom)}</span>${m.role?`<span class="sm-role">${esc(m.role)}</span>`:''}</div>
+          ${m.notes?`<div class="sm-notes">${esc(m.notes).replace(/\n/g,'<br>')}</div>`:''}
+        </div>
+        <span class="item-actions edit-only">
+          <button class="ic-btn" onclick="editMember(${si},${mi})" title="Modifier">✎</button>
+          <button class="ic-btn del" onclick="deleteMember(${si},${mi})" title="Supprimer">🗑</button>
+        </span>
+      </div>`).join('') || `<div class="empty" style="padding:14px">Aucun membre. Ajoutez-en un en mode édition.</div>`;
+    return `<div class="staff-section">
+      <div class="staff-sec-head">
+        <h3>${esc(sec.titre)}<span class="sec-count tnum">${(sec.membres||[]).length}</span></h3>
+        <span class="actions-inline item-actions edit-only">
+          <button class="ic-btn" onclick="editSection(${si})" title="Renommer / supprimer la section">✎</button>
+          <button class="add-btn" onclick="addMember(${si})">+ Membre</button>
+        </span>
+      </div>
+      <div class="staff-members">${membres}</div>
+    </div>`;
+  }).join('');
 }
 
 function poleCard(p){
@@ -754,6 +830,7 @@ function toggleEdit(){
 document.getElementById('edit-toggle').addEventListener('click',toggleEdit);
 document.getElementById('btn-settings').addEventListener('click',()=>openForm('parametres',null));
 
+/* --- Moteur de modale générique (piloté par des callbacks) --- */
 let EDITCTX=null;
 function fieldHTML(f,val){
   if(f.t==='select'||f.t==='bool'){
@@ -761,48 +838,77 @@ function fieldHTML(f,val){
     return `<select name="${f.k}">${opts.map(([ov,ol])=>`<option value="${esc(ov)}"${String(ov)===cur?' selected':''}>${esc(ol)}</option>`).join('')}</select>`;
   }
   if(f.t==='lines'){ const txt=Array.isArray(val)?val.join('\n'):(val||''); return `<textarea name="${f.k}" rows="3">${esc(txt)}</textarea>`; }
+  if(f.t==='textarea'){ return `<textarea name="${f.k}" rows="3">${esc(val==null?'':val)}</textarea>`; }
   const type=f.t==='number'?'number':(f.t==='date'?'date':'text');
   return `<input type="${type}" name="${f.k}" value="${esc(val==null?'':val)}" ${f.req?'required':''} />`;
 }
-function openForm(key,index){
-  const sc=SCHEMAS[key]; EDITCTX={key,index};
-  const src=sc.root?DATA:(index==null?{}:DATA[sc.coll][index]);
-  const isNew=!sc.root&&index==null;
-  document.getElementById('modal-title').textContent=(sc.root?'Modifier les ':(isNew?'Ajouter — ':'Modifier — '))+sc.titre;
-  document.getElementById('modal-form').innerHTML=sc.champs.map(f=>`<div class="fld"><label>${esc(f.l)}</label>${fieldHTML(f,src[f.k])}</div>`).join('');
-  document.getElementById('modal-del').style.display=(!sc.root&&index!=null)?'inline-flex':'none';
+function readForm(champs){
+  const form=document.getElementById('modal-form'); const o={};
+  for(const f of champs){
+    const el=form.elements[f.k]; if(!el) continue; let v=el.value;
+    if(f.t==='number') v=(v===''?0:Number(v));
+    else if(f.t==='bool') v=(v==='true');
+    else if(f.t==='lines') v=v.split('\n').map(s=>s.trim()).filter(Boolean);
+    else v=(v==null?'':v).trim();
+    o[f.k]=v;
+  }
+  return o;
+}
+function openModal(title,champs,src,onSave,onDelete){
+  EDITCTX={champs,onSave,onDelete};
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-form').innerHTML=champs.map(f=>`<div class="fld"><label>${esc(f.l)}</label>${fieldHTML(f,src?src[f.k]:'')}</div>`).join('');
+  document.getElementById('modal-del').style.display=onDelete?'inline-flex':'none';
   document.getElementById('modal').classList.add('show');
   const first=document.querySelector('#modal-form input,#modal-form select,#modal-form textarea'); if(first) first.focus();
 }
 function closeModal(){ document.getElementById('modal').classList.remove('show'); EDITCTX=null; }
-function saveForm(){
-  if(!EDITCTX) return;
-  const sc=SCHEMAS[EDITCTX.key], form=document.getElementById('modal-form');
-  const target=sc.root?DATA:(EDITCTX.index==null?{}:Object.assign({},DATA[sc.coll][EDITCTX.index]));
-  for(const f of sc.champs){
-    const el=form.elements[f.k]; if(!el) continue;
-    let v=el.value;
-    if(f.t==='number') v=(v===''?0:Number(v));
-    else if(f.t==='bool') v=(v==='true');
-    else if(f.t==='lines') v=v.split('\n').map(s=>s.trim()).filter(Boolean);
-    else v=v.trim();
-    target[f.k]=v;
-  }
-  if(!sc.root){
-    if(EDITCTX.index==null) DATA[sc.coll].push(target);
-    else DATA[sc.coll][EDITCTX.index]=target;
-  }
-  persist(); closeModal(); render();
+
+/* --- Collections génériques (SCHEMAS) --- */
+function openForm(key,index){
+  const sc=SCHEMAS[key];
+  const src=sc.root?DATA:(index==null?{}:DATA[sc.coll][index]);
+  const isNew=!sc.root&&index==null;
+  const title=(sc.root?'Modifier les ':(isNew?'Ajouter — ':'Modifier — '))+sc.titre;
+  openModal(title, sc.champs, src,
+    ()=>{ const vals=readForm(sc.champs);
+      if(sc.root) Object.assign(DATA,vals);
+      else if(index==null) DATA[sc.coll].push(vals);
+      else DATA[sc.coll][index]=Object.assign({},DATA[sc.coll][index],vals);
+      persist(); closeModal(); render(); },
+    (!sc.root&&index!=null)?()=>{ closeModal(); removeItem(key,index); }:null
+  );
 }
 function removeItem(key,index){
   const sc=SCHEMAS[key];
   if(!confirm('Supprimer définitivement cet élément ?')) return;
   DATA[sc.coll].splice(index,1); persist(); render();
 }
-document.getElementById('modal-save').addEventListener('click',saveForm);
+
+/* --- Staff : sections + membres (structure imbriquée) --- */
+const SECTION_CHAMPS=[{k:"titre",l:"Nom de la section (ex. un pôle)",t:"text",req:true}];
+const MEMBER_CHAMPS=[
+  {k:"nom",l:"Nom",t:"text",req:true},
+  {k:"role",l:"Rôle / poste",t:"text"},
+  {k:"notes",l:"Notes de suivi",t:"textarea"}
+];
+function addSection(){ openModal('Ajouter une section',SECTION_CHAMPS,{},
+  ()=>{ const v=readForm(SECTION_CHAMPS); DATA.staff.push({titre:v.titre,membres:[]}); persist(); closeModal(); render(); }, null); }
+function editSection(si){ openModal('Renommer la section',SECTION_CHAMPS,DATA.staff[si],
+  ()=>{ const v=readForm(SECTION_CHAMPS); DATA.staff[si].titre=v.titre; persist(); closeModal(); render(); },
+  ()=>{ closeModal(); deleteSection(si); }); }
+function deleteSection(si){ if(!confirm('Supprimer cette section et tout son staff ?')) return; DATA.staff.splice(si,1); persist(); render(); }
+function addMember(si){ openModal('Ajouter un membre',MEMBER_CHAMPS,{},
+  ()=>{ DATA.staff[si].membres.push(readForm(MEMBER_CHAMPS)); persist(); closeModal(); render(); }, null); }
+function editMember(si,mi){ openModal('Modifier le membre',MEMBER_CHAMPS,DATA.staff[si].membres[mi],
+  ()=>{ DATA.staff[si].membres[mi]=readForm(MEMBER_CHAMPS); persist(); closeModal(); render(); },
+  ()=>{ closeModal(); deleteMember(si,mi); }); }
+function deleteMember(si,mi){ if(!confirm('Supprimer ce membre ?')) return; DATA.staff[si].membres.splice(mi,1); persist(); render(); }
+
+document.getElementById('modal-save').addEventListener('click',()=>{ if(EDITCTX&&EDITCTX.onSave) EDITCTX.onSave(); });
+document.getElementById('modal-del').addEventListener('click',()=>{ if(EDITCTX&&EDITCTX.onDelete) EDITCTX.onDelete(); });
 document.getElementById('modal-cancel').addEventListener('click',closeModal);
 document.getElementById('modal-x').addEventListener('click',closeModal);
-document.getElementById('modal-del').addEventListener('click',()=>{ if(EDITCTX&&EDITCTX.index!=null){ const c=EDITCTX; closeModal(); removeItem(c.key,c.index); } });
 document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.getElementById('modal').classList.contains('show')) closeModal(); });
 
