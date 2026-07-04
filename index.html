@@ -7,15 +7,13 @@
 <title>FLC Esport — Reporting Direction</title>
 <style>
 /* =========================================================================
-   FLC ESPORT — Site de reporting interne (édition dans le navigateur)
-   Piliers : Suivi (émeraude) · Besoins (violet) · Calendrier (cyan) · Données (corail)
+   FLC ESPORT — Base minimale. On reconstruit brique par brique.
    ========================================================================= */
 :root{
   --bg:#0A0E13; --surface:#131A23; --surface-2:#18212C;
   --line:#232E3A; --line-soft:#1C2531;
   --text:#E7EEF5; --muted:#8593A3; --faint:#5C6b7a;
-  --emeraude:#22E0A6; --violet:#8B7CF6; --corail:#FF5C7A; --cyan:#38BDF8; --gold:#E6B34D;
-  --ok:#3FD98B; --warn:#F5B944; --crit:#FF5670;
+  --emeraude:#22E0A6; --violet:#8B7CF6; --corail:#FF5C7A;
   --radius:14px; --radius-sm:10px;
   --shadow:0 18px 40px -24px rgba(0,0,0,.8);
   --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
@@ -28,11 +26,8 @@ body{
     radial-gradient(1200px 600px at 100% -10%, rgba(34,224,166,.06), transparent 55%),
     radial-gradient(900px 500px at -10% 110%, rgba(139,124,246,.05), transparent 55%),
     var(--bg);
-  min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  min-height:100vh;-webkit-font-smoothing:antialiased;
 }
-button{font-family:inherit}
-::selection{background:rgba(34,224,166,.28)}
-.tnum{font-variant-numeric:tabular-nums}
 .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:700}
 
 /* ---------- Portail ---------- */
@@ -44,17 +39,16 @@ button{font-family:inherit}
 .gate-logo{display:flex;align-items:center;gap:10px;margin-bottom:22px}
 .gate-logo .mark{font-weight:800;font-size:20px;color:var(--emeraude)}
 .gate-logo .sub{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
-.gate h1{font-size:19px;margin:0 0 6px;letter-spacing:-.01em}
+.gate h1{font-size:19px;margin:0 0 6px}
 .gate p{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 22px}
 .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
 .field input{width:100%;padding:12px 14px;border-radius:var(--radius-sm);background:#0D141B;border:1px solid var(--line);
   color:var(--text);font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s}
 .field input:focus{border-color:var(--emeraude);box-shadow:0 0 0 3px rgba(34,224,166,.15)}
 .gate button{margin-top:16px;width:100%;padding:12px;border:none;border-radius:var(--radius-sm);
-  background:var(--emeraude);color:#062017;font-weight:700;font-size:14px;cursor:pointer;transition:filter .15s,transform .05s}
+  background:var(--emeraude);color:#062017;font-weight:700;font-size:14px;cursor:pointer;transition:filter .15s}
 .gate button:hover{filter:brightness(1.06)}
-.gate button:active{transform:translateY(1px)}
-.gate .err{color:var(--crit);font-size:12.5px;margin-top:12px;min-height:16px}
+.gate .err{color:var(--corail);font-size:12.5px;margin-top:12px;min-height:16px}
 .gate .foot{margin-top:22px;font-size:11px;color:var(--faint);line-height:1.5}
 
 /* ---------- Structure ---------- */
@@ -68,232 +62,53 @@ button{font-family:inherit}
 .brand .brand-txt .t{font-weight:700;font-size:13.5px}
 .brand .brand-txt .s{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .nav-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);padding:14px 10px 6px}
-.nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;
-  color:var(--muted);font-size:13.5px;font-weight:500;border:1px solid transparent;
-  transition:background .15s,color .15s,border-color .15s;text-align:left;background:none;width:100%}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;
+  color:var(--muted);font-size:13.5px;font-weight:500;border:1px solid transparent;text-align:left;
+  background:none;width:100%;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
 .nav-item .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.55;flex:none}
 .nav-item:hover{background:var(--surface);color:var(--text)}
-.nav-item.active{background:var(--surface-2);color:var(--text);border-color:var(--line)}
+.nav-item.active{background:var(--surface-2);color:var(--emeraude);border-color:var(--line)}
 .nav-item.active .dot{opacity:1}
-.nav-item[data-accent="emeraude"].active{color:var(--emeraude)}
-.nav-item[data-accent="violet"].active{color:var(--violet)}
-.nav-item[data-accent="cyan"].active{color:var(--cyan)}
-.nav-item[data-accent="corail"].active{color:var(--corail)}
-.nav-item[data-accent="gold"].active{color:var(--gold)}
-.nav-item[data-accent="emeraude"] .dot{color:var(--emeraude)}
-.nav-item[data-accent="violet"] .dot{color:var(--violet)}
-.nav-item[data-accent="cyan"] .dot{color:var(--cyan)}
-.nav-item[data-accent="corail"] .dot{color:var(--corail)}
-.nav-item[data-accent="gold"] .dot{color:var(--gold)}
-.nav-item[data-accent="neutre"] .dot{color:var(--muted)}
 .side-foot{margin-top:auto;padding:12px 10px 4px;border-top:1px solid var(--line-soft);font-size:11px;color:var(--faint)}
-.side-actions{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.mini-btn{background:var(--surface);border:1px solid var(--line);color:var(--muted);padding:6px 10px;border-radius:8px;font-size:11.5px;cursor:pointer;transition:color .15s,border-color .15s}
-.mini-btn:hover{color:var(--text);border-color:var(--faint)}
-.mini-btn.danger{color:var(--crit);border-color:rgba(255,86,112,.3)}
-.logout{margin-top:4px;width:100%;padding:9px 12px;border-radius:9px;cursor:pointer;background:none;
+.logout{margin-top:10px;width:100%;padding:9px 12px;border-radius:9px;cursor:pointer;background:none;
   border:1px solid var(--line);color:var(--muted);font-size:12.5px;transition:border-color .15s,color .15s}
 .logout:hover{color:var(--text);border-color:var(--faint)}
 
-/* ---------- Main ---------- */
-.main{min-width:0;padding:26px 34px 60px;max-width:1160px}
-.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:20px}
-.topbar h1{font-size:24px;margin:0;letter-spacing:-.02em;text-wrap:balance}
-.topbar .lead{color:var(--muted);font-size:13.5px;margin-top:5px;max-width:60ch;line-height:1.5}
-.topbar-right{display:flex;align-items:center;gap:10px}
-.saison-badge{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:7px 12px;border-radius:999px;background:var(--surface);white-space:nowrap}
+.main{min-width:0;padding:26px 34px 60px;max-width:1000px}
+.topbar{margin-bottom:26px}
+.topbar h1{font-size:24px;margin:6px 0 5px;letter-spacing:-.02em}
+.topbar .lead{color:var(--muted);font-size:13.5px;max-width:62ch;line-height:1.55}
 
-.edit-banner{display:none;margin-bottom:18px;padding:12px 16px;border-radius:10px;background:rgba(34,224,166,.07);
-  border:1px solid rgba(34,224,166,.25);font-size:12.5px;color:var(--muted);line-height:1.5}
-body.editing .edit-banner{display:block}
-.edit-banner b{color:var(--emeraude)}
+/* ---------- Accueil ---------- */
+.hero{background:linear-gradient(180deg,var(--surface),#10171F);border:1px solid var(--line-soft);
+  border-radius:var(--radius);padding:26px 26px 24px;margin-bottom:22px}
+.hero h2{font-size:20px;margin:0 0 8px;letter-spacing:-.01em}
+.hero h2 em{color:var(--emeraude);font-style:normal}
+.hero p{color:var(--muted);font-size:13.5px;line-height:1.6;margin:0;max-width:70ch}
 
-.view{display:none;animation:fade .25s ease both}
-.view.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.view{animation:none}}
-
-.section-title{display:flex;align-items:center;gap:10px;margin:30px 0 14px;flex-wrap:wrap}
-.section-title h2{font-size:15px;margin:0;font-weight:700}
+.section-title{display:flex;align-items:center;gap:10px;margin:26px 0 14px}
 .section-title .rail{width:20px;height:2px;border-radius:2px;background:var(--emeraude)}
-.section-title.violet .rail{background:var(--violet)}
-.section-title.cyan .rail{background:var(--cyan)}
-.section-title.corail .rail{background:var(--corail)}
-.section-title.gold .rail{background:var(--gold)}
-.section-title .count{font-size:12px;color:var(--faint);margin-left:2px}
+.section-title h3{font-size:14px;margin:0;font-weight:700}
 
-/* ---------- Stat tiles ---------- */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.tile{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);padding:16px 16px 15px;position:relative;overflow:hidden}
-.tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--emeraude);opacity:.9}
-.tile[data-accent="violet"]::before{background:var(--violet)}
-.tile[data-accent="corail"]::before{background:var(--corail)}
-.tile[data-accent="warn"]::before{background:var(--warn)}
-.tile .k-label{font-size:11.5px;color:var(--muted)}
-.tile .k-val{font-size:30px;font-weight:800;margin-top:8px;letter-spacing:-.02em;line-height:1}
-.tile .k-sub{font-size:12px;color:var(--faint);margin-top:7px}
+.missions{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mcard{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);
+  padding:18px;border-left:2px solid var(--accent,var(--emeraude))}
+.mcard .num{font-size:12px;font-weight:800;color:var(--accent,var(--emeraude));letter-spacing:.04em}
+.mcard h4{font-size:15px;margin:8px 0 4px;letter-spacing:-.01em}
+.mcard .tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:700}
+.mcard p{color:var(--muted);font-size:12.5px;line-height:1.55;margin:10px 0 0}
+.mcard.violet{--accent:var(--violet)}
+.mcard.corail{--accent:var(--corail)}
 
-/* ---------- Cards ---------- */
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);padding:18px;
-  display:flex;flex-direction:column;gap:14px;transition:border-color .15s,transform .15s}
-.card:hover{border-color:var(--line);transform:translateY(-2px)}
-.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.card-head .jeu{font-size:16px;font-weight:700;letter-spacing:-.01em}
-.card-head .mgr{font-size:12.5px;color:var(--muted);margin-top:3px}
-.card-head .ch-right{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
-.card-meta{display:flex;gap:18px;font-size:12px;color:var(--muted);border-top:1px solid var(--line-soft);padding-top:12px}
-.card-meta b{color:var(--text);font-weight:600}
-.pt-list{display:flex;flex-direction:column;gap:7px}
-.pt-list .grp-label{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:1px}
-.pt{display:flex;align-items:flex-start;gap:9px;font-size:13px;line-height:1.45;color:var(--text)}
-.pt .b{width:6px;height:6px;border-radius:50%;margin-top:6px;flex:none}
-.pt.up .b{background:var(--ok)}
-.pt.down .b{background:var(--crit)}
-.cadence-line{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line-soft);border-radius:9px;padding:9px 12px}
-.cadence-line b{color:var(--text);font-weight:600}
-.carnet{display:flex;flex-direction:column;gap:8px}
-.carnet-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.cr{background:var(--surface-2);border:1px solid var(--line-soft);border-left:2px solid var(--emeraude);border-radius:8px;padding:9px 11px;display:flex;flex-direction:column;gap:4px}
-.cr-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.cr-date{font-size:11.5px;font-weight:700;color:var(--emeraude)}
-.cr-line{font-size:12px;line-height:1.45;color:var(--text)}
-.cr-line b{color:var(--muted);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-right:7px}
-.cr-empty{font-size:12px;color:var(--faint)}
-.ev-group{display:flex;flex-direction:column;gap:8px}
-.ev{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;font-size:13px}
-.ev-main{display:flex;gap:9px;align-items:flex-start;min-width:0}
-.ev-main .b{width:6px;height:6px;border-radius:50%;margin-top:6px;flex:none}
-.ev.up .b{background:var(--ok)}
-.ev.down .b{background:var(--crit)}
-.ev-txt{line-height:1.45;color:var(--text)}
-.ev-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px;font-size:11.5px;color:var(--faint)}
-.ev-meta .pill{padding:3px 8px;font-size:10.5px}
-
-/* ---------- Pills ---------- */
-.pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:999px;white-space:nowrap;line-height:1;border:1px solid transparent}
-.pill .d{width:6px;height:6px;border-radius:50%;background:currentColor}
-.pill.ok{color:var(--ok);background:rgba(63,217,139,.10);border-color:rgba(63,217,139,.25)}
-.pill.warn{color:var(--warn);background:rgba(245,185,68,.10);border-color:rgba(245,185,68,.25)}
-.pill.crit{color:var(--crit);background:rgba(255,86,112,.10);border-color:rgba(255,86,112,.28)}
-.pill.neutre{color:var(--muted);background:var(--surface-2);border-color:var(--line)}
-.pill.violet{color:var(--violet);background:rgba(139,124,246,.10);border-color:rgba(139,124,246,.28)}
-.pill.emeraude{color:var(--emeraude);background:rgba(34,224,166,.10);border-color:rgba(34,224,166,.28)}
-
-/* ---------- Table ---------- */
-.table-wrap{overflow-x:auto;border:1px solid var(--line-soft);border-radius:var(--radius);background:var(--surface)}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
-thead th{text-align:left;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
-  font-weight:700;padding:13px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
-tbody td{padding:14px 16px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
-tbody tr:last-child td{border-bottom:none}
-tbody tr:hover{background:rgba(255,255,255,.015)}
-.td-pole{font-weight:600}
-.type-tag{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:12.5px}
-.type-tag .ic{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:12px;background:var(--surface-2);border:1px solid var(--line)}
-.remonter-flag{color:var(--corail);font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:6px}
-.filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.filter-btn{padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:12.5px;cursor:pointer;transition:all .15s}
-.filter-btn:hover{color:var(--text)}
-.filter-btn.active{background:var(--surface-2);color:var(--text);border-color:var(--faint)}
-
-/* ---------- Reporting ---------- */
-.report-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
-@media (max-width:900px){.report-grid{grid-template-columns:1fr}}
-.panel{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);padding:18px}
-.panel h3{font-size:13.5px;margin:0 0 4px;font-weight:700}
-.panel .h-sub{font-size:12px;color:var(--muted);margin:0 0 16px}
-.res-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line-soft)}
-.res-row:last-child{border-bottom:none}
-.res-row .rp-jeu{width:130px;font-weight:600;font-size:13px;flex:none}
-.res-row .rp-desc{flex:1;font-size:12.5px;color:var(--muted);min-width:0}
-.meter{width:110px;flex:none}
-.meter .track{height:7px;border-radius:4px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line-soft)}
-.meter .fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--emeraude),#5df0c4)}
-.meter .mlabel{font-size:10.5px;color:var(--faint);margin-top:4px;text-align:right}
-.tend{font-size:12px;font-weight:700;width:44px;text-align:right;flex:none}
-.tend.up{color:var(--ok)}.tend.down{color:var(--crit)}.tend.flat{color:var(--muted)}
-.ind{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft)}
-.ind:last-child{border-bottom:none}
-.ind .il{font-size:13px;color:var(--muted)}
-.ind .iv{font-size:17px;font-weight:800;letter-spacing:-.01em}
-
-/* ---------- Calendrier / Historique ---------- */
-.cal-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line-soft)}
-.cal-row:last-child{border-bottom:none}
-.dateblock{width:52px;text-align:center;flex:none;border:1px solid var(--line);border-radius:10px;padding:6px 0;background:var(--surface-2)}
-.dateblock .d{font-size:18px;font-weight:800;line-height:1}
-.dateblock .m{font-size:10px;letter-spacing:.06em;color:var(--muted);margin-top:2px}
-.cal-main{flex:1;min-width:0}
-.cal-main .c-comp{font-weight:600;font-size:13.5px}
-.cal-main .c-sub{font-size:12px;color:var(--muted);margin-top:2px}
-
-/* ---------- Staff ---------- */
-.staff-section{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);padding:18px;margin-bottom:16px}
-.staff-sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
-.staff-sec-head h3{margin:0;font-size:15px;display:flex;align-items:center;gap:10px}
-.staff-sec-head .actions-inline{display:flex;align-items:center;gap:8px}
-.sec-count{font-size:11px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-weight:600}
-.staff-members{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px}
-.staff-member{display:flex;justify-content:space-between;gap:10px;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px}
-.sm-main{min-width:0}
-.sm-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.sm-nom{font-weight:600;font-size:13.5px}
-.sm-role{font-size:11px;color:var(--gold);background:rgba(230,179,77,.10);border:1px solid rgba(230,179,77,.28);border-radius:999px;padding:3px 9px;font-weight:600}
-.sm-notes{font-size:12px;color:var(--muted);line-height:1.5;margin-top:7px}
-
-/* ---------- Callout ---------- */
-.callout{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(180deg,rgba(255,92,122,.06),transparent);
-  border:1px solid rgba(255,92,122,.25);border-radius:var(--radius);padding:16px 18px}
-.callout .ci{color:var(--corail);font-size:18px;line-height:1;margin-top:1px}
-.callout .ct{font-size:13px;line-height:1.55;color:var(--text)}
-.callout .ct b{color:var(--corail)}
-.empty{color:var(--faint);font-size:13px;padding:24px;text-align:center}
-.mission-note{font-size:12.5px;color:var(--muted);line-height:1.55;border-left:2px solid var(--line);padding-left:14px;margin:0 0 4px;max-width:70ch}
-
-/* ---------- Boutons édition ---------- */
-.btn-primary{background:var(--emeraude);color:#062017;border:none;padding:10px 16px;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer}
-.btn-primary:hover{filter:brightness(1.06)}
-.btn-ghost{background:none;border:1px solid var(--line);color:var(--muted);padding:9px 14px;border-radius:9px;font-size:13px;cursor:pointer}
-.btn-ghost:hover{color:var(--text);border-color:var(--faint)}
-.btn-danger{background:none;border:1px solid rgba(255,86,112,.4);color:var(--crit);padding:9px 14px;border-radius:9px;font-size:13px;cursor:pointer}
-.btn-edit{background:var(--surface-2);border:1px solid var(--line);color:var(--text);padding:9px 14px;border-radius:9px;font-size:13px;cursor:pointer;white-space:nowrap}
-.btn-edit.on{background:rgba(34,224,166,.12);border-color:rgba(34,224,166,.4);color:var(--emeraude)}
-.add-btn{background:none;border:1px dashed var(--line);color:var(--muted);padding:6px 12px;border-radius:8px;font-size:12.5px;cursor:pointer}
-.add-btn:hover{color:var(--text);border-color:var(--faint)}
-.ic-btn{background:var(--surface-2);border:1px solid var(--line);color:var(--muted);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:12px;display:inline-grid;place-items:center}
-.ic-btn:hover{color:var(--text)}
-.ic-btn.del:hover{color:var(--crit);border-color:rgba(255,86,112,.4)}
-.item-actions{display:inline-flex;gap:6px}
-
-.edit-only{display:none}
-body.editing span.item-actions.edit-only,body.editing .card-head .item-actions.edit-only{display:inline-flex}
-body.editing .add-btn.edit-only{display:inline-block}
-body.editing .btn-ghost.edit-only,body.editing .mini-btn.edit-only{display:inline-block}
-body.editing th.edit-only,body.editing td.edit-only{display:table-cell}
-
-/* ---------- Modal ---------- */
-.modal-backdrop{position:fixed;inset:0;z-index:60;background:rgba(4,7,10,.72);display:none;align-items:center;justify-content:center;padding:24px}
-.modal-backdrop.show{display:flex}
-.modal{width:100%;max-width:460px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);max-height:88vh;display:flex;flex-direction:column}
-.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line-soft)}
-.modal-head h3{margin:0;font-size:15px}
-.modal-x{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1}
-#modal-form{padding:18px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
-.fld{display:flex;flex-direction:column;gap:6px}
-.fld label{font-size:12px;color:var(--muted)}
-.fld input,.fld select,.fld textarea{width:100%;padding:10px 12px;border-radius:9px;background:#0D141B;border:1px solid var(--line);color:var(--text);font-size:13.5px;font-family:inherit;outline:none}
-.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--emeraude)}
-.fld textarea{resize:vertical}
-.modal-foot{display:flex;align-items:center;gap:10px;padding:16px 20px;border-top:1px solid var(--line-soft)}
-.modal-foot .spacer{flex:1}
+.note{margin-top:22px;font-size:12.5px;color:var(--muted);line-height:1.55;
+  border-left:2px solid var(--line);padding:2px 0 2px 14px}
+.note b{color:var(--text)}
 
 @media (max-width:820px){
   .app.show{grid-template-columns:1fr}
   .sidebar{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;border-right:none;border-bottom:1px solid var(--line-soft)}
   .brand{padding:6px 8px}
   .nav-label,.side-foot{display:none}
-  .kpis{grid-template-columns:repeat(2,1fr)}
   .main{padding:22px 18px 48px}
 }
 </style>
@@ -312,7 +127,7 @@ body.editing th.edit-only,body.editing td.edit-only{display:table-cell}
     </div>
     <button id="gate-btn">Entrer</button>
     <div class="err" id="gate-err"></div>
-    <div class="foot">Protection légère côté navigateur — ne pas y stocker de données confidentielles sans hébergement sécurisé. Voir le README.</div>
+    <div class="foot">Protection légère côté navigateur. Mot de passe par défaut : flc-esport</div>
   </div>
 </div>
 
@@ -323,698 +138,69 @@ body.editing th.edit-only,body.editing td.edit-only{display:table-cell}
       <span class="mark">FLC</span>
       <span class="brand-txt"><span class="t">Esport</span><span class="s">Reporting</span></span>
     </div>
-    <div class="nav-label">Direction</div>
-    <button class="nav-item active" data-view="apercu" data-accent="neutre"><span class="dot"></span>Vue d'ensemble</button>
-    <div class="nav-label">Les 3 missions</div>
-    <button class="nav-item" data-view="poles" data-accent="emeraude"><span class="dot"></span>Suivi des managers</button>
-    <button class="nav-item" data-view="besoins" data-accent="violet"><span class="dot"></span>Besoins &amp; arbitrage</button>
-    <button class="nav-item" data-view="reporting" data-accent="corail"><span class="dot"></span>Données &amp; reporting</button>
-    <div class="nav-label">Compétitions</div>
-    <button class="nav-item" data-view="calendrier" data-accent="cyan"><span class="dot"></span>Calendrier &amp; historique</button>
-    <div class="nav-label">Organisation</div>
-    <button class="nav-item" data-view="staff" data-accent="gold"><span class="dot"></span>Staff des pôles</button>
+    <div class="nav-label">Menu</div>
+    <button class="nav-item active"><span class="dot"></span>Accueil</button>
     <div class="side-foot">
       Connecté — coordination esport
-      <div class="side-actions">
-        <button class="mini-btn" id="btn-export">Exporter</button>
-        <button class="mini-btn" id="btn-import">Importer</button>
-        <button class="mini-btn danger edit-only" id="btn-reset">Réinitialiser</button>
-      </div>
       <button class="logout" id="logout">Se déconnecter</button>
     </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
-      <div>
-        <div class="eyebrow" id="tb-eyebrow">Fiche direction</div>
-        <h1 id="tb-title">Vue d'ensemble</h1>
-        <div class="lead" id="tb-lead"></div>
+      <div class="eyebrow">Fiche direction</div>
+      <h1>Bienvenue</h1>
+      <div class="lead">Le point de départ de votre espace interne. On va le construire ensemble, une brique à la fois.</div>
+    </div>
+
+    <div class="hero">
+      <div class="eyebrow" style="margin-bottom:10px">Coordination esport</div>
+      <h2>Directeur Esport — <em>le pivot</em></h2>
+      <p>Chaque pôle de jeu a son manager qui porte l'opérationnel de son équipe. Ce rôle se situe au-dessus : assurer le suivi des managers, cadrer les besoins et transformer les données éparses en une lecture claire pour la direction.</p>
+    </div>
+
+    <div class="section-title"><span class="rail"></span><h3>Les 3 missions à outiller</h3></div>
+    <div class="missions">
+      <div class="mcard">
+        <div class="num">01</div>
+        <div class="tag">Coordination transversale</div>
+        <h4>Suivi des managers</h4>
+        <p>Points réguliers avec chaque pôle, remontée des blocages et avancées, harmonisation des pratiques, circulation fluide de l'information.</p>
       </div>
-      <div class="topbar-right">
-        <button class="btn-ghost edit-only" id="btn-settings">Paramètres</button>
-        <span class="saison-badge" id="saison-badge"></span>
-        <button class="btn-edit" id="edit-toggle">✎ Mode édition</button>
+      <div class="mcard violet">
+        <div class="num">02</div>
+        <div class="tag">Cadrage & arbitrage</div>
+        <h4>Définition des besoins</h4>
+        <p>Identifier les manques (staff, matériel, budget), prioriser avec une vision d'ensemble, faire remonter les besoins à la direction.</p>
+      </div>
+      <div class="mcard corail">
+        <div class="num">03</div>
+        <div class="tag">Reporting & lisibilité</div>
+        <h4>Retranscription des données</h4>
+        <p>Consolider résultats et indicateurs, rassembler les données de tous les pôles, produire un reporting clair et exploitable.</p>
       </div>
     </div>
 
-    <div class="edit-banner">
-      <b>Mode édition actif.</b> Vos modifications sont enregistrées automatiquement dans ce navigateur.
-      Utilisez <b>Exporter</b> (barre latérale) pour sauvegarder un fichier et retrouver vos données sur un autre poste.
+    <div class="note">
+      <b>On repart de zéro.</b> Cette page est la base. Dites-moi par quelle brique commencer
+      (par exemple le suivi des managers), et je l'ajoute ici, étape par étape.
     </div>
-
-    <!-- VUE D'ENSEMBLE -->
-    <section class="view active" id="view-apercu">
-      <div class="kpis" id="kpis"></div>
-      <div class="section-title corail"><span class="rail"></span><h2>À remonter à la direction</h2></div>
-      <div id="callouts"></div>
-      <div class="section-title cyan"><span class="rail"></span><h2>Prochaines compétitions</h2></div>
-      <div class="panel" id="apercu-cal"></div>
-      <div class="section-title"><span class="rail"></span><h2>Pôles nécessitant un point</h2></div>
-      <div class="cards" id="apercu-poles"></div>
-    </section>
-
-    <!-- SUIVI DES MANAGERS -->
-    <section class="view" id="view-poles">
-      <p class="mission-note">Coordination transversale — points réguliers avec chaque pôle. Chaque pôle a un rythme de suivi ; le prochain point et les retards sont calculés automatiquement. Le carnet consigne sujets, décisions et actions de chaque point.</p>
-      <div class="section-title"><span class="rail"></span><h2>Suivi par pôle</h2><span class="count" id="poles-count"></span>
-        <button class="add-btn edit-only" onclick="openForm('poles',null)">+ Ajouter un pôle</button></div>
-      <div class="cards" id="poles-cards"></div>
-    </section>
-
-    <!-- BESOINS -->
-    <section class="view" id="view-besoins">
-      <p class="mission-note">Cadrage &amp; arbitrage : identifier les manques (staff, matériel, budget), prioriser avec une vision d'ensemble et faire remonter à la direction ce qui doit être arbitré.</p>
-      <div class="section-title violet"><span class="rail"></span><h2>Besoins des pôles</h2><span class="count" id="besoins-count"></span>
-        <button class="add-btn edit-only" onclick="openForm('besoins',null)">+ Ajouter un besoin</button></div>
-      <div class="filters" id="besoins-filters">
-        <button class="filter-btn active" data-f="tous">Tous</button>
-        <button class="filter-btn" data-f="remonter">À remonter</button>
-        <button class="filter-btn" data-f="staff">Staff</button>
-        <button class="filter-btn" data-f="materiel">Matériel</button>
-        <button class="filter-btn" data-f="budget">Budget</button>
-      </div>
-      <div class="table-wrap">
-        <table><thead><tr>
-          <th>Pôle</th><th>Type</th><th>Besoin</th><th>Priorité</th><th>Statut</th><th>Direction</th><th class="edit-only">Actions</th>
-        </tr></thead><tbody id="besoins-body"></tbody></table>
-      </div>
-    </section>
-
-    <!-- REPORTING -->
-    <section class="view" id="view-reporting">
-      <p class="mission-note">Reporting &amp; lisibilité : consolider résultats et indicateurs de tous les pôles pour produire une lecture claire et exploitable, au service des managers et de la direction.</p>
-      <div class="section-title corail"><span class="rail"></span><h2>Lecture consolidée</h2></div>
-      <div class="report-grid">
-        <div class="panel">
-          <div class="section-title" style="margin:0 0 4px"><h3 style="font-size:13.5px;margin:0">Résultats par pôle</h3>
-            <button class="add-btn edit-only" onclick="openForm('resultats',null)">+ Ajouter</button></div>
-          <p class="h-sub">Forme sur les dernières rencontres (0 à 100)</p>
-          <div id="report-rows"></div>
-        </div>
-        <div class="panel">
-          <div class="section-title" style="margin:0 0 4px"><h3 style="font-size:13.5px;margin:0">Indicateurs clés</h3>
-            <button class="add-btn edit-only" onclick="openForm('indicateurs',null)">+ Ajouter</button></div>
-          <p class="h-sub">Agrégés sur l'ensemble des pôles</p>
-          <div id="report-inds"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CALENDRIER & HISTORIQUE -->
-    <section class="view" id="view-calendrier">
-      <p class="mission-note">Le calendrier des compétitions à venir et l'historique des résultats passés, rassemblés pour donner à la direction une vision claire de l'agenda esport.</p>
-      <div class="section-title cyan"><span class="rail"></span><h2>Prochaines compétitions</h2><span class="count" id="cal-count"></span>
-        <button class="add-btn edit-only" onclick="openForm('calendrier',null)">+ Ajouter une compétition</button></div>
-      <div class="panel" id="cal-list"></div>
-      <div class="section-title corail"><span class="rail"></span><h2>Historique des compétitions</h2><span class="count" id="hist-count"></span>
-        <button class="add-btn edit-only" onclick="openForm('historique',null)">+ Ajouter un résultat</button></div>
-      <div class="panel" id="hist-list"></div>
-    </section>
-
-    <!-- STAFF -->
-    <section class="view" id="view-staff">
-      <p class="mission-note">L'équipe encadrante de chaque pôle : coachs, analystes, managers, création… Créez librement des sections (un pôle, un staff transverse…) et ajoutez des notes de suivi sur chaque membre.</p>
-      <div class="section-title gold"><span class="rail"></span><h2>Staff par section</h2><span class="count" id="staff-count"></span>
-        <button class="add-btn edit-only" onclick="addSection()">+ Ajouter une section</button></div>
-      <div id="staff-list"></div>
-    </section>
   </main>
 </div>
 
-<!-- ===================== MODAL ===================== -->
-<div class="modal-backdrop" id="modal">
-  <div class="modal">
-    <div class="modal-head"><h3 id="modal-title"></h3><button class="modal-x" id="modal-x">×</button></div>
-    <form id="modal-form" onsubmit="return false"></form>
-    <div class="modal-foot">
-      <button class="btn-danger" id="modal-del" style="display:none">Supprimer</button>
-      <span class="spacer"></span>
-      <button class="btn-ghost" id="modal-cancel">Annuler</button>
-      <button class="btn-primary" id="modal-save">Enregistrer</button>
-    </div>
-  </div>
-</div>
-
-<input type="file" id="import-file" accept="application/json" style="display:none" />
-
 <script>
-/* =========================================================================
-   DONNÉES PAR DÉFAUT
-   Ce sont les données de départ. Une fois le site utilisé, vos modifications
-   (via le « Mode édition ») sont enregistrées dans le navigateur et priment.
-   ========================================================================= */
-const DEFAULTS = {
-  org:"FLC Esport",
-  saison:"Saison 2025–2026",
-  motDePasse:"flc-esport",
-
-  poles:[],
-  besoins:[],
-  resultats:[],
-  indicateurs:[],
-  calendrier:[],
-  historique:[],
-  staff:[]
-};
-
-/* ---------- Persistance (navigateur) ---------- */
-const STORE_KEY = "flc-esport-data-v4";
-let DATA = loadData();
-function clone(o){ return JSON.parse(JSON.stringify(o)); }
-function loadData(){
-  try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ return Object.assign(clone(DEFAULTS), JSON.parse(raw)); } }catch(e){}
-  return clone(DEFAULTS);
-}
-function persist(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(DATA)); }catch(e){} }
-
-/* ---------- Référentiels d'affichage ---------- */
-const STATUT={"a-jour":{label:"À jour",cls:"ok"},"attention":{label:"À suivre",cls:"warn"},"bloque":{label:"Bloqué",cls:"crit"}};
-const PRIORITE={haute:{label:"Haute",cls:"crit"},moyenne:{label:"Moyenne",cls:"warn"},basse:{label:"Basse",cls:"neutre"}};
-const BESOIN_STATUT={nouveau:{label:"Nouveau",cls:"neutre"},cadre:{label:"Cadré",cls:"violet"},remonte:{label:"Remonté",cls:"warn"},traite:{label:"Traité",cls:"ok"}};
-const BLOCAGE_STATUT={ouvert:{label:"Ouvert",cls:"crit"},"en-cours":{label:"En cours",cls:"warn"},resolu:{label:"Résolu",cls:"ok"}};
-function asEntry(x){ return typeof x==='string'?{texte:x}:(x||{}); }
-const CAL_STATUT={confirme:{l:"Confirmé",c:"ok"},"a-confirmer":{l:"À confirmer",c:"warn"}};
-const ISSUE={victoire:{l:"Victoire",c:"ok"},podium:{l:"Podium",c:"emeraude"},elimine:{l:"Éliminé",c:"crit"},participation:{l:"Participation",c:"neutre"}};
-const TYPE_IC={staff:"👥",materiel:"🖥",budget:"€"};
-const TYPE_LABEL={staff:"Staff",materiel:"Matériel",budget:"Budget"};
-const TEND={up:{s:"▲",c:"up"},down:{s:"▼",c:"down"},flat:{s:"—",c:"flat"}};
-const MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
-
-function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function pill(cls,label){ return `<span class="pill ${cls}"><span class="d"></span>${esc(label)}</span>`; }
-function dparts(iso){
-  if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return {d:"?",m:""};
-  const p=iso.split("-"); const day=Number(p[2])||"";
-  return {d:day, m:(MOIS[(Number(p[1])||1)-1]||"").replace(".","").toUpperCase().slice(0,4)};
-}
-function todayISO(){ return new Date().toISOString().slice(0,10); }
-function addDays(iso,n){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
-function fdate(iso){ if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return '—'; const p=iso.split('-'); return Number(p[2])+' '+(MOIS[(Number(p[1])||1)-1]||''); }
-function joursEntre(a,b){ return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000); }
-const RYTHME_LABEL={7:"Hebdo",14:"2 semaines",21:"3 semaines",30:"Mensuel",0:"Ponctuel"};
-function rythmeLabel(r){ return RYTHME_LABEL[Number(r)]||(r?Number(r)+' j':'Ponctuel'); }
-/* Cadence du suivi : calculée à partir du dernier point + rythme */
-function cadence(p){
-  const r=Number(p.rythmeJours)||0;
-  if(!p.dernierPoint||!r) return {key:'aplanifier', label:'À planifier', cls:'neutre', prochain:null};
-  const prochain=addDays(p.dernierPoint,r), t=todayISO();
-  if(prochain<t) return {key:'retard', label:'En retard', cls:'crit', prochain};
-  if(prochain===t) return {key:'aujourdhui', label:"Aujourd'hui", cls:'warn', prochain};
-  if(prochain<=addDays(t,2)) return {key:'bientot', label:'Bientôt', cls:'warn', prochain};
-  return {key:'ajour', label:'À jour', cls:'ok', prochain};
-}
-
-/* =========================================================================
-   SCHÉMAS DE FORMULAIRES (pilotent le mode édition)
-   ========================================================================= */
-const SEL_STATUT=[["a-jour","À jour"],["attention","À suivre"],["bloque","Bloqué"]];
-const SEL_TYPE=[["staff","Staff"],["materiel","Matériel"],["budget","Budget"]];
-const SEL_PRIO=[["haute","Haute"],["moyenne","Moyenne"],["basse","Basse"]];
-const SEL_BSTAT=[["nouveau","Nouveau"],["cadre","Cadré"],["remonte","Remonté"],["traite","Traité"]];
-const SEL_BOOL=[["true","Oui"],["false","Non"]];
-const SEL_CAL=[["confirme","Confirmé"],["a-confirmer","À confirmer"]];
-const SEL_ISSUE=[["victoire","Victoire"],["podium","Podium"],["elimine","Éliminé"],["participation","Participation"]];
-const SEL_TEND=[["up","En hausse ▲"],["flat","Stable —"],["down","En baisse ▼"]];
-const SEL_RYTHME=[["7","Hebdomadaire"],["14","Toutes les 2 semaines"],["21","Toutes les 3 semaines"],["30","Mensuel"],["0","Ponctuel (sans rythme)"]];
-const SEL_BLOCAGE=[["ouvert","Ouvert"],["en-cours","En cours"],["resolu","Résolu"]];
-
-const SCHEMAS={
-  poles:{titre:"pôle", coll:"poles", champs:[
-    {k:"jeu",l:"Jeu",t:"text",req:true},
-    {k:"manager",l:"Manager",t:"text"},
-    {k:"joueurs",l:"Nombre de joueurs",t:"number"},
-    {k:"statut",l:"État du pôle",t:"select",opts:SEL_STATUT},
-    {k:"rythmeJours",l:"Rythme des points",t:"select",opts:SEL_RYTHME},
-    {k:"dernierPoint",l:"Date du dernier point",t:"date"}
-  ]},
-  besoins:{titre:"besoin", coll:"besoins", champs:[
-    {k:"pole",l:"Pôle concerné",t:"text",req:true},
-    {k:"type",l:"Type",t:"select",opts:SEL_TYPE},
-    {k:"libelle",l:"Besoin",t:"text"},
-    {k:"priorite",l:"Priorité",t:"select",opts:SEL_PRIO},
-    {k:"statut",l:"Statut",t:"select",opts:SEL_BSTAT},
-    {k:"aRemonter",l:"À remonter à la direction ?",t:"bool"}
-  ]},
-  resultats:{titre:"résultat", coll:"resultats", champs:[
-    {k:"jeu",l:"Jeu",t:"text",req:true},
-    {k:"desc",l:"Dernier résultat",t:"text"},
-    {k:"forme",l:"Forme (0 à 100)",t:"number"},
-    {k:"tendance",l:"Tendance",t:"select",opts:SEL_TEND}
-  ]},
-  indicateurs:{titre:"indicateur", coll:"indicateurs", champs:[
-    {k:"label",l:"Libellé",t:"text",req:true},
-    {k:"valeur",l:"Valeur",t:"text"}
-  ]},
-  calendrier:{titre:"compétition", coll:"calendrier", champs:[
-    {k:"date",l:"Date",t:"date",req:true},
-    {k:"jeu",l:"Jeu",t:"text"},
-    {k:"competition",l:"Compétition",t:"text"},
-    {k:"format",l:"Format / lieu (ex. BO3 · en ligne)",t:"text"},
-    {k:"statut",l:"Statut",t:"select",opts:SEL_CAL}
-  ]},
-  historique:{titre:"résultat", coll:"historique", champs:[
-    {k:"date",l:"Date",t:"date",req:true},
-    {k:"jeu",l:"Jeu",t:"text"},
-    {k:"competition",l:"Compétition",t:"text"},
-    {k:"resultat",l:"Résultat (ex. 3e / 24)",t:"text"},
-    {k:"issue",l:"Issue",t:"select",opts:SEL_ISSUE}
-  ]},
-  parametres:{titre:"paramètres", root:true, champs:[
-    {k:"org",l:"Nom de l'organisation",t:"text"},
-    {k:"saison",l:"Saison",t:"text"},
-    {k:"motDePasse",l:"Mot de passe d'accès",t:"text"}
-  ]}
-};
-
-/* =========================================================================
-   PORTAIL
-   ========================================================================= */
-const gate=document.getElementById('gate'), app=document.getElementById('app');
-function unlock(){ gate.classList.add('hidden'); app.classList.add('show'); render(); }
+/* Portail : simple accès par mot de passe (protection légère côté navigateur). */
+const MOT_DE_PASSE = "flc-esport";
+const gate = document.getElementById('gate');
+const app = document.getElementById('app');
+function unlock(){ gate.classList.add('hidden'); app.classList.add('show'); }
 function tryUnlock(){
-  const v=document.getElementById('pw').value;
-  if(v===DATA.motDePasse){ sessionStorage.setItem('flc-ok','1'); unlock(); }
-  else{ document.getElementById('gate-err').textContent="Mot de passe incorrect."; }
+  if(document.getElementById('pw').value === MOT_DE_PASSE){ sessionStorage.setItem('flc-ok','1'); unlock(); }
+  else{ document.getElementById('gate-err').textContent = "Mot de passe incorrect."; }
 }
-document.getElementById('gate-btn').addEventListener('click',tryUnlock);
-document.getElementById('pw').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
-document.getElementById('logout').addEventListener('click',()=>{ sessionStorage.removeItem('flc-ok'); location.reload(); });
-
-/* =========================================================================
-   NAVIGATION
-   ========================================================================= */
-const VIEWS={
-  apercu:{title:"Vue d'ensemble",eyebrow:"Fiche direction",lead:"Le pivot entre les pôles de jeu et la direction : l'information circule, les besoins sont cadrés, la donnée est lisible."},
-  poles:{title:"Suivi des managers",eyebrow:"Mission 01 · Coordination transversale",lead:"Points réguliers avec chaque pôle : rythme, prochain point, retards et carnet de comptes-rendus."},
-  besoins:{title:"Besoins & arbitrage",eyebrow:"Mission 02 · Cadrage & arbitrage",lead:"Les manques identifiés par les pôles, priorisés et cadrés avant remontée à la direction."},
-  reporting:{title:"Données & reporting",eyebrow:"Mission 03 · Reporting & lisibilité",lead:"Résultats et indicateurs consolidés de tous les pôles, en une lecture claire."},
-  calendrier:{title:"Calendrier & historique",eyebrow:"Compétitions",lead:"Agenda des compétitions à venir et historique des résultats passés."},
-  staff:{title:"Staff des pôles",eyebrow:"Organisation",lead:"Le staff de chaque pôle, organisé en sections, avec des notes de suivi sur chaque membre."}
-};
-document.querySelectorAll('.nav-item').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const v=btn.dataset.view;
-    document.querySelectorAll('.view').forEach(s=>s.classList.remove('active'));
-    document.getElementById('view-'+v).classList.add('active');
-    const m=VIEWS[v];
-    document.getElementById('tb-title').textContent=m.title;
-    document.getElementById('tb-eyebrow').textContent=m.eyebrow;
-    document.getElementById('tb-lead').textContent=m.lead;
-    window.scrollTo(0,0);
-  });
-});
-
-/* =========================================================================
-   RENDU
-   ========================================================================= */
-function editBtns(key,i){
-  return `<span class="item-actions edit-only">
-    <button class="ic-btn" onclick="openForm('${key}',${i})" title="Modifier">✎</button>
-    <button class="ic-btn del" onclick="removeItem('${key}',${i})" title="Supprimer">🗑</button></span>`;
-}
-
-function render(){
-  document.getElementById('saison-badge').textContent=DATA.saison;
-
-  /* KPIs (cadence du suivi) */
-  const cads=DATA.poles.map(cadence);
-  const enRetard=cads.filter(c=>c.key==='retard').length;
-  const aFaire=cads.filter(c=>c.key==='aujourdhui'||c.key==='bientot').length;
-  const aJour=cads.filter(c=>c.key==='ajour').length;
-  // Éléments à remonter à la direction : blocages flaggés (ouverts) + besoins flaggés
-  const remBlocages=[];
-  DATA.poles.forEach(p=>(p.blocages||[]).forEach(x=>{ const e=asEntry(x); if(e.aRemonter&&e.statut!=='resolu') remBlocages.push({pole:p.jeu,texte:e.texte}); }));
-  const remBesoins=DATA.besoins.filter(b=>b.aRemonter);
-  const aRemonter=remBlocages.length+remBesoins.length;
-  const blocages=DATA.poles.reduce((n,p)=>n+(p.blocages||[]).filter(x=>asEntry(x).statut!=='resolu').length,0);
-  document.getElementById('kpis').innerHTML=`
-    <div class="tile"><div class="k-label">Pôles suivis</div><div class="k-val tnum">${DATA.poles.length}</div><div class="k-sub">${aJour} à jour sur le rythme</div></div>
-    <div class="tile" data-accent="${enRetard?'corail':'warn'}"><div class="k-label">Points à faire</div><div class="k-val tnum">${aFaire+enRetard}</div><div class="k-sub">${enRetard} en retard</div></div>
-    <div class="tile" data-accent="violet"><div class="k-label">Besoins ouverts</div><div class="k-val tnum">${DATA.besoins.filter(b=>b.statut!=='traite').length}</div><div class="k-sub">${aRemonter} à remonter</div></div>
-    <div class="tile" data-accent="corail"><div class="k-label">Blocages actifs</div><div class="k-val tnum">${blocages}</div><div class="k-sub">à débloquer</div></div>`;
-
-  /* Callouts : blocages + besoins à remonter */
-  const remHTML=[
-    ...remBlocages.map(r=>`<div class="callout" style="margin-bottom:10px"><div class="ci">↗</div>
-      <div class="ct"><b>Blocage · ${esc(r.pole)}</b> — ${esc(r.texte)}</div></div>`),
-    ...remBesoins.map(b=>`<div class="callout" style="margin-bottom:10px"><div class="ci">↗</div>
-      <div class="ct"><b>${esc(TYPE_LABEL[b.type]||b.type)} · ${esc(b.pole)}</b> — ${esc(b.libelle)}
-      &nbsp; ${pill(PRIORITE[b.priorite]?PRIORITE[b.priorite].cls:'neutre','Priorité '+(PRIORITE[b.priorite]?PRIORITE[b.priorite].label.toLowerCase():b.priorite))}</div></div>`)
-  ];
-  document.getElementById('callouts').innerHTML=remHTML.length?remHTML.join(''):`<div class="empty">Rien en attente de remontée à la direction.</div>`;
-
-  /* Prochaines compétitions (aperçu) */
-  const today=new Date().toISOString().slice(0,10);
-  const calSorted=[...DATA.calendrier].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  let up=calSorted.filter(c=>String(c.date)>=today); if(!up.length) up=calSorted;
-  document.getElementById('apercu-cal').innerHTML = up.length? up.slice(0,4).map(c=>calRow(c,false)).join('') : `<div class="empty">Aucune compétition programmée.</div>`;
-
-  /* Pôles à recontacter (aperçu, par cadence) */
-  const rank={retard:0,aujourdhui:1,bientot:2};
-  const aTraiter=DATA.poles.filter(p=>rank[cadence(p).key]!==undefined).sort((a,b)=>rank[cadence(a).key]-rank[cadence(b).key]);
-  document.getElementById('apercu-poles').innerHTML=(aTraiter.length?aTraiter:DATA.poles).map(poleCard).join('');
-
-  /* Suivi des pôles */
-  document.getElementById('poles-count').textContent=DATA.poles.length+' pôles';
-  document.getElementById('poles-cards').innerHTML=DATA.poles.length?DATA.poles.map(poleCard).join(''):`<div class="empty">Aucun pôle. Passez en mode édition pour en ajouter.</div>`;
-
-  /* Besoins */
-  document.getElementById('besoins-count').textContent=DATA.besoins.length+' besoins';
-  const af=document.querySelector('#besoins-filters .filter-btn.active');
-  renderBesoins(af?af.dataset.f:'tous');
-
-  /* Reporting */
-  document.getElementById('report-rows').innerHTML=DATA.resultats.length?DATA.resultats.map(r=>{
-    const oi=DATA.resultats.indexOf(r); const t=TEND[r.tendance]||TEND.flat; const f=Math.max(0,Math.min(100,Number(r.forme)||0));
-    return `<div class="res-row"><div class="rp-jeu">${esc(r.jeu)}</div><div class="rp-desc">${esc(r.desc)}</div>
-      <div class="meter"><div class="track"><div class="fill" style="width:${f}%"></div></div><div class="mlabel tnum">forme ${f}</div></div>
-      <div class="tend ${t.c}">${t.s}</div>${editBtns('resultats',oi)}</div>`;
-  }).join(''):`<div class="empty">Aucun résultat.</div>`;
-  document.getElementById('report-inds').innerHTML=DATA.indicateurs.map(i=>{
-    const oi=DATA.indicateurs.indexOf(i);
-    return `<div class="ind"><span class="il">${esc(i.label)}</span><span style="display:flex;align-items:center;gap:10px"><span class="iv tnum">${esc(i.valeur)}</span>${editBtns('indicateurs',oi)}</span></div>`;
-  }).join('');
-
-  /* Calendrier */
-  document.getElementById('cal-count').textContent=DATA.calendrier.length+' à venir';
-  document.getElementById('cal-list').innerHTML=calSorted.length?calSorted.map(c=>calRow(c,true)).join(''):`<div class="empty">Aucune compétition. Passez en mode édition pour en ajouter.</div>`;
-
-  /* Historique */
-  const hist=[...DATA.historique].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  document.getElementById('hist-count').textContent=DATA.historique.length+' résultats';
-  document.getElementById('hist-list').innerHTML=hist.length?hist.map(h=>histRow(h)).join(''):`<div class="empty">Aucun résultat enregistré.</div>`;
-
-  /* Staff */
-  document.getElementById('staff-count').textContent=DATA.staff.length+(DATA.staff.length>1?' sections':' section');
-  renderStaff();
-}
-
-function renderStaff(){
-  const wrap=document.getElementById('staff-list');
-  if(!DATA.staff.length){ wrap.innerHTML=`<div class="empty">Aucune section. Passez en mode édition pour créer une section (ex. un pôle).</div>`; return; }
-  wrap.innerHTML=DATA.staff.map((sec,si)=>{
-    const membres=(sec.membres||[]).map((m,mi)=>`
-      <div class="staff-member">
-        <div class="sm-main">
-          <div class="sm-head"><span class="sm-nom">${esc(m.nom)}</span>${m.role?`<span class="sm-role">${esc(m.role)}</span>`:''}</div>
-          ${m.notes?`<div class="sm-notes">${esc(m.notes).replace(/\n/g,'<br>')}</div>`:''}
-        </div>
-        <span class="item-actions edit-only">
-          <button class="ic-btn" onclick="editMember(${si},${mi})" title="Modifier">✎</button>
-          <button class="ic-btn del" onclick="deleteMember(${si},${mi})" title="Supprimer">🗑</button>
-        </span>
-      </div>`).join('') || `<div class="empty" style="padding:14px">Aucun membre. Ajoutez-en un en mode édition.</div>`;
-    return `<div class="staff-section">
-      <div class="staff-sec-head">
-        <h3>${esc(sec.titre)}<span class="sec-count tnum">${(sec.membres||[]).length}</span></h3>
-        <span class="actions-inline item-actions edit-only">
-          <button class="ic-btn" onclick="editSection(${si})" title="Renommer / supprimer la section">✎</button>
-          <button class="add-btn" onclick="addMember(${si})">+ Membre</button>
-        </span>
-      </div>
-      <div class="staff-members">${membres}</div>
-    </div>`;
-  }).join('');
-}
-
-function poleCard(p){
-  const pi=DATA.poles.indexOf(p);
-  const st=STATUT[p.statut]||STATUT.attention;
-  const cad=cadence(p);
-  const av=(p.avancees||[]).map(a=>{
-    const e=asEntry(a), oi=(p.avancees||[]).indexOf(a);
-    return `<div class="ev up"><div class="ev-main"><span class="b"></span><div>
-        <div class="ev-txt">${esc(e.texte)}</div>${e.date?`<div class="ev-meta">${fdate(e.date)}</div>`:''}
-      </div></div>
-      <span class="item-actions edit-only"><button class="ic-btn" onclick="editAvancee(${pi},${oi})" title="Modifier">✎</button><button class="ic-btn del" onclick="deleteAvancee(${pi},${oi})" title="Supprimer">🗑</button></span>
-    </div>`;
-  }).join('');
-  const bl=(p.blocages||[]).map(x=>{
-    const e=asEntry(x), oi=(p.blocages||[]).indexOf(x);
-    const st=BLOCAGE_STATUT[e.statut]||BLOCAGE_STATUT.ouvert;
-    const meta = e.statut==='resolu' ? (e.date?'Résolu':'') : (e.date?`Ouvert depuis ${Math.max(0,joursEntre(e.date,todayISO()))} j`:'');
-    return `<div class="ev down"><div class="ev-main"><span class="b"></span><div>
-        <div class="ev-txt">${esc(e.texte)}</div>
-        <div class="ev-meta">${pill(st.cls,st.label)}${meta?`<span>${meta}</span>`:''}${e.aRemonter&&e.statut!=='resolu'?'<span class="remonter-flag">↗ À remonter</span>':''}</div>
-      </div></div>
-      <span class="item-actions edit-only"><button class="ic-btn" onclick="editBlocage(${pi},${oi})" title="Modifier">✎</button><button class="ic-btn del" onclick="deleteBlocage(${pi},${oi})" title="Supprimer">🗑</button></span>
-    </div>`;
-  }).join('');
-  const body=`
-    <div class="ev-group">
-      <div class="carnet-head"><span class="grp-label">Avancées</span><button class="add-btn edit-only" onclick="addAvancee(${pi})">+ Avancée</button></div>
-      ${av||'<div class="cr-empty">—</div>'}
-    </div>
-    <div class="ev-group">
-      <div class="carnet-head"><span class="grp-label">Blocages</span><button class="add-btn edit-only" onclick="addBlocage(${pi})">+ Blocage</button></div>
-      ${bl||'<div class="cr-empty">Aucun blocage.</div>'}
-    </div>`;
-
-  // Ligne de cadence
-  let prochainTxt='—';
-  if(cad.prochain){ const j=joursEntre(todayISO(),cad.prochain); prochainTxt=fdate(cad.prochain)+(j===0?" (aujourd'hui)":j>0?` (dans ${j} j)`:` (retard ${-j} j)`); }
-  const cadLine=`<div class="cadence-line">
-    <span>Rythme · <b>${rythmeLabel(p.rythmeJours)}</b></span>
-    <span>Dernier · <b>${fdate(p.dernierPoint)}</b></span>
-    <span>Prochain · <b>${prochainTxt}</b></span>
-  </div>`;
-
-  // Carnet de points
-  const pts=[...(p.points||[])].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  const crHTML=pts.slice(0,3).map(pt=>{
-    const oi=(p.points||[]).indexOf(pt);
-    const line=(lbl,val)=>val?`<div class="cr-line"><b>${lbl}</b>${esc(val).replace(/\n/g,'<br>')}</div>`:'';
-    return `<div class="cr">
-      <div class="cr-head"><span class="cr-date tnum">${fdate(pt.date)}</span>
-        <span class="item-actions edit-only"><button class="ic-btn" onclick="editPoint(${pi},${oi})" title="Modifier">✎</button><button class="ic-btn del" onclick="deletePoint(${pi},${oi})" title="Supprimer">🗑</button></span>
-      </div>
-      ${line('Sujets',pt.sujets)}${line('Décisions',pt.decisions)}${line('Actions',pt.actions)}
-    </div>`;
-  }).join('') || `<div class="cr-empty">Aucun compte-rendu enregistré.</div>`;
-  const carnet=`<div class="carnet">
-    <div class="carnet-head"><span class="grp-label">Carnet de points${pts.length>3?` · 3 sur ${pts.length}`:pts.length?` · ${pts.length}`:''}</span>
-      <button class="add-btn edit-only" onclick="addPoint(${pi})">+ Point</button></div>
-    ${crHTML}
-  </div>`;
-
-  return `<div class="card">
-    <div class="card-head">
-      <div><div class="jeu">${esc(p.jeu)}</div><div class="mgr">Manager · ${esc(p.manager)}</div></div>
-      <div class="ch-right">${pill(cad.cls,cad.label)}${pill(st.cls,st.label)}${editBtns('poles',pi)}</div>
-    </div>
-    ${cadLine}
-    ${body}
-    ${carnet}
-    <div class="card-meta"><span><b>${esc(p.joueurs)}</b> joueurs</span><span>État · <b>${esc(st.label)}</b></span></div>
-  </div>`;
-}
-
-function calRow(c,withActions){
-  const oi=DATA.calendrier.indexOf(c); const st=CAL_STATUT[c.statut]||CAL_STATUT.confirme; const dp=dparts(c.date);
-  return `<div class="cal-row">
-    <div class="dateblock"><div class="d tnum">${dp.d}</div><div class="m">${dp.m}</div></div>
-    <div class="cal-main"><div class="c-comp">${esc(c.competition)}</div><div class="c-sub">${esc(c.jeu)}${c.format?' · '+esc(c.format):''}</div></div>
-    ${pill(st.c,st.l)}${withActions?editBtns('calendrier',oi):''}
-  </div>`;
-}
-function histRow(h){
-  const oi=DATA.historique.indexOf(h); const is=ISSUE[h.issue]||ISSUE.participation; const dp=dparts(h.date);
-  return `<div class="cal-row">
-    <div class="dateblock"><div class="d tnum">${dp.d}</div><div class="m">${dp.m}</div></div>
-    <div class="cal-main"><div class="c-comp">${esc(h.competition)}</div><div class="c-sub">${esc(h.jeu)}${h.resultat?' · '+esc(h.resultat):''}</div></div>
-    ${pill(is.c,is.l)}${editBtns('historique',oi)}
-  </div>`;
-}
-
-function renderBesoins(f){
-  let list=DATA.besoins.slice();
-  if(f==='remonter') list=list.filter(b=>b.aRemonter);
-  else if(f&&f!=='tous') list=list.filter(b=>b.type===f);
-  const order={haute:0,moyenne:1,basse:2};
-  list.sort((a,b)=>(order[a.priorite]??9)-(order[b.priorite]??9));
-  const body=document.getElementById('besoins-body');
-  body.innerHTML=list.length?list.map(b=>{
-    const oi=DATA.besoins.indexOf(b);
-    const pr=PRIORITE[b.priorite]||{label:b.priorite,cls:'neutre'};
-    const bs=BESOIN_STATUT[b.statut]||{label:b.statut,cls:'neutre'};
-    return `<tr>
-      <td class="td-pole">${esc(b.pole)}</td>
-      <td><span class="type-tag"><span class="ic">${TYPE_IC[b.type]||'•'}</span>${esc(TYPE_LABEL[b.type]||b.type)}</span></td>
-      <td>${esc(b.libelle)}</td>
-      <td>${pill(pr.cls,pr.label)}</td>
-      <td>${pill(bs.cls,bs.label)}</td>
-      <td>${b.aRemonter?'<span class="remonter-flag">↗ À remonter</span>':'<span style="color:var(--faint)">—</span>'}</td>
-      <td class="edit-only">${editBtns('besoins',oi)}</td>
-    </tr>`;
-  }).join(''):`<tr><td colspan="7"><div class="empty">Aucun besoin dans ce filtre.</div></td></tr>`;
-}
-document.getElementById('besoins-filters').addEventListener('click',e=>{
-  const btn=e.target.closest('.filter-btn'); if(!btn) return;
-  document.querySelectorAll('#besoins-filters .filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); renderBesoins(btn.dataset.f);
-});
-
-/* =========================================================================
-   MODE ÉDITION + FORMULAIRES
-   ========================================================================= */
-function toggleEdit(){
-  document.body.classList.toggle('editing');
-  const on=document.body.classList.contains('editing');
-  const b=document.getElementById('edit-toggle');
-  b.textContent=on?'✓ Terminer':'✎ Mode édition'; b.classList.toggle('on',on);
-}
-document.getElementById('edit-toggle').addEventListener('click',toggleEdit);
-document.getElementById('btn-settings').addEventListener('click',()=>openForm('parametres',null));
-
-/* --- Moteur de modale générique (piloté par des callbacks) --- */
-let EDITCTX=null;
-function fieldHTML(f,val){
-  if(f.t==='select'||f.t==='bool'){
-    const opts=(f.t==='bool'?SEL_BOOL:f.opts); const cur=f.t==='bool'?String(!!val):String(val==null?'':val);
-    return `<select name="${f.k}">${opts.map(([ov,ol])=>`<option value="${esc(ov)}"${String(ov)===cur?' selected':''}>${esc(ol)}</option>`).join('')}</select>`;
-  }
-  if(f.t==='lines'){ const txt=Array.isArray(val)?val.join('\n'):(val||''); return `<textarea name="${f.k}" rows="3">${esc(txt)}</textarea>`; }
-  if(f.t==='textarea'){ return `<textarea name="${f.k}" rows="3">${esc(val==null?'':val)}</textarea>`; }
-  const type=f.t==='number'?'number':(f.t==='date'?'date':'text');
-  return `<input type="${type}" name="${f.k}" value="${esc(val==null?'':val)}" ${f.req?'required':''} />`;
-}
-function readForm(champs){
-  const form=document.getElementById('modal-form'); const o={};
-  for(const f of champs){
-    const el=form.elements[f.k]; if(!el) continue; let v=el.value;
-    if(f.t==='number') v=(v===''?0:Number(v));
-    else if(f.t==='bool') v=(v==='true');
-    else if(f.t==='lines') v=v.split('\n').map(s=>s.trim()).filter(Boolean);
-    else v=(v==null?'':v).trim();
-    o[f.k]=v;
-  }
-  return o;
-}
-function openModal(title,champs,src,onSave,onDelete){
-  EDITCTX={champs,onSave,onDelete};
-  document.getElementById('modal-title').textContent=title;
-  document.getElementById('modal-form').innerHTML=champs.map(f=>`<div class="fld"><label>${esc(f.l)}</label>${fieldHTML(f,src?src[f.k]:'')}</div>`).join('');
-  document.getElementById('modal-del').style.display=onDelete?'inline-flex':'none';
-  document.getElementById('modal').classList.add('show');
-  const first=document.querySelector('#modal-form input,#modal-form select,#modal-form textarea'); if(first) first.focus();
-}
-function closeModal(){ document.getElementById('modal').classList.remove('show'); EDITCTX=null; }
-
-/* --- Collections génériques (SCHEMAS) --- */
-function openForm(key,index){
-  const sc=SCHEMAS[key];
-  const src=sc.root?DATA:(index==null?{}:DATA[sc.coll][index]);
-  const isNew=!sc.root&&index==null;
-  const title=(sc.root?'Modifier les ':(isNew?'Ajouter — ':'Modifier — '))+sc.titre;
-  openModal(title, sc.champs, src,
-    ()=>{ const vals=readForm(sc.champs);
-      if(sc.root) Object.assign(DATA,vals);
-      else if(index==null) DATA[sc.coll].push(vals);
-      else DATA[sc.coll][index]=Object.assign({},DATA[sc.coll][index],vals);
-      persist(); closeModal(); render(); },
-    (!sc.root&&index!=null)?()=>{ closeModal(); removeItem(key,index); }:null
-  );
-}
-function removeItem(key,index){
-  const sc=SCHEMAS[key];
-  if(!confirm('Supprimer définitivement cet élément ?')) return;
-  DATA[sc.coll].splice(index,1); persist(); render();
-}
-
-/* --- Staff : sections + membres (structure imbriquée) --- */
-const SECTION_CHAMPS=[{k:"titre",l:"Nom de la section (ex. un pôle)",t:"text",req:true}];
-const MEMBER_CHAMPS=[
-  {k:"nom",l:"Nom",t:"text",req:true},
-  {k:"role",l:"Rôle / poste",t:"text"},
-  {k:"notes",l:"Notes de suivi",t:"textarea"}
-];
-function addSection(){ openModal('Ajouter une section',SECTION_CHAMPS,{},
-  ()=>{ const v=readForm(SECTION_CHAMPS); DATA.staff.push({titre:v.titre,membres:[]}); persist(); closeModal(); render(); }, null); }
-function editSection(si){ openModal('Renommer la section',SECTION_CHAMPS,DATA.staff[si],
-  ()=>{ const v=readForm(SECTION_CHAMPS); DATA.staff[si].titre=v.titre; persist(); closeModal(); render(); },
-  ()=>{ closeModal(); deleteSection(si); }); }
-function deleteSection(si){ if(!confirm('Supprimer cette section et tout son staff ?')) return; DATA.staff.splice(si,1); persist(); render(); }
-function addMember(si){ openModal('Ajouter un membre',MEMBER_CHAMPS,{},
-  ()=>{ DATA.staff[si].membres.push(readForm(MEMBER_CHAMPS)); persist(); closeModal(); render(); }, null); }
-function editMember(si,mi){ openModal('Modifier le membre',MEMBER_CHAMPS,DATA.staff[si].membres[mi],
-  ()=>{ DATA.staff[si].membres[mi]=readForm(MEMBER_CHAMPS); persist(); closeModal(); render(); },
-  ()=>{ closeModal(); deleteMember(si,mi); }); }
-function deleteMember(si,mi){ if(!confirm('Supprimer ce membre ?')) return; DATA.staff[si].membres.splice(mi,1); persist(); render(); }
-
-/* --- Carnet de points : comptes-rendus imbriqués dans chaque pôle --- */
-const POINT_CHAMPS=[
-  {k:"date",l:"Date du point",t:"date",req:true},
-  {k:"sujets",l:"Sujets abordés",t:"textarea"},
-  {k:"decisions",l:"Décisions prises",t:"textarea"},
-  {k:"actions",l:"Actions à suivre",t:"textarea"}
-];
-function syncDernierPoint(pole){ if(pole.points&&pole.points.length){ pole.dernierPoint=pole.points.map(x=>x.date).filter(Boolean).sort().slice(-1)[0]||pole.dernierPoint; } }
-function addPoint(pi){ openModal('Ajouter un compte-rendu de point',POINT_CHAMPS,{date:todayISO()},
-  ()=>{ const pole=DATA.poles[pi]; (pole.points||(pole.points=[])).push(readForm(POINT_CHAMPS)); syncDernierPoint(pole); persist(); closeModal(); render(); }, null); }
-function editPoint(pi,idx){ openModal('Modifier le compte-rendu',POINT_CHAMPS,DATA.poles[pi].points[idx],
-  ()=>{ DATA.poles[pi].points[idx]=readForm(POINT_CHAMPS); syncDernierPoint(DATA.poles[pi]); persist(); closeModal(); render(); },
-  ()=>{ closeModal(); deletePoint(pi,idx); }); }
-function deletePoint(pi,idx){ if(!confirm('Supprimer ce compte-rendu ?')) return; DATA.poles[pi].points.splice(idx,1); syncDernierPoint(DATA.poles[pi]); persist(); render(); }
-
-/* --- Avancées & blocages : entrées datées avec statut de suivi --- */
-const AVANCEE_CHAMPS=[
-  {k:"texte",l:"Avancée",t:"text",req:true},
-  {k:"date",l:"Date",t:"date"}
-];
-const BLOCAGE_CHAMPS=[
-  {k:"texte",l:"Blocage",t:"text",req:true},
-  {k:"date",l:"Ouvert depuis le",t:"date"},
-  {k:"statut",l:"Statut",t:"select",opts:SEL_BLOCAGE},
-  {k:"aRemonter",l:"À remonter à la direction ?",t:"bool"}
-];
-function addAvancee(pi){ openModal('Ajouter une avancée',AVANCEE_CHAMPS,{date:todayISO()},
-  ()=>{ const p=DATA.poles[pi]; (p.avancees||(p.avancees=[])).push(readForm(AVANCEE_CHAMPS)); persist(); closeModal(); render(); }, null); }
-function editAvancee(pi,idx){ openModal("Modifier l'avancée",AVANCEE_CHAMPS,asEntry(DATA.poles[pi].avancees[idx]),
-  ()=>{ DATA.poles[pi].avancees[idx]=readForm(AVANCEE_CHAMPS); persist(); closeModal(); render(); },
-  ()=>{ closeModal(); deleteAvancee(pi,idx); }); }
-function deleteAvancee(pi,idx){ if(!confirm('Supprimer cette avancée ?')) return; DATA.poles[pi].avancees.splice(idx,1); persist(); render(); }
-function addBlocage(pi){ openModal('Ajouter un blocage',BLOCAGE_CHAMPS,{date:todayISO(),statut:'ouvert'},
-  ()=>{ const p=DATA.poles[pi]; (p.blocages||(p.blocages=[])).push(readForm(BLOCAGE_CHAMPS)); persist(); closeModal(); render(); }, null); }
-function editBlocage(pi,idx){ openModal('Modifier le blocage',BLOCAGE_CHAMPS,asEntry(DATA.poles[pi].blocages[idx]),
-  ()=>{ DATA.poles[pi].blocages[idx]=readForm(BLOCAGE_CHAMPS); persist(); closeModal(); render(); },
-  ()=>{ closeModal(); deleteBlocage(pi,idx); }); }
-function deleteBlocage(pi,idx){ if(!confirm('Supprimer ce blocage ?')) return; DATA.poles[pi].blocages.splice(idx,1); persist(); render(); }
-
-document.getElementById('modal-save').addEventListener('click',()=>{ if(EDITCTX&&EDITCTX.onSave) EDITCTX.onSave(); });
-document.getElementById('modal-del').addEventListener('click',()=>{ if(EDITCTX&&EDITCTX.onDelete) EDITCTX.onDelete(); });
-document.getElementById('modal-cancel').addEventListener('click',closeModal);
-document.getElementById('modal-x').addEventListener('click',closeModal);
-document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.getElementById('modal').classList.contains('show')) closeModal(); });
-
-/* =========================================================================
-   EXPORT / IMPORT / RÉINITIALISATION
-   ========================================================================= */
-document.getElementById('btn-export').addEventListener('click',()=>{
-  const blob=new Blob([JSON.stringify(DATA,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob), a=document.createElement('a');
-  a.href=url; a.download='flc-esport-donnees.json'; a.click(); URL.revokeObjectURL(url);
-});
-document.getElementById('btn-import').addEventListener('click',()=>document.getElementById('import-file').click());
-document.getElementById('import-file').addEventListener('change',e=>{
-  const file=e.target.files[0]; if(!file) return;
-  const r=new FileReader();
-  r.onload=()=>{ try{ const parsed=JSON.parse(r.result); DATA=Object.assign(clone(DEFAULTS),parsed); persist(); render(); alert('Données importées avec succès.'); }
-    catch(err){ alert("Fichier invalide : impossible de lire les données."); } };
-  r.readAsText(file); e.target.value='';
-});
-document.getElementById('btn-reset').addEventListener('click',()=>{
-  if(!confirm('Réinitialiser toutes les données aux valeurs par défaut ? Vos modifications seront perdues.')) return;
-  DATA=clone(DEFAULTS); persist(); render();
-});
-
-/* =========================================================================
-   INITIALISATION (après toutes les déclarations)
-   ========================================================================= */
-document.getElementById('tb-lead').textContent=VIEWS.apercu.lead;
+document.getElementById('gate-btn').addEventListener('click', tryUnlock);
+document.getElementById('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
+document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage.removeItem('flc-ok'); location.reload(); });
 if(sessionStorage.getItem('flc-ok')==='1') unlock(); else document.getElementById('pw').focus();
 </script>
 </body>
