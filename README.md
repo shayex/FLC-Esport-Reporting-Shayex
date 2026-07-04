@@ -2,28 +2,34 @@
 
 Espace interne (privé) pour donner à la **direction** une lecture claire de l'activité esport.
 
-Ce site est construit **pas à pas**. Pour l'instant, c'est une **base minimale** :
-- un accès par mot de passe ;
-- un écran d'accueil qui rappelle le rôle de **Directeur Esport — le pivot** et ses 3 missions.
+Design **sombre avec accent doré**, navigation en **barre supérieure** :
+`Dashboard · Roster · Données · Calendrier · Scouting · Notes`.
 
-Les fonctionnalités (suivi des managers, besoins, reporting…) seront ajoutées une par une.
+Le site est construit **pas à pas**. Pour l'instant :
+- accès par mot de passe ;
+- **Dashboard** : rappel du rôle (« le pivot ») et des 3 missions ;
+- les autres onglets sont en place mais affichent un écran « section à construire ».
 
 ---
 
 ## Ouvrir le site
 
-Double-cliquez sur `index.html` — il s'ouvre dans le navigateur.
-Mot de passe par défaut : **`flc-esport`** (modifiable dans `index.html`, variable `MOT_DE_PASSE`).
+Double-cliquez sur `index.html`. Mot de passe par défaut : **`flc-esport`**
+(modifiable dans `index.html`, variable `MOT_DE_PASSE`).
 
 ## Structure
 
-Tout tient dans **un seul fichier** : `index.html` (HTML + CSS + un peu de JavaScript pour l'accès).
-Aucune installation requise.
+Un seul fichier : `index.html` (HTML + CSS + un peu de JavaScript). Aucune installation.
 
-## Les 3 missions à outiller (rappel de la fiche de poste)
+## Onglets prévus
 
-1. **Suivi des managers** — coordination transversale (points réguliers, blocages/avancées, harmonisation, circulation de l'info)
-2. **Définition des besoins** — cadrage & arbitrage (staff, matériel, budget)
-3. **Retranscription des données** — reporting clair et exploitable pour la direction
+| Onglet | Contenu prévu |
+|---|---|
+| **Dashboard** | Vue d'ensemble de l'organisation ✅ (base) |
+| **Roster** | Effectif : joueurs et staff par pôle |
+| **Données** | Résultats et indicateurs consolidés |
+| **Calendrier** | Compétitions à venir et passées |
+| **Scouting** | Joueurs et cibles suivis |
+| **Notes** | Comptes-rendus et informations |
 
-> On avance brique par brique : dites par quoi commencer, et la fonctionnalité est ajoutée ici.
+> On avance brique par brique : dites quel onglet construire, et on l'ajoute.
