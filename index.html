@@ -175,6 +175,26 @@ button{font-family:inherit}
 .cr-part{font-size:12px;color:var(--muted);margin-top:2px}
 .cr-body{margin-top:10px;font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap}
 .cr .acts{margin-left:auto}
+.cr-actions{margin-top:12px;border-top:1px solid var(--line-soft);padding-top:10px;display:flex;flex-direction:column;gap:7px}
+.cr-actions-h{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700}
+.act{display:flex;align-items:center;gap:9px;font-size:13px}
+.act input{width:15px;height:15px;accent-color:var(--gold);cursor:pointer;flex:none}
+.act span{flex:1;line-height:1.4}
+.act.done span{color:var(--faint);text-decoration:line-through}
+.act .nx{color:var(--faint);cursor:pointer;background:none;border:none;font-size:12px;padding:0}
+.act .nx:hover{color:var(--crimson)}
+
+/* En-tête récap du pôle */
+.pole-head{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;
+  background:linear-gradient(180deg,var(--surface),#101014);border:1px solid var(--line-soft);
+  border-radius:14px;padding:16px 20px;margin-bottom:6px}
+.ph-item{display:flex;flex-direction:column;gap:4px}
+.phi-l{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:700}
+.phi-v{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.phi-sub{font-size:11px;color:var(--muted);font-weight:400}
+.ph-cog{margin-left:auto;align-self:center;background:none;border:1px solid var(--line);color:var(--muted);
+  padding:8px 13px;border-radius:9px;font-size:12.5px;cursor:pointer;transition:color .15s,border-color .15s}
+.ph-cog:hover{color:var(--gold);border-color:var(--gold-deep)}
 
 .sv{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--line-soft);
   border-left:2px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:8px}
@@ -336,6 +356,7 @@ button{font-family:inherit}
 
     <!-- FORTNITE -->
     <section class="view" id="view-fortnite">
+      <div class="pole-head" id="ft-head"></div>
       <div class="section-title"><span class="rail"></span><h3>Staff de la section</h3><span class="cnt" id="ft-staff-cnt"></span>
         <button class="add-btn" onclick="openStaff()">+ Ajouter un membre</button></div>
       <div class="staff-grid" id="ft-staff"></div>
@@ -427,7 +448,15 @@ document.querySelectorAll('.tab').forEach(btn=>{
    ========================================================================= */
 const FT_KEY = "flc-pole-fortnite-v1";
 let FT = ftLoad();
-function ftLoad(){ try{ const r=localStorage.getItem(FT_KEY); if(r) return JSON.parse(r); }catch(e){} return {staff:[], reunions:[], suivi:[]}; }
+function ftLoad(){
+  let d; try{ d=JSON.parse(localStorage.getItem(FT_KEY)); }catch(e){}
+  d=d||{};
+  d.staff=Array.isArray(d.staff)?d.staff:[];
+  d.reunions=Array.isArray(d.reunions)?d.reunions:[];
+  d.suivi=Array.isArray(d.suivi)?d.suivi:[];
+  d.meta=Object.assign({manager:"",contact:"",rythmeJours:7}, d.meta||{});
+  return d;
+}
 function ftSave(){ try{ localStorage.setItem(FT_KEY, JSON.stringify(FT)); }catch(e){} }
 
 const TYPE_SUIVI={avancee:{l:"Avancée",c:"pos"}, blocage:{l:"Blocage",c:"neg"}, probleme:{l:"Problème",c:"warn"}};
@@ -437,9 +466,37 @@ function ftEsc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;
 function ftDate(iso){ if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return ""; const p=iso.split("-"); return Number(p[2])+" "+(MOIS[(Number(p[1])||1)-1]||"")+" "+p[0]; }
 function ftToday(){ return new Date().toISOString().slice(0,10); }
 function chip(c,l){ return `<span class="chip ${c}">${ftEsc(l)}</span>`; }
+function ftAddDays(iso,n){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function ftDernierPoint(){ const ds=FT.reunions.map(r=>r.date).filter(Boolean).sort(); return ds.length?ds[ds.length-1]:''; }
+const FT_RYTHME={7:"Hebdo",14:"2 semaines",21:"3 semaines",30:"Mensuel",0:"Ponctuel"};
+function ftRythmeLabel(r){ return FT_RYTHME[Number(r)]!=null?FT_RYTHME[Number(r)]:"Ponctuel"; }
+function ftCadence(){
+  const r=Number(FT.meta.rythmeJours)||0, dp=ftDernierPoint();
+  if(!dp||!r) return {label:"À planifier", c:"neutral", prochain:null, dp};
+  const prochain=ftAddDays(dp,r), t=ftToday();
+  if(prochain<t) return {label:"En retard", c:"neg", prochain, dp};
+  if(prochain===t) return {label:"Aujourd'hui", c:"warn", prochain, dp};
+  if(prochain<=ftAddDays(t,2)) return {label:"Bientôt", c:"warn", prochain, dp};
+  return {label:"À jour", c:"pos", prochain, dp};
+}
 
 let FT_FILTER="tous";
 function renderFortnite(){
+  /* En-tête récap du pôle */
+  const cad=ftCadence();
+  const openCount=FT.suivi.filter(s=>(s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu').length;
+  const avCount=FT.suivi.filter(s=>s.type==='avancee').length;
+  document.getElementById('ft-head').innerHTML=`
+    <div class="ph-item"><span class="phi-l">Manager du pôle</span>
+      <span class="phi-v">${FT.meta.manager?ftEsc(FT.meta.manager):'<span style="color:var(--faint);font-weight:400">À renseigner</span>'}</span>
+      ${FT.meta.contact?`<span class="phi-sub">${ftEsc(FT.meta.contact)}</span>`:''}</div>
+    <div class="ph-item"><span class="phi-l">Rythme</span><span class="phi-v">${ftRythmeLabel(FT.meta.rythmeJours)}</span></div>
+    <div class="ph-item"><span class="phi-l">Dernier point</span><span class="phi-v">${cad.dp?ftDate(cad.dp):'—'}</span></div>
+    <div class="ph-item"><span class="phi-l">Prochain point</span><span class="phi-v">${cad.prochain?ftDate(cad.prochain):'—'} ${chip(cad.c,cad.label)}</span></div>
+    <div class="ph-item"><span class="phi-l">Blocages ouverts</span><span class="phi-v">${openCount}</span></div>
+    <div class="ph-item"><span class="phi-l">Avancées</span><span class="phi-v">${avCount}</span></div>
+    <button class="ph-cog" onclick="openPoleSettings()">⚙ Paramètres</button>`;
+
   /* Staff */
   document.getElementById('ft-staff-cnt').textContent = FT.staff.length?`(${FT.staff.length})`:'';
   document.getElementById('ft-staff').innerHTML = FT.staff.length ? FT.staff.map((m,i)=>`
@@ -455,11 +512,18 @@ function renderFortnite(){
   document.getElementById('ft-cr-cnt').textContent = FT.reunions.length?`(${FT.reunions.length})`:'';
   document.getElementById('ft-reunions').innerHTML = rs.length ? rs.map(r=>{
     const i=FT.reunions.indexOf(r);
+    const acts=(r.actions||[]);
+    const actHTML=acts.map((a,ai)=>`
+      <label class="act ${a.fait?'done':''}"><input type="checkbox" ${a.fait?'checked':''} onchange="reunionActionToggle(${i},${ai})">
+        <span>${ftEsc(a.texte)}</span><button class="nx" onclick="reunionActionDel(${i},${ai})" title="Supprimer">🗑</button></label>`).join('');
+    const done=acts.filter(a=>a.fait).length;
     return `<div class="cr">
       <div class="cr-head"><span class="cr-date">${ftDate(r.date)||'—'}</span>
         <div><div class="cr-titre">${ftEsc(r.titre||'Réunion')}</div>${r.participants?`<div class="cr-part">${ftEsc(r.participants)}</div>`:''}</div>
         <span class="acts"><button class="ic-btn" onclick="openReunion(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="reunionDel(${i})" title="Supprimer">🗑</button></span></div>
       ${r.contenu?`<div class="cr-body">${ftEsc(r.contenu)}</div>`:''}
+      <div class="cr-actions"><div class="cr-actions-h">Actions à suivre${acts.length?` · ${done}/${acts.length}`:''}</div>
+        ${actHTML}<button class="add-note" onclick="reunionActionAdd(${i})">+ Action</button></div>
     </div>`;
   }).join('') : `<div class="empty">Aucun compte-rendu. Ajoutez le compte-rendu d'une réunion.</div>`;
 
@@ -531,8 +595,24 @@ function openStaff(i){ const isNew=(i==null); openModal(isNew?'Ajouter un membre
 function staffDel(i){ if(!confirm('Supprimer ce membre ?')) return; FT.staff.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
 
 function openReunion(i){ const isNew=(i==null); openModal(isNew?'Nouveau compte-rendu':'Modifier le compte-rendu',REUNION_FIELDS,isNew?{date:ftToday()}:FT.reunions[i],
-  ()=>{ const v=readForm(REUNION_FIELDS); if(isNew)FT.reunions.push(v); else FT.reunions[i]=v; ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>reunionDel(i)); }
+  ()=>{ const v=readForm(REUNION_FIELDS); if(isNew){ v.actions=[]; FT.reunions.push(v); } else FT.reunions[i]=Object.assign({},FT.reunions[i],v); ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>reunionDel(i)); }
 function reunionDel(i){ if(!confirm('Supprimer ce compte-rendu ?')) return; FT.reunions.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
+
+/* Actions à suivre d'un compte-rendu */
+const ACTION_FIELDS=[{k:'texte',l:'Action à suivre',t:'text',req:true}];
+function reunionActionAdd(i){ openModal('Ajouter une action',ACTION_FIELDS,{},
+  ()=>{ const v=readForm(ACTION_FIELDS); const r=FT.reunions[i]; (r.actions||(r.actions=[])).push({texte:v.texte,fait:false}); ftSave(); closeModal(); renderFortnite(); }, null); }
+function reunionActionToggle(i,ai){ const a=FT.reunions[i].actions[ai]; a.fait=!a.fait; ftSave(); renderFortnite(); }
+function reunionActionDel(i,ai){ FT.reunions[i].actions.splice(ai,1); ftSave(); renderFortnite(); }
+
+/* Paramètres du pôle (manager, contact, rythme) */
+const POLE_FIELDS=[
+  {k:'manager',l:'Manager du pôle',t:'text'},
+  {k:'contact',l:'Contact (email, Discord…)',t:'text'},
+  {k:'rythmeJours',l:'Rythme des points',t:'select',opts:[['7','Hebdomadaire'],['14','Toutes les 2 semaines'],['21','Toutes les 3 semaines'],['30','Mensuel'],['0','Ponctuel (sans rythme)']]}
+];
+function openPoleSettings(){ openModal('Paramètres du pôle',POLE_FIELDS,FT.meta,
+  ()=>{ Object.assign(FT.meta, readForm(POLE_FIELDS)); ftSave(); closeModal(); renderFortnite(); }, null); }
 
 function openSuivi(i){ const isNew=(i==null); openModal(isNew?'Ajouter une entrée':"Modifier l'entrée",SUIVI_FIELDS,isNew?{date:ftToday(),type:'avancee',statut:'ouvert'}:FT.suivi[i],
   ()=>{ const v=readForm(SUIVI_FIELDS); if(isNew){ v.notes=[]; FT.suivi.push(v); } else FT.suivi[i]=Object.assign({},FT.suivi[i],v); ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>suiviDel(i)); }

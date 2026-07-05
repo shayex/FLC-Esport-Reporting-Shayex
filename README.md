@@ -15,8 +15,13 @@ Le site est construit **pas à pas**. Pour l'instant :
 
 Espace de travail du pôle, avec ajout/modification/suppression directs (sauvegarde
 automatique dans le navigateur) :
+- **En-tête récap** — manager & contact du pôle, rythme des points, dernier point,
+  **prochain point calculé** avec badge de cadence (À jour / Bientôt / En retard…),
+  nombre de blocages ouverts et d'avancées. Bouton **Paramètres** pour régler
+  manager, contact et rythme.
 - **Staff de la section** — membres du pôle (nom, rôle, notes) ;
-- **Comptes-rendus de réunions** — date, thème, participants et compte-rendu ;
+- **Comptes-rendus de réunions** — date, thème, participants et compte-rendu, avec
+  une liste d'**actions à suivre cochables** (à faire / fait) par réunion ;
 - **Avancées, blocages & problèmes** — chaque entrée a un type (avancée / blocage /
   problème) et un statut (ouvert / en cours / résolu) ; filtrable par type. Le nombre de
   blocages et problèmes non résolus s'affiche en pastille sur l'onglet.
