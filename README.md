@@ -8,7 +8,18 @@ Design **sombre avec accent doré**, navigation en **barre supérieure** :
 Le site est construit **pas à pas**. Pour l'instant :
 - accès par mot de passe ;
 - **Dashboard** : rappel du rôle (« le pivot ») et des 3 missions ;
+- **Fortnite** : premier pôle construit (voir ci-dessous) ;
 - les autres onglets sont en place mais affichent un écran « section à construire ».
+
+### Onglet Fortnite
+
+Espace de travail du pôle, avec ajout/modification/suppression directs (sauvegarde
+automatique dans le navigateur) :
+- **Staff de la section** — membres du pôle (nom, rôle, notes) ;
+- **Comptes-rendus de réunions** — date, thème, participants et compte-rendu ;
+- **Avancées, blocages & problèmes** — chaque entrée a un type (avancée / blocage /
+  problème) et un statut (ouvert / en cours / résolu) ; filtrable par type. Le nombre de
+  blocages et problèmes non résolus s'affiche en pastille sur l'onglet.
 
 ---
 

@@ -140,6 +140,79 @@ button{font-family:inherit}
 .placeholder h3{margin:0 0 6px;font-size:16px;color:var(--text)}
 .placeholder p{margin:0;font-size:13px;max-width:44ch;line-height:1.55}
 
+/* ---------- Actions, chips, listes (onglet pôle) ---------- */
+.section-title .cnt{font-size:12px;color:var(--faint);font-weight:600}
+.add-btn{margin-left:auto;background:none;border:1px solid var(--line);color:var(--muted);
+  padding:7px 13px;border-radius:9px;font-size:12.5px;cursor:pointer;transition:color .15s,border-color .15s}
+.add-btn:hover{color:var(--gold);border-color:var(--gold-deep)}
+.acts{display:inline-flex;gap:6px}
+.ic-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--line);background:var(--surface-2);
+  color:var(--muted);display:grid;place-items:center;cursor:pointer;font-size:12px;transition:color .15s,border-color .15s}
+.ic-btn:hover{color:var(--text)}
+.ic-btn.del:hover{color:var(--crimson);border-color:rgba(229,72,77,.4)}
+
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.chip.pos{color:#5FD08C;background:rgba(95,208,140,.10);border-color:rgba(95,208,140,.28)}
+.chip.neg{color:#F0575C;background:rgba(229,72,77,.10);border-color:rgba(229,72,77,.30)}
+.chip.warn{color:#E8935B;background:rgba(232,147,91,.10);border-color:rgba(232,147,91,.30)}
+.chip.gold{color:var(--gold);background:rgba(228,180,76,.10);border-color:rgba(228,180,76,.30)}
+.chip.neutral{color:var(--muted);background:var(--surface-2);border-color:var(--line)}
+
+.empty{padding:22px;text-align:center;color:var(--faint);font-size:13px;border:1px dashed var(--line);border-radius:var(--radius);background:rgba(255,255,255,.01)}
+
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.member{background:var(--surface);border:1px solid var(--line-soft);border-radius:12px;padding:15px}
+.member .m-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.member .nom{font-weight:700;font-size:14px}
+.member .m-role{margin-top:8px}
+.member .m-notes{margin-top:9px;font-size:12.5px;color:var(--muted);line-height:1.5;white-space:pre-wrap}
+
+.cr{background:var(--surface);border:1px solid var(--line-soft);border-left:2px solid var(--gold);
+  border-radius:12px;padding:15px 16px;margin-bottom:10px}
+.cr-head{display:flex;align-items:flex-start;gap:12px}
+.cr-date{font-size:11.5px;font-weight:700;color:var(--gold);white-space:nowrap;padding-top:2px}
+.cr-titre{font-weight:700;font-size:14px}
+.cr-part{font-size:12px;color:var(--muted);margin-top:2px}
+.cr-body{margin-top:10px;font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap}
+.cr .acts{margin-left:auto}
+
+.sv{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--line-soft);
+  border-left:2px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:8px}
+.sv.avancee{border-left-color:#5FD08C}
+.sv.blocage{border-left-color:#F0575C}
+.sv.probleme{border-left-color:#E8935B}
+.sv-main{flex:1;min-width:0}
+.sv-txt{font-size:13.5px;line-height:1.45}
+.sv-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;font-size:11.5px;color:var(--faint)}
+.sv .acts{flex:none}
+
+.suivi-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.fbtn{padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:12.5px;cursor:pointer;transition:all .15s}
+.fbtn:hover{color:var(--text)}
+.fbtn.active{color:var(--gold);border-color:var(--gold-deep);background:rgba(228,180,76,.08)}
+
+.tab .badge.alert{color:#F0575C;background:rgba(229,72,77,.12);border-color:rgba(229,72,77,.3)}
+
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;z-index:60;background:rgba(4,4,7,.72);display:none;align-items:center;justify-content:center;padding:24px}
+.modal-backdrop.show{display:flex}
+.modal{width:100%;max-width:480px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);max-height:88vh;display:flex;flex-direction:column}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line-soft)}
+.modal-head h3{margin:0;font-size:15px}
+.modal-x{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1}
+#modal-form{padding:18px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld label{font-size:12px;color:var(--muted)}
+.fld input,.fld select,.fld textarea{width:100%;padding:10px 12px;border-radius:9px;background:#0C0C10;border:1px solid var(--line);color:var(--text);font-size:13.5px;font-family:inherit;outline:none}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--gold)}
+.fld textarea{resize:vertical;min-height:96px}
+.modal-foot{display:flex;align-items:center;gap:10px;padding:16px 20px;border-top:1px solid var(--line-soft)}
+.modal-foot .sp{flex:1}
+.btn-primary{background:linear-gradient(180deg,var(--gold-hi),var(--gold));color:#241a03;border:none;padding:10px 16px;border-radius:9px;font-weight:800;font-size:13px;cursor:pointer}
+.btn-ghost{background:none;border:1px solid var(--line);color:var(--muted);padding:9px 14px;border-radius:9px;font-size:13px;cursor:pointer}
+.btn-ghost:hover{color:var(--text)}
+.btn-danger{background:none;border:1px solid rgba(229,72,77,.4);color:#F0575C;padding:9px 14px;border-radius:9px;font-size:13px;cursor:pointer}
+
 @media (max-width:760px){
   .topbar{padding:14px 16px}
   .brand .wm{font-size:18px}
@@ -198,6 +271,10 @@ button{font-family:inherit}
     <button class="tab active" data-view="dashboard">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
       Dashboard
+    </button>
+    <button class="tab" data-view="fortnite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.06 1.44.06 2.9.29 4.33.24 1.5.68 3.09 2.11 3.5 1.35.4 2.2-.6 2.98-1.55.55-.68 1.15-1.44 2.06-1.44h1.68c.91 0 1.51.76 2.06 1.44.78.95 1.63 1.95 2.98 1.55 1.43-.41 1.87-2 2.11-3.5.23-1.43.35-2.89.29-4.33A4 4 0 0 0 17.32 5z"/></svg>
+      Fortnite <span class="badge alert" id="ft-badge" style="display:none"></span>
     </button>
     <button class="tab" data-view="roster">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -260,6 +337,27 @@ button{font-family:inherit}
       </div>
     </section>
 
+    <!-- FORTNITE -->
+    <section class="view" id="view-fortnite">
+      <div class="section-title"><span class="rail"></span><h3>Staff de la section</h3><span class="cnt" id="ft-staff-cnt"></span>
+        <button class="add-btn" onclick="openStaff()">+ Ajouter un membre</button></div>
+      <div class="staff-grid" id="ft-staff"></div>
+
+      <div class="section-title"><span class="rail"></span><h3>Comptes-rendus de réunions</h3><span class="cnt" id="ft-cr-cnt"></span>
+        <button class="add-btn" onclick="openReunion()">+ Nouveau compte-rendu</button></div>
+      <div id="ft-reunions"></div>
+
+      <div class="section-title"><span class="rail"></span><h3>Avancées, blocages &amp; problèmes</h3><span class="cnt" id="ft-sv-cnt"></span>
+        <button class="add-btn" onclick="openSuivi()">+ Ajouter</button></div>
+      <div class="suivi-filters" id="ft-filters">
+        <button class="fbtn active" data-f="tous">Tous</button>
+        <button class="fbtn" data-f="avancee">Avancées</button>
+        <button class="fbtn" data-f="blocage">Blocages</button>
+        <button class="fbtn" data-f="probleme">Problèmes</button>
+      </div>
+      <div id="ft-suivi"></div>
+    </section>
+
     <!-- Onglets à construire -->
     <section class="view" id="view-roster"></section>
     <section class="view" id="view-donnees"></section>
@@ -267,6 +365,20 @@ button{font-family:inherit}
     <section class="view" id="view-scouting"></section>
     <section class="view" id="view-notes"></section>
   </main>
+</div>
+
+<!-- ===================== MODALE ===================== -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-title"></h3><button class="modal-x" id="modal-x">×</button></div>
+    <form id="modal-form" onsubmit="return false"></form>
+    <div class="modal-foot">
+      <button class="btn-danger" id="modal-del" style="display:none">Supprimer</button>
+      <span class="sp"></span>
+      <button class="btn-ghost" id="modal-cancel">Annuler</button>
+      <button class="btn-primary" id="modal-save">Enregistrer</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -286,6 +398,7 @@ document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage
 /* ---------- Navigation par onglets ---------- */
 const VIEWS = {
   dashboard:{title:"Tableau de bord", eyebrow:"Organisation", sub:"Vue d'ensemble de l'organisation"},
+  fortnite:{title:"Fortnite", eyebrow:"Pôle de jeu", sub:"Staff, comptes-rendus de réunions et suivi du pôle"},
   roster:{title:"Roster", eyebrow:"Effectif", sub:"Joueurs et staff des pôles"},
   donnees:{title:"Données", eyebrow:"Reporting", sub:"Résultats et indicateurs consolidés"},
   calendrier:{title:"Calendrier", eyebrow:"Compétitions", sub:"Compétitions à venir et passées"},
@@ -316,6 +429,119 @@ document.querySelectorAll('.tab').forEach(btn=>{
     window.scrollTo(0,0);
   });
 });
+
+/* =========================================================================
+   ONGLET FORTNITE — staff · comptes-rendus · suivi (avancées/blocages/problèmes)
+   Données enregistrées dans le navigateur (localStorage).
+   ========================================================================= */
+const FT_KEY = "flc-pole-fortnite-v1";
+let FT = ftLoad();
+function ftLoad(){ try{ const r=localStorage.getItem(FT_KEY); if(r) return JSON.parse(r); }catch(e){} return {staff:[], reunions:[], suivi:[]}; }
+function ftSave(){ try{ localStorage.setItem(FT_KEY, JSON.stringify(FT)); }catch(e){} }
+
+const TYPE_SUIVI={avancee:{l:"Avancée",c:"pos"}, blocage:{l:"Blocage",c:"neg"}, probleme:{l:"Problème",c:"warn"}};
+const STATUT_SUIVI={ouvert:{l:"Ouvert",c:"neg"}, "en-cours":{l:"En cours",c:"warn"}, resolu:{l:"Résolu",c:"pos"}};
+const MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+function ftEsc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function ftDate(iso){ if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return ""; const p=iso.split("-"); return Number(p[2])+" "+(MOIS[(Number(p[1])||1)-1]||"")+" "+p[0]; }
+function ftToday(){ return new Date().toISOString().slice(0,10); }
+function chip(c,l){ return `<span class="chip ${c}">${ftEsc(l)}</span>`; }
+
+let FT_FILTER="tous";
+function renderFortnite(){
+  /* Staff */
+  document.getElementById('ft-staff-cnt').textContent = FT.staff.length?`(${FT.staff.length})`:'';
+  document.getElementById('ft-staff').innerHTML = FT.staff.length ? FT.staff.map((m,i)=>`
+    <div class="member">
+      <div class="m-top"><span class="nom">${ftEsc(m.nom)}</span>
+        <span class="acts"><button class="ic-btn" onclick="openStaff(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="staffDel(${i})" title="Supprimer">🗑</button></span></div>
+      ${m.role?`<div class="m-role">${chip('gold',m.role)}</div>`:''}
+      ${m.notes?`<div class="m-notes">${ftEsc(m.notes)}</div>`:''}
+    </div>`).join('') : `<div class="empty">Aucun membre. Ajoutez le staff présent dans le pôle Fortnite.</div>`;
+
+  /* Comptes-rendus */
+  const rs=[...FT.reunions].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  document.getElementById('ft-cr-cnt').textContent = FT.reunions.length?`(${FT.reunions.length})`:'';
+  document.getElementById('ft-reunions').innerHTML = rs.length ? rs.map(r=>{
+    const i=FT.reunions.indexOf(r);
+    return `<div class="cr">
+      <div class="cr-head"><span class="cr-date">${ftDate(r.date)||'—'}</span>
+        <div><div class="cr-titre">${ftEsc(r.titre||'Réunion')}</div>${r.participants?`<div class="cr-part">${ftEsc(r.participants)}</div>`:''}</div>
+        <span class="acts"><button class="ic-btn" onclick="openReunion(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="reunionDel(${i})" title="Supprimer">🗑</button></span></div>
+      ${r.contenu?`<div class="cr-body">${ftEsc(r.contenu)}</div>`:''}
+    </div>`;
+  }).join('') : `<div class="empty">Aucun compte-rendu. Ajoutez le compte-rendu d'une réunion.</div>`;
+
+  /* Suivi */
+  let list=[...FT.suivi].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  if(FT_FILTER!=='tous') list=list.filter(s=>s.type===FT_FILTER);
+  document.getElementById('ft-sv-cnt').textContent = FT.suivi.length?`(${FT.suivi.length})`:'';
+  document.getElementById('ft-suivi').innerHTML = list.length ? list.map(s=>{
+    const i=FT.suivi.indexOf(s);
+    const t=TYPE_SUIVI[s.type]||TYPE_SUIVI.avancee;
+    const showStatut = s.type!=='avancee' && s.statut;
+    const st=STATUT_SUIVI[s.statut];
+    return `<div class="sv ${ftEsc(s.type)}">
+      <div class="sv-main"><div class="sv-txt">${ftEsc(s.texte)}</div>
+        <div class="sv-meta">${chip(t.c,t.l)}${showStatut&&st?chip(st.c,st.l):''}${s.date?`<span>${ftDate(s.date)}</span>`:''}</div></div>
+      <span class="acts"><button class="ic-btn" onclick="openSuivi(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="suiviDel(${i})" title="Supprimer">🗑</button></span>
+    </div>`;
+  }).join('') : `<div class="empty">Aucune entrée. Ajoutez une avancée, un blocage ou un problème.</div>`;
+
+  /* Badge onglet : blocages + problèmes non résolus */
+  const alert=FT.suivi.filter(s=>(s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu').length;
+  const badge=document.getElementById('ft-badge');
+  if(alert>0){ badge.textContent=alert; badge.style.display=''; } else badge.style.display='none';
+}
+document.getElementById('ft-filters').addEventListener('click',e=>{
+  const b=e.target.closest('.fbtn'); if(!b) return;
+  document.querySelectorAll('#ft-filters .fbtn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); FT_FILTER=b.dataset.f; renderFortnite();
+});
+
+/* --- Modale générique --- */
+let MCTX=null;
+function mField(f,val){
+  if(f.t==='select'){ return `<select name="${f.k}">${f.opts.map(([v,l])=>`<option value="${v}"${String(val)===String(v)?' selected':''}>${ftEsc(l)}</option>`).join('')}</select>`; }
+  if(f.t==='textarea'){ return `<textarea name="${f.k}" placeholder="${ftEsc(f.ph||'')}">${ftEsc(val==null?'':val)}</textarea>`; }
+  const type=f.t==='date'?'date':'text';
+  return `<input type="${type}" name="${f.k}" value="${ftEsc(val==null?'':val)}" placeholder="${ftEsc(f.ph||'')}" ${f.req?'required':''}>`;
+}
+function openModal(title,fields,src,onSave,onDelete){
+  MCTX={fields,onSave,onDelete};
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-form').innerHTML=fields.map(f=>`<div class="fld"><label>${ftEsc(f.l)}</label>${mField(f,src?src[f.k]:'')}</div>`).join('');
+  document.getElementById('modal-del').style.display=onDelete?'inline-flex':'none';
+  document.getElementById('modal').classList.add('show');
+  const first=document.querySelector('#modal-form input,#modal-form select,#modal-form textarea'); if(first) first.focus();
+}
+function readForm(fields){ const f=document.getElementById('modal-form'); const o={}; for(const fl of fields){ const el=f.elements[fl.k]; if(el) o[fl.k]=(el.value==null?'':el.value).trim(); } return o; }
+function closeModal(){ document.getElementById('modal').classList.remove('show'); MCTX=null; }
+document.getElementById('modal-save').addEventListener('click',()=>{ if(MCTX&&MCTX.onSave) MCTX.onSave(); });
+document.getElementById('modal-del').addEventListener('click',()=>{ if(MCTX&&MCTX.onDelete) MCTX.onDelete(); });
+document.getElementById('modal-cancel').addEventListener('click',closeModal);
+document.getElementById('modal-x').addEventListener('click',closeModal);
+document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.getElementById('modal').classList.contains('show')) closeModal(); });
+
+/* --- Formulaires --- */
+const STAFF_FIELDS=[{k:'nom',l:'Nom',t:'text',req:true},{k:'role',l:'Rôle / poste',t:'text',ph:'ex. Coach, Manager, Analyste'},{k:'notes',l:'Notes',t:'textarea'}];
+const REUNION_FIELDS=[{k:'date',l:'Date',t:'date',req:true},{k:'titre',l:'Titre / thème',t:'text',ph:'ex. Point hebdo'},{k:'participants',l:'Participants',t:'text'},{k:'contenu',l:'Compte-rendu de la réunion',t:'textarea',ph:'Sujets abordés, décisions, actions à suivre…'}];
+const SUIVI_FIELDS=[{k:'type',l:'Type',t:'select',opts:[['avancee','Avancée'],['blocage','Blocage'],['probleme','Problème']]},{k:'texte',l:'Description',t:'text',req:true},{k:'date',l:'Date',t:'date'},{k:'statut',l:'Statut (pour blocage / problème)',t:'select',opts:[['ouvert','Ouvert'],['en-cours','En cours'],['resolu','Résolu']]}];
+
+function openStaff(i){ const isNew=(i==null); openModal(isNew?'Ajouter un membre':'Modifier le membre',STAFF_FIELDS,isNew?{}:FT.staff[i],
+  ()=>{ const v=readForm(STAFF_FIELDS); if(isNew)FT.staff.push(v); else FT.staff[i]=v; ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>staffDel(i)); }
+function staffDel(i){ if(!confirm('Supprimer ce membre ?')) return; FT.staff.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
+
+function openReunion(i){ const isNew=(i==null); openModal(isNew?'Nouveau compte-rendu':'Modifier le compte-rendu',REUNION_FIELDS,isNew?{date:ftToday()}:FT.reunions[i],
+  ()=>{ const v=readForm(REUNION_FIELDS); if(isNew)FT.reunions.push(v); else FT.reunions[i]=v; ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>reunionDel(i)); }
+function reunionDel(i){ if(!confirm('Supprimer ce compte-rendu ?')) return; FT.reunions.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
+
+function openSuivi(i){ const isNew=(i==null); openModal(isNew?'Ajouter une entrée':"Modifier l'entrée",SUIVI_FIELDS,isNew?{date:ftToday(),type:'avancee',statut:'ouvert'}:FT.suivi[i],
+  ()=>{ const v=readForm(SUIVI_FIELDS); if(isNew)FT.suivi.push(v); else FT.suivi[i]=v; ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>suiviDel(i)); }
+function suiviDel(i){ if(!confirm('Supprimer cette entrée ?')) return; FT.suivi.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
+
+renderFortnite();
 
 if(sessionStorage.getItem('flc-ok')==='1') unlock(); else document.getElementById('pw').focus();
 </script>
