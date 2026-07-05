@@ -185,6 +185,15 @@ button{font-family:inherit}
 .sv-txt{font-size:13.5px;line-height:1.45}
 .sv-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;font-size:11.5px;color:var(--faint)}
 .sv .acts{flex:none}
+.sv-notes{margin-top:11px;border-top:1px solid var(--line-soft);padding-top:10px;display:flex;flex-direction:column;gap:8px}
+.note-item{display:flex;align-items:flex-start;gap:9px;font-size:12.5px}
+.note-item .nd{color:var(--gold);font-weight:600;white-space:nowrap;font-size:11px;padding-top:1px}
+.note-item .nt{color:var(--text);line-height:1.5;flex:1;white-space:pre-wrap}
+.note-item .nx{color:var(--faint);cursor:pointer;background:none;border:none;font-size:12px;line-height:1;padding:0}
+.note-item .nx:hover{color:var(--crimson)}
+.add-note{align-self:flex-start;background:none;border:1px dashed var(--line);color:var(--muted);
+  padding:5px 11px;border-radius:8px;font-size:11.5px;cursor:pointer;transition:color .15s,border-color .15s}
+.add-note:hover{color:var(--gold);border-color:var(--gold-deep)}
 
 .suivi-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .fbtn{padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:12.5px;cursor:pointer;transition:all .15s}
@@ -276,21 +285,9 @@ button{font-family:inherit}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.06 1.44.06 2.9.29 4.33.24 1.5.68 3.09 2.11 3.5 1.35.4 2.2-.6 2.98-1.55.55-.68 1.15-1.44 2.06-1.44h1.68c.91 0 1.51.76 2.06 1.44.78.95 1.63 1.95 2.98 1.55 1.43-.41 1.87-2 2.11-3.5.23-1.43.35-2.89.29-4.33A4 4 0 0 0 17.32 5z"/></svg>
       Fortnite <span class="badge alert" id="ft-badge" style="display:none"></span>
     </button>
-    <button class="tab" data-view="roster">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Roster
-    </button>
-    <button class="tab" data-view="donnees">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 4 3 5-7"/></svg>
-      Données
-    </button>
     <button class="tab" data-view="calendrier">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
       Calendrier
-    </button>
-    <button class="tab" data-view="scouting">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      Scouting
     </button>
     <button class="tab" data-view="notes">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h6"/></svg>
@@ -359,10 +356,7 @@ button{font-family:inherit}
     </section>
 
     <!-- Onglets à construire -->
-    <section class="view" id="view-roster"></section>
-    <section class="view" id="view-donnees"></section>
     <section class="view" id="view-calendrier"></section>
-    <section class="view" id="view-scouting"></section>
     <section class="view" id="view-notes"></section>
   </main>
 </div>
@@ -399,10 +393,7 @@ document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage
 const VIEWS = {
   dashboard:{title:"Tableau de bord", eyebrow:"Organisation", sub:"Vue d'ensemble de l'organisation"},
   fortnite:{title:"Fortnite", eyebrow:"Pôle de jeu", sub:"Staff, comptes-rendus de réunions et suivi du pôle"},
-  roster:{title:"Roster", eyebrow:"Effectif", sub:"Joueurs et staff des pôles"},
-  donnees:{title:"Données", eyebrow:"Reporting", sub:"Résultats et indicateurs consolidés"},
   calendrier:{title:"Calendrier", eyebrow:"Compétitions", sub:"Compétitions à venir et passées"},
-  scouting:{title:"Scouting", eyebrow:"Recrutement", sub:"Joueurs et cibles suivis"},
   notes:{title:"Notes", eyebrow:"Suivi", sub:"Comptes-rendus et informations"}
 };
 const PLACEHOLDER = `
@@ -411,7 +402,7 @@ const PLACEHOLDER = `
     <h3>Section à construire</h3>
     <p>On l'ajoute prochainement, étape par étape. Dis-moi quand tu veux attaquer cet onglet.</p>
   </div>`;
-['roster','donnees','calendrier','scouting','notes'].forEach(v=>{
+['calendrier','notes'].forEach(v=>{
   document.getElementById('view-'+v).innerHTML = PLACEHOLDER;
 });
 
@@ -481,9 +472,15 @@ function renderFortnite(){
     const t=TYPE_SUIVI[s.type]||TYPE_SUIVI.avancee;
     const showStatut = s.type!=='avancee' && s.statut;
     const st=STATUT_SUIVI[s.statut];
+    const notes=[...(s.notes||[])].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+    const notesHTML=notes.map(n=>{ const j=(s.notes||[]).indexOf(n);
+      return `<div class="note-item"><span class="nd">${ftDate(n.date)||'—'}</span><span class="nt">${ftEsc(n.texte)}</span><button class="nx" onclick="suiviNoteDel(${i},${j})" title="Supprimer la note">🗑</button></div>`;
+    }).join('');
     return `<div class="sv ${ftEsc(s.type)}">
       <div class="sv-main"><div class="sv-txt">${ftEsc(s.texte)}</div>
-        <div class="sv-meta">${chip(t.c,t.l)}${showStatut&&st?chip(st.c,st.l):''}${s.date?`<span>${ftDate(s.date)}</span>`:''}</div></div>
+        <div class="sv-meta">${chip(t.c,t.l)}${showStatut&&st?chip(st.c,st.l):''}${s.date?`<span>${ftDate(s.date)}</span>`:''}</div>
+        <div class="sv-notes">${notesHTML}<button class="add-note" onclick="addSuiviNote(${i})">+ Note d'avancement</button></div>
+      </div>
       <span class="acts"><button class="ic-btn" onclick="openSuivi(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="suiviDel(${i})" title="Supprimer">🗑</button></span>
     </div>`;
   }).join('') : `<div class="empty">Aucune entrée. Ajoutez une avancée, un blocage ou un problème.</div>`;
@@ -538,8 +535,14 @@ function openReunion(i){ const isNew=(i==null); openModal(isNew?'Nouveau compte-
 function reunionDel(i){ if(!confirm('Supprimer ce compte-rendu ?')) return; FT.reunions.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
 
 function openSuivi(i){ const isNew=(i==null); openModal(isNew?'Ajouter une entrée':"Modifier l'entrée",SUIVI_FIELDS,isNew?{date:ftToday(),type:'avancee',statut:'ouvert'}:FT.suivi[i],
-  ()=>{ const v=readForm(SUIVI_FIELDS); if(isNew)FT.suivi.push(v); else FT.suivi[i]=v; ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>suiviDel(i)); }
+  ()=>{ const v=readForm(SUIVI_FIELDS); if(isNew){ v.notes=[]; FT.suivi.push(v); } else FT.suivi[i]=Object.assign({},FT.suivi[i],v); ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>suiviDel(i)); }
 function suiviDel(i){ if(!confirm('Supprimer cette entrée ?')) return; FT.suivi.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
+
+/* Notes d'avancement rattachées à un sujet de suivi */
+const NOTE_FIELDS=[{k:'date',l:'Date',t:'date'},{k:'texte',l:"Note d'avancement / choses en cours",t:'textarea',req:true}];
+function addSuiviNote(i){ openModal("Ajouter une note d'avancement",NOTE_FIELDS,{date:ftToday()},
+  ()=>{ const v=readForm(NOTE_FIELDS); const s=FT.suivi[i]; (s.notes||(s.notes=[])).push(v); ftSave(); closeModal(); renderFortnite(); }, null); }
+function suiviNoteDel(i,j){ if(!confirm('Supprimer cette note ?')) return; FT.suivi[i].notes.splice(j,1); ftSave(); renderFortnite(); }
 
 renderFortnite();
 

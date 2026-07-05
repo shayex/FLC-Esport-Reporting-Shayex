@@ -20,6 +20,8 @@ automatique dans le navigateur) :
 - **Avancées, blocages & problèmes** — chaque entrée a un type (avancée / blocage /
   problème) et un statut (ouvert / en cours / résolu) ; filtrable par type. Le nombre de
   blocages et problèmes non résolus s'affiche en pastille sur l'onglet.
+  Chaque sujet peut recevoir des **notes d'avancement** datées (état, choses en cours),
+  pour suivre son évolution dans le temps.
 
 ---
 
@@ -34,13 +36,11 @@ Un seul fichier : `index.html` (HTML + CSS + un peu de JavaScript). Aucune insta
 
 ## Onglets prévus
 
-| Onglet | Contenu prévu |
+| Onglet | Contenu |
 |---|---|
 | **Dashboard** | Vue d'ensemble de l'organisation ✅ (base) |
-| **Roster** | Effectif : joueurs et staff par pôle |
-| **Données** | Résultats et indicateurs consolidés |
-| **Calendrier** | Compétitions à venir et passées |
-| **Scouting** | Joueurs et cibles suivis |
-| **Notes** | Comptes-rendus et informations |
+| **Fortnite** | Pôle : staff, comptes-rendus, suivi ✅ |
+| **Calendrier** | Compétitions à venir et passées (à construire) |
+| **Notes** | Comptes-rendus et informations (à construire) |
 
 > On avance brique par brique : dites quel onglet construire, et on l'ajoute.
