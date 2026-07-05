@@ -166,6 +166,9 @@ button{font-family:inherit}
 .member .nom{font-weight:700;font-size:14px}
 .member .m-role{margin-top:8px}
 .member .m-notes{margin-top:9px;font-size:12.5px;color:var(--muted);line-height:1.5;white-space:pre-wrap}
+.member .m-avis{margin-top:10px;padding:9px 11px;border-left:2px solid var(--gold);background:var(--surface-2);
+  border-radius:0 8px 8px 0;font-size:12.5px;color:var(--text);line-height:1.5;white-space:pre-wrap}
+.member .m-avis .lbl{display:block;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:4px}
 
 .cr{background:var(--surface);border:1px solid var(--line-soft);border-left:2px solid var(--gold);
   border-radius:12px;padding:15px 16px;margin-bottom:10px}
@@ -505,6 +508,7 @@ function renderFortnite(){
         <span class="acts"><button class="ic-btn" onclick="openStaff(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="staffDel(${i})" title="Supprimer">🗑</button></span></div>
       ${m.role?`<div class="m-role">${chip('gold',m.role)}</div>`:''}
       ${m.notes?`<div class="m-notes">${ftEsc(m.notes)}</div>`:''}
+      ${m.avis?`<div class="m-avis"><span class="lbl">Avis</span>${ftEsc(m.avis)}</div>`:''}
     </div>`).join('') : `<div class="empty">Aucun membre. Ajoutez le staff présent dans le pôle Fortnite.</div>`;
 
   /* Comptes-rendus */
@@ -586,7 +590,7 @@ document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id===
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.getElementById('modal').classList.contains('show')) closeModal(); });
 
 /* --- Formulaires --- */
-const STAFF_FIELDS=[{k:'nom',l:'Nom',t:'text',req:true},{k:'role',l:'Rôle / poste',t:'text',ph:'ex. Coach, Manager, Analyste'},{k:'notes',l:'Notes',t:'textarea'}];
+const STAFF_FIELDS=[{k:'nom',l:'Nom',t:'text',req:true},{k:'role',l:'Rôle / poste',t:'text',ph:'ex. Coach, Manager, Analyste'},{k:'notes',l:'Notes',t:'textarea'},{k:'avis',l:'Avis / appréciation',t:'textarea',ph:'Ton avis sur ce membre : points forts, à surveiller…'}];
 const REUNION_FIELDS=[{k:'date',l:'Date',t:'date',req:true},{k:'titre',l:'Titre / thème',t:'text',ph:'ex. Point hebdo'},{k:'participants',l:'Participants',t:'text'},{k:'contenu',l:'Compte-rendu de la réunion',t:'textarea',ph:'Sujets abordés, décisions, actions à suivre…'}];
 const SUIVI_FIELDS=[{k:'type',l:'Type',t:'select',opts:[['avancee','Avancée'],['blocage','Blocage'],['probleme','Problème']]},{k:'texte',l:'Description',t:'text',req:true},{k:'date',l:'Date',t:'date'},{k:'statut',l:'Statut (pour blocage / problème)',t:'select',opts:[['ouvert','Ouvert'],['en-cours','En cours'],['resolu','Résolu']]}];
 

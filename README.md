@@ -19,7 +19,8 @@ automatique dans le navigateur) :
   **prochain point calculé** avec badge de cadence (À jour / Bientôt / En retard…),
   nombre de blocages ouverts et d'avancées. Bouton **Paramètres** pour régler
   manager, contact et rythme.
-- **Staff de la section** — membres du pôle (nom, rôle, notes) ;
+- **Staff de la section** — membres du pôle (nom, rôle, notes) avec un champ **Avis /
+  appréciation** mis en évidence sur la carte ;
 - **Comptes-rendus de réunions** — date, thème, participants et compte-rendu, avec
   une liste d'**actions à suivre cochables** (à faire / fait) par réunion ;
 - **Avancées, blocages & problèmes** — chaque entrée a un type (avancée / blocage /
