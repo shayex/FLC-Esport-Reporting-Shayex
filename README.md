@@ -3,35 +3,7 @@
 Espace interne (privé) pour donner à la **direction** une lecture claire de l'activité esport.
 
 Design **sombre avec accent doré**, navigation en **barre supérieure** :
-`Dashboard · Roster · Données · Calendrier · Scouting · Notes`.
-
-Le site est construit **pas à pas**. Pour l'instant :
-- accès par mot de passe ;
-- **Dashboard** : rappel du rôle (« le pivot ») et des 3 missions ;
-- **Fortnite** : premier pôle construit (voir ci-dessous) ;
-- les autres onglets sont en place mais affichent un écran « section à construire ».
-
-### Onglet Fortnite
-
-Espace de travail du pôle, avec ajout/modification/suppression directs (sauvegarde
-automatique dans le navigateur) :
-- **En-tête récap** — manager & contact du pôle, rythme des points, dernier point,
-  **prochain point calculé** avec badge de cadence (À jour / Bientôt / En retard…),
-  nombre de blocages ouverts et d'avancées. Bouton **Paramètres** pour régler
-  manager, contact et rythme.
-- **Staff de la section** — membres du pôle (nom, rôle, notes) avec un champ **Avis /
-  appréciation** mis en évidence sur la carte ;
-- **Comptes-rendus de réunions** — date, thème, participants et compte-rendu, avec
-  une liste d'**actions à suivre cochables** (à faire / fait) par réunion ;
-- **Objectifs du pôle** — objectifs court/moyen terme avec échéance et statut
-  (En cours / Atteint / Abandonné) ;
-- **Besoins du pôle** — manques staff / matériel / budget, avec priorité, statut et
-  case **« à remonter à la direction »** (triés par priorité) ;
-- **Avancées, blocages & problèmes** — chaque entrée a un type (avancée / blocage /
-  problème) et un statut (ouvert / en cours / résolu) ; filtrable par type. Le nombre de
-  blocages et problèmes non résolus s'affiche en pastille sur l'onglet.
-  Chaque sujet peut recevoir des **notes d'avancement** datées (état, choses en cours),
-  pour suivre son évolution dans le temps.
+`Dashboard · Fortnite · FIFA · Delta Force · Calendrier · Notes`.
 
 ---
 
@@ -42,15 +14,40 @@ Double-cliquez sur `index.html`. Mot de passe par défaut : **`flc-esport`**
 
 ## Structure
 
-Un seul fichier : `index.html` (HTML + CSS + un peu de JavaScript). Aucune installation.
+Un seul fichier : `index.html` (HTML + CSS + JavaScript). Aucune installation.
+Les données sont enregistrées **dans le navigateur** (localStorage, clé `flc-poles-v1`).
+Pensez à sauvegarder si besoin (voir « Évolutions »).
 
-## Onglets prévus
+## Onglets
 
-| Onglet | Contenu |
-|---|---|
-| **Dashboard** | Vue d'ensemble de l'organisation ✅ (base) |
-| **Fortnite** | Pôle : staff, comptes-rendus, suivi ✅ |
-| **Calendrier** | Compétitions à venir et passées (à construire) |
-| **Notes** | Comptes-rendus et informations (à construire) |
+### Dashboard — vue direction
 
-> On avance brique par brique : dites quel onglet construire, et on l'ajoute.
+Agrège **tous les pôles** :
+- **Vue par pôle** : carte par pôle (manager, cadence / prochain point, nb de blocages·problèmes
+  ouverts, besoins à remonter, objectifs en cours) — cliquable pour ouvrir le pôle ;
+- **À remonter à la direction** : tous les besoins marqués « à remonter », triés par priorité ;
+- **Points de vigilance** : tous les blocages et problèmes en cours, tous pôles confondus.
+
+### Fortnite / FIFA / Delta Force — un espace par pôle
+
+Les trois pôles partagent le **même moteur**. Chaque pôle contient, tout éditable directement :
+- **En-tête récap** — manager & contact, rythme des points, dernier point, **prochain point calculé**
+  avec badge de cadence, compteurs blocages/avancées. Bouton **Paramètres** (manager, contact, rythme) ;
+- **Objectifs du pôle** — intitulé, échéance, statut (En cours / Atteint / Abandonné) ;
+- **Staff de la section** — membres (nom, rôle, notes) + champ **Avis / appréciation** ;
+- **Comptes-rendus de réunions** — date, thème, participants, compte-rendu, + **actions à suivre cochables** ;
+- **Avancées, blocages & problèmes** — type + statut (Ouvert / En cours / Résolu), filtrables,
+  avec des **notes d'avancement** datées par sujet. Une pastille sur l'onglet indique le nombre de
+  blocages/problèmes non résolus ;
+- **Besoins du pôle** — type (staff/matériel/budget), priorité, statut et case
+  **« à remonter à la direction »** (alimente le Dashboard).
+
+### Calendrier / Notes
+
+À construire.
+
+## Évolutions possibles
+
+- Export / import des données (sauvegarde, transfert entre postes) ;
+- Vraie authentification et base partagée (accès multi-utilisateurs synchronisé) ;
+- Onglets Calendrier (compétitions) et Notes.

@@ -187,6 +187,19 @@ button{font-family:inherit}
 .act .nx{color:var(--faint);cursor:pointer;background:none;border:none;font-size:12px;padding:0}
 .act .nx:hover{color:var(--crimson)}
 
+/* Dashboard direction */
+.dash-poles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:6px}
+.dash-pole{text-align:left;background:var(--surface);border:1px solid var(--line-soft);border-radius:12px;
+  padding:15px;cursor:pointer;display:flex;flex-direction:column;gap:9px;transition:border-color .15s,transform .15s}
+.dash-pole:hover{border-color:var(--gold-deep);transform:translateY(-2px)}
+.dp-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dp-name{font-weight:800;font-size:15px}
+.dp-mgr{font-size:12px;color:var(--muted);margin-top:-2px}
+.dp-stats{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);border-top:1px solid var(--line-soft);padding-top:9px}
+.dp-stats b{color:var(--text)}
+.dp-next{font-size:12px;color:var(--muted)}
+.dp-next b{color:var(--text)}
+
 /* En-tête récap du pôle */
 .pole-head{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;
   background:linear-gradient(180deg,var(--surface),#101014);border:1px solid var(--line-soft);
@@ -307,9 +320,17 @@ button{font-family:inherit}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
       Dashboard
     </button>
-    <button class="tab" data-view="fortnite">
+    <button class="tab" data-pole="fortnite">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.06 1.44.06 2.9.29 4.33.24 1.5.68 3.09 2.11 3.5 1.35.4 2.2-.6 2.98-1.55.55-.68 1.15-1.44 2.06-1.44h1.68c.91 0 1.51.76 2.06 1.44.78.95 1.63 1.95 2.98 1.55 1.43-.41 1.87-2 2.11-3.5.23-1.43.35-2.89.29-4.33A4 4 0 0 0 17.32 5z"/></svg>
-      Fortnite <span class="badge alert" id="ft-badge" style="display:none"></span>
+      Fortnite <span class="badge alert" id="badge-fortnite" style="display:none"></span>
+    </button>
+    <button class="tab" data-pole="fifa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7l4.7 3.4-1.8 5.6H9.1l-1.8-5.6z"/></svg>
+      FIFA <span class="badge alert" id="badge-fifa" style="display:none"></span>
+    </button>
+    <button class="tab" data-pole="deltaforce">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 5v6c0 5-3.5 8-9 9-5.5-1-9-4-9-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
+      Delta Force <span class="badge alert" id="badge-deltaforce" style="display:none"></span>
     </button>
     <button class="tab" data-view="calendrier">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -337,31 +358,18 @@ button{font-family:inherit}
         <p>Chaque pôle de jeu a son manager qui porte l'opérationnel de son équipe. Ce rôle se situe au-dessus : assurer le suivi des managers, cadrer les besoins et transformer les données éparses en une lecture claire pour la direction.</p>
       </div>
 
-      <div class="section-title"><span class="rail"></span><h3>Les 3 missions à outiller</h3></div>
-      <div class="missions">
-        <div class="mcard">
-          <div class="num">01</div>
-          <div class="tag">Coordination transversale</div>
-          <h4>Suivi des managers</h4>
-          <p>Points réguliers avec chaque pôle, remontée des blocages et avancées, harmonisation des pratiques, circulation fluide de l'information.</p>
-        </div>
-        <div class="mcard">
-          <div class="num">02</div>
-          <div class="tag">Cadrage & arbitrage</div>
-          <h4>Définition des besoins</h4>
-          <p>Identifier les manques (staff, matériel, budget), prioriser avec une vision d'ensemble, faire remonter les besoins à la direction.</p>
-        </div>
-        <div class="mcard">
-          <div class="num">03</div>
-          <div class="tag">Reporting & lisibilité</div>
-          <h4>Retranscription des données</h4>
-          <p>Consolider résultats et indicateurs, rassembler les données de tous les pôles, produire un reporting clair et exploitable.</p>
-        </div>
-      </div>
+      <div class="section-title"><span class="rail"></span><h3>Vue par pôle</h3></div>
+      <div class="dash-poles" id="dash-poles"></div>
+
+      <div class="section-title"><span class="rail"></span><h3>À remonter à la direction</h3><span class="cnt" id="dash-rem-cnt"></span></div>
+      <div id="dash-remonter"></div>
+
+      <div class="section-title"><span class="rail"></span><h3>Points de vigilance — blocages &amp; problèmes en cours</h3><span class="cnt" id="dash-vig-cnt"></span></div>
+      <div id="dash-vigilance"></div>
     </section>
 
-    <!-- FORTNITE -->
-    <section class="view" id="view-fortnite">
+    <!-- PÔLE (vue partagée : Fortnite / FIFA / Delta Force) -->
+    <section class="view" id="view-pole">
       <div class="pole-head" id="ft-head"></div>
 
       <div class="section-title"><span class="rail"></span><h3>Objectifs du pôle</h3><span class="cnt" id="ft-obj-cnt"></span>
@@ -427,8 +435,7 @@ document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage
 
 /* ---------- Navigation par onglets ---------- */
 const VIEWS = {
-  dashboard:{title:"Tableau de bord", eyebrow:"Organisation", sub:"Vue d'ensemble de l'organisation"},
-  fortnite:{title:"Fortnite", eyebrow:"Pôle de jeu", sub:"Staff, comptes-rendus de réunions et suivi du pôle"},
+  dashboard:{title:"Tableau de bord", eyebrow:"Organisation", sub:"Vue direction — agrégé de tous les pôles"},
   calendrier:{title:"Calendrier", eyebrow:"Compétitions", sub:"Compétitions à venir et passées"},
   notes:{title:"Notes", eyebrow:"Suivi", sub:"Comptes-rendus et informations"}
 };
@@ -442,39 +449,57 @@ const PLACEHOLDER = `
   document.getElementById('view-'+v).innerHTML = PLACEHOLDER;
 });
 
-document.querySelectorAll('.tab').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const v = btn.dataset.view;
-    document.querySelectorAll('.view').forEach(s=>s.classList.remove('active'));
+function setHead(eyebrow,title,sub){
+  document.getElementById('ph-eyebrow').textContent=eyebrow;
+  document.getElementById('ph-title').textContent=title;
+  document.getElementById('ph-sub').textContent=sub;
+}
+function showPage(v, poleId){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(s=>s.classList.remove('active'));
+  if(poleId){
+    CUR=poleId; FT=POLES[CUR];
+    document.getElementById('view-pole').classList.add('active');
+    const tab=document.querySelector(`.tab[data-pole="${poleId}"]`); if(tab) tab.classList.add('active');
+    setHead('Pôle de jeu', POLE_NAMES[poleId], 'Objectifs, staff, comptes-rendus, suivi et besoins du pôle');
+    renderFortnite();
+  } else {
     document.getElementById('view-'+v).classList.add('active');
-    const m = VIEWS[v];
-    document.getElementById('ph-title').textContent = m.title;
-    document.getElementById('ph-eyebrow').textContent = m.eyebrow;
-    document.getElementById('ph-sub').textContent = m.sub;
-    window.scrollTo(0,0);
-  });
+    const tab=document.querySelector(`.tab[data-view="${v}"]`); if(tab) tab.classList.add('active');
+    const m=VIEWS[v]; setHead(m.eyebrow, m.title, m.sub);
+    if(v==='dashboard') renderDashboard();
+  }
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{ if(btn.dataset.pole) showPage('pole', btn.dataset.pole); else showPage(btn.dataset.view, null); });
 });
 
 /* =========================================================================
    ONGLET FORTNITE — staff · comptes-rendus · suivi (avancées/blocages/problèmes)
    Données enregistrées dans le navigateur (localStorage).
    ========================================================================= */
-const FT_KEY = "flc-pole-fortnite-v1";
-let FT = ftLoad();
-function ftLoad(){
-  let d; try{ d=JSON.parse(localStorage.getItem(FT_KEY)); }catch(e){}
+const POLES_KEY="flc-poles-v1";
+const POLE_IDS=["fortnite","fifa","deltaforce"];
+const POLE_NAMES={fortnite:"Fortnite", fifa:"FIFA", deltaforce:"Delta Force"};
+function normalizePole(p){
+  p=p||{};
+  p.meta=Object.assign({manager:"",contact:"",rythmeJours:7}, p.meta||{});
+  ["staff","reunions","suivi","objectifs","besoins"].forEach(k=>{ p[k]=Array.isArray(p[k])?p[k]:[]; });
+  return p;
+}
+function loadPoles(){
+  let d; try{ d=JSON.parse(localStorage.getItem(POLES_KEY)); }catch(e){}
   d=d||{};
-  d.staff=Array.isArray(d.staff)?d.staff:[];
-  d.reunions=Array.isArray(d.reunions)?d.reunions:[];
-  d.suivi=Array.isArray(d.suivi)?d.suivi:[];
-  d.objectifs=Array.isArray(d.objectifs)?d.objectifs:[];
-  d.besoins=Array.isArray(d.besoins)?d.besoins:[];
-  d.meta=Object.assign({manager:"",contact:"",rythmeJours:7}, d.meta||{});
+  if(!d.fortnite){ try{ const old=JSON.parse(localStorage.getItem("flc-pole-fortnite-v1")); if(old) d.fortnite=old; }catch(e){} }
+  POLE_IDS.forEach(id=>{ d[id]=normalizePole(d[id]); });
   return d;
 }
-function ftSave(){ try{ localStorage.setItem(FT_KEY, JSON.stringify(FT)); }catch(e){} }
+function savePoles(){ try{ localStorage.setItem(POLES_KEY, JSON.stringify(POLES)); }catch(e){} }
+let POLES=loadPoles();
+let CUR="fortnite";
+let FT=POLES[CUR];        // pôle courant (l'onglet-pôle affiché)
+function ftSave(){ savePoles(); }
 
 const TYPE_SUIVI={avancee:{l:"Avancée",c:"pos"}, blocage:{l:"Blocage",c:"neg"}, probleme:{l:"Problème",c:"warn"}};
 const STATUT_SUIVI={ouvert:{l:"Ouvert",c:"neg"}, "en-cours":{l:"En cours",c:"warn"}, resolu:{l:"Résolu",c:"pos"}};
@@ -488,11 +513,11 @@ function ftDate(iso){ if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return ""; const
 function ftToday(){ return new Date().toISOString().slice(0,10); }
 function chip(c,l){ return `<span class="chip ${c}">${ftEsc(l)}</span>`; }
 function ftAddDays(iso,n){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
-function ftDernierPoint(){ const ds=FT.reunions.map(r=>r.date).filter(Boolean).sort(); return ds.length?ds[ds.length-1]:''; }
+function dernierPoint(p){ const ds=p.reunions.map(r=>r.date).filter(Boolean).sort(); return ds.length?ds[ds.length-1]:''; }
 const FT_RYTHME={7:"Hebdo",14:"2 semaines",21:"3 semaines",30:"Mensuel",0:"Ponctuel"};
 function ftRythmeLabel(r){ return FT_RYTHME[Number(r)]!=null?FT_RYTHME[Number(r)]:"Ponctuel"; }
-function ftCadence(){
-  const r=Number(FT.meta.rythmeJours)||0, dp=ftDernierPoint();
+function cadenceOf(p){
+  const r=Number(p.meta.rythmeJours)||0, dp=dernierPoint(p);
   if(!dp||!r) return {label:"À planifier", c:"neutral", prochain:null, dp};
   const prochain=ftAddDays(dp,r), t=ftToday();
   if(prochain<t) return {label:"En retard", c:"neg", prochain, dp};
@@ -504,7 +529,7 @@ function ftCadence(){
 let FT_FILTER="tous";
 function renderFortnite(){
   /* En-tête récap du pôle */
-  const cad=ftCadence();
+  const cad=cadenceOf(FT);
   const openCount=FT.suivi.filter(s=>(s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu').length;
   const avCount=FT.suivi.filter(s=>s.type==='avancee').length;
   document.getElementById('ft-head').innerHTML=`
@@ -596,10 +621,57 @@ function renderFortnite(){
     </div>`;
   }).join('') : `<div class="empty">Aucun besoin. Note les manques (staff, matériel, budget) à faire remonter.</div>`;
 
-  /* Badge onglet : blocages + problèmes non résolus */
-  const alert=FT.suivi.filter(s=>(s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu').length;
-  const badge=document.getElementById('ft-badge');
-  if(alert>0){ badge.textContent=alert; badge.style.display=''; } else badge.style.display='none';
+  updateTabBadges();
+}
+
+/* Pastille de chaque onglet-pôle : blocages + problèmes non résolus */
+function updateTabBadges(){
+  POLE_IDS.forEach(id=>{
+    const n=POLES[id].suivi.filter(s=>(s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu').length;
+    const el=document.getElementById('badge-'+id);
+    if(el){ el.textContent=n; el.style.display=n>0?'':'none'; }
+  });
+}
+
+/* =========================================================================
+   DASHBOARD DIRECTION — agrège tous les pôles (brique C)
+   ========================================================================= */
+function gotoPole(id){ showPage('pole', id); }
+function renderDashboard(){
+  document.getElementById('dash-poles').innerHTML = POLE_IDS.map(id=>{
+    const p=POLES[id], cad=cadenceOf(p);
+    const openBloc=p.suivi.filter(s=>(s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu').length;
+    const besRem=p.besoins.filter(b=>b.aRemonter==='oui'&&b.statut!=='traite').length;
+    const objEnCours=p.objectifs.filter(o=>o.statut==='en-cours').length;
+    return `<button class="dash-pole" onclick="gotoPole('${id}')">
+      <div class="dp-head"><span class="dp-name">${POLE_NAMES[id]}</span>${chip(cad.c,cad.label)}</div>
+      <div class="dp-mgr">${p.meta.manager?ftEsc(p.meta.manager):'<span style="color:var(--faint)">Manager à renseigner</span>'}</div>
+      <div class="dp-stats"><span><b>${openBloc}</b> blocages/pb</span><span><b>${besRem}</b> à remonter</span><span><b>${objEnCours}</b> objectifs</span></div>
+      <div class="dp-next">Prochain point : <b>${cad.prochain?ftDate(cad.prochain):'—'}</b></div>
+    </button>`;
+  }).join('');
+
+  const ordreP={haute:0,moyenne:1,basse:2};
+  const rem=[];
+  POLE_IDS.forEach(id=>POLES[id].besoins.forEach(b=>{ if(b.aRemonter==='oui'&&b.statut!=='traite') rem.push({id,b}); }));
+  rem.sort((a,b)=>(ordreP[a.b.priorite]??9)-(ordreP[b.b.priorite]??9));
+  document.getElementById('dash-rem-cnt').textContent = rem.length?`(${rem.length})`:'';
+  document.getElementById('dash-remonter').innerHTML = rem.length ? rem.map(({id,b})=>{
+    const tb=TYPE_BESOIN[b.type]||TYPE_BESOIN.materiel, pr=PRIO_BESOIN[b.priorite]||PRIO_BESOIN.moyenne;
+    return `<div class="sv"><div class="sv-main"><div class="sv-txt">${tb.ic} ${ftEsc(b.libelle)}</div>
+      <div class="sv-meta">${chip('gold',POLE_NAMES[id])}${chip('neutral',tb.l)}${chip(pr.c,'Priorité '+pr.l)}</div></div></div>`;
+  }).join('') : `<div class="empty">Rien à remonter pour le moment.</div>`;
+
+  const vig=[];
+  POLE_IDS.forEach(id=>POLES[id].suivi.forEach(s=>{ if((s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu') vig.push({id,s}); }));
+  document.getElementById('dash-vig-cnt').textContent = vig.length?`(${vig.length})`:'';
+  document.getElementById('dash-vigilance').innerHTML = vig.length ? vig.map(({id,s})=>{
+    const t=TYPE_SUIVI[s.type]||TYPE_SUIVI.blocage, st=STATUT_SUIVI[s.statut];
+    return `<div class="sv ${ftEsc(s.type)}"><div class="sv-main"><div class="sv-txt">${ftEsc(s.texte)}</div>
+      <div class="sv-meta">${chip('gold',POLE_NAMES[id])}${chip(t.c,t.l)}${st?chip(st.c,st.l):''}</div></div></div>`;
+  }).join('') : `<div class="empty">Aucun blocage ou problème en cours.</div>`;
+
+  updateTabBadges();
 }
 document.getElementById('ft-filters').addEventListener('click',e=>{
   const b=e.target.closest('.fbtn'); if(!b) return;
@@ -693,7 +765,8 @@ function addSuiviNote(i){ openModal("Ajouter une note d'avancement",NOTE_FIELDS,
   ()=>{ const v=readForm(NOTE_FIELDS); const s=FT.suivi[i]; (s.notes||(s.notes=[])).push(v); ftSave(); closeModal(); renderFortnite(); }, null); }
 function suiviNoteDel(i,j){ if(!confirm('Supprimer cette note ?')) return; FT.suivi[i].notes.splice(j,1); ftSave(); renderFortnite(); }
 
-renderFortnite();
+updateTabBadges();
+renderDashboard();
 
 if(sessionStorage.getItem('flc-ok')==='1') unlock(); else document.getElementById('pw').focus();
 </script>
