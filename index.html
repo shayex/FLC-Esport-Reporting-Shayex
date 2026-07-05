@@ -208,6 +208,9 @@ button{font-family:inherit}
 .sv-txt{font-size:13.5px;line-height:1.45}
 .sv-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;font-size:11.5px;color:var(--faint)}
 .sv .acts{flex:none}
+.sv.atteint{border-left-color:#5FD08C}
+.sv.abandonne{border-left-color:var(--line)}
+.remonter{color:var(--gold);font-weight:700;font-size:11.5px;white-space:nowrap}
 .sv-notes{margin-top:11px;border-top:1px solid var(--line-soft);padding-top:10px;display:flex;flex-direction:column;gap:8px}
 .note-item{display:flex;align-items:flex-start;gap:9px;font-size:12.5px}
 .note-item .nd{color:var(--gold);font-weight:600;white-space:nowrap;font-size:11px;padding-top:1px}
@@ -360,6 +363,11 @@ button{font-family:inherit}
     <!-- FORTNITE -->
     <section class="view" id="view-fortnite">
       <div class="pole-head" id="ft-head"></div>
+
+      <div class="section-title"><span class="rail"></span><h3>Objectifs du pôle</h3><span class="cnt" id="ft-obj-cnt"></span>
+        <button class="add-btn" onclick="openObjectif()">+ Ajouter un objectif</button></div>
+      <div id="ft-objectifs"></div>
+
       <div class="section-title"><span class="rail"></span><h3>Staff de la section</h3><span class="cnt" id="ft-staff-cnt"></span>
         <button class="add-btn" onclick="openStaff()">+ Ajouter un membre</button></div>
       <div class="staff-grid" id="ft-staff"></div>
@@ -377,6 +385,10 @@ button{font-family:inherit}
         <button class="fbtn" data-f="probleme">Problèmes</button>
       </div>
       <div id="ft-suivi"></div>
+
+      <div class="section-title"><span class="rail"></span><h3>Besoins du pôle</h3><span class="cnt" id="ft-bes-cnt"></span>
+        <button class="add-btn" onclick="openBesoin()">+ Ajouter un besoin</button></div>
+      <div id="ft-besoins"></div>
     </section>
 
     <!-- Onglets à construire -->
@@ -457,6 +469,8 @@ function ftLoad(){
   d.staff=Array.isArray(d.staff)?d.staff:[];
   d.reunions=Array.isArray(d.reunions)?d.reunions:[];
   d.suivi=Array.isArray(d.suivi)?d.suivi:[];
+  d.objectifs=Array.isArray(d.objectifs)?d.objectifs:[];
+  d.besoins=Array.isArray(d.besoins)?d.besoins:[];
   d.meta=Object.assign({manager:"",contact:"",rythmeJours:7}, d.meta||{});
   return d;
 }
@@ -464,6 +478,10 @@ function ftSave(){ try{ localStorage.setItem(FT_KEY, JSON.stringify(FT)); }catch
 
 const TYPE_SUIVI={avancee:{l:"Avancée",c:"pos"}, blocage:{l:"Blocage",c:"neg"}, probleme:{l:"Problème",c:"warn"}};
 const STATUT_SUIVI={ouvert:{l:"Ouvert",c:"neg"}, "en-cours":{l:"En cours",c:"warn"}, resolu:{l:"Résolu",c:"pos"}};
+const STATUT_OBJ={"en-cours":{l:"En cours",c:"warn"}, atteint:{l:"Atteint",c:"pos"}, abandonne:{l:"Abandonné",c:"neutral"}};
+const TYPE_BESOIN={staff:{l:"Staff",ic:"👥"}, materiel:{l:"Matériel",ic:"🖥"}, budget:{l:"Budget",ic:"€"}};
+const PRIO_BESOIN={haute:{l:"Haute",c:"neg"}, moyenne:{l:"Moyenne",c:"warn"}, basse:{l:"Basse",c:"neutral"}};
+const STATUT_BESOIN={ouvert:{l:"Ouvert",c:"neutral"}, "en-cours":{l:"En cours",c:"warn"}, traite:{l:"Traité",c:"pos"}};
 const MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 function ftEsc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function ftDate(iso){ if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return ""; const p=iso.split("-"); return Number(p[2])+" "+(MOIS[(Number(p[1])||1)-1]||"")+" "+p[0]; }
@@ -553,6 +571,31 @@ function renderFortnite(){
     </div>`;
   }).join('') : `<div class="empty">Aucune entrée. Ajoutez une avancée, un blocage ou un problème.</div>`;
 
+  /* Objectifs */
+  document.getElementById('ft-obj-cnt').textContent = FT.objectifs.length?`(${FT.objectifs.length})`:'';
+  document.getElementById('ft-objectifs').innerHTML = FT.objectifs.length ? FT.objectifs.map((o,i)=>{
+    const st=STATUT_OBJ[o.statut]||STATUT_OBJ['en-cours'];
+    return `<div class="sv ${o.statut==='atteint'?'atteint':(o.statut==='abandonne'?'abandonne':'')}">
+      <div class="sv-main"><div class="sv-txt">${ftEsc(o.texte)}</div>
+        <div class="sv-meta">${chip(st.c,st.l)}${o.echeance?`<span>Échéance : ${ftDate(o.echeance)}</span>`:''}</div></div>
+      <span class="acts"><button class="ic-btn" onclick="openObjectif(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="objectifDel(${i})" title="Supprimer">🗑</button></span>
+    </div>`;
+  }).join('') : `<div class="empty">Aucun objectif. Fixe un cap pour le pôle (ex. « Top 8 FNCS »).</div>`;
+
+  /* Besoins */
+  const ordreP={haute:0,moyenne:1,basse:2};
+  const besoins=[...FT.besoins].sort((a,b)=>(ordreP[a.priorite]??9)-(ordreP[b.priorite]??9));
+  document.getElementById('ft-bes-cnt').textContent = FT.besoins.length?`(${FT.besoins.length})`:'';
+  document.getElementById('ft-besoins').innerHTML = besoins.length ? besoins.map(b=>{
+    const i=FT.besoins.indexOf(b);
+    const tb=TYPE_BESOIN[b.type]||TYPE_BESOIN.materiel, pr=PRIO_BESOIN[b.priorite]||PRIO_BESOIN.moyenne, bs=STATUT_BESOIN[b.statut]||STATUT_BESOIN.ouvert;
+    return `<div class="sv">
+      <div class="sv-main"><div class="sv-txt">${tb.ic} ${ftEsc(b.libelle)}</div>
+        <div class="sv-meta">${chip('neutral',tb.l)}${chip(pr.c,'Priorité '+pr.l)}${chip(bs.c,bs.l)}${(b.aRemonter==='oui'&&b.statut!=='traite')?'<span class="remonter">↗ À remonter</span>':''}</div></div>
+      <span class="acts"><button class="ic-btn" onclick="openBesoin(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="besoinDel(${i})" title="Supprimer">🗑</button></span>
+    </div>`;
+  }).join('') : `<div class="empty">Aucun besoin. Note les manques (staff, matériel, budget) à faire remonter.</div>`;
+
   /* Badge onglet : blocages + problèmes non résolus */
   const alert=FT.suivi.filter(s=>(s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu').length;
   const badge=document.getElementById('ft-badge');
@@ -608,6 +651,28 @@ function reunionActionAdd(i){ openModal('Ajouter une action',ACTION_FIELDS,{},
   ()=>{ const v=readForm(ACTION_FIELDS); const r=FT.reunions[i]; (r.actions||(r.actions=[])).push({texte:v.texte,fait:false}); ftSave(); closeModal(); renderFortnite(); }, null); }
 function reunionActionToggle(i,ai){ const a=FT.reunions[i].actions[ai]; a.fait=!a.fait; ftSave(); renderFortnite(); }
 function reunionActionDel(i,ai){ FT.reunions[i].actions.splice(ai,1); ftSave(); renderFortnite(); }
+
+/* Objectifs du pôle */
+const OBJ_FIELDS=[
+  {k:'texte',l:'Objectif',t:'text',req:true},
+  {k:'echeance',l:'Échéance (optionnel)',t:'date'},
+  {k:'statut',l:'Statut',t:'select',opts:[['en-cours','En cours'],['atteint','Atteint'],['abandonne','Abandonné']]}
+];
+function openObjectif(i){ const isNew=(i==null); openModal(isNew?'Ajouter un objectif':"Modifier l'objectif",OBJ_FIELDS,isNew?{statut:'en-cours'}:FT.objectifs[i],
+  ()=>{ const v=readForm(OBJ_FIELDS); if(isNew)FT.objectifs.push(v); else FT.objectifs[i]=v; ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>objectifDel(i)); }
+function objectifDel(i){ if(!confirm('Supprimer cet objectif ?')) return; FT.objectifs.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
+
+/* Besoins du pôle */
+const BESOIN_FIELDS=[
+  {k:'type',l:'Type',t:'select',opts:[['staff','Staff'],['materiel','Matériel'],['budget','Budget']]},
+  {k:'libelle',l:'Besoin',t:'text',req:true},
+  {k:'priorite',l:'Priorité',t:'select',opts:[['haute','Haute'],['moyenne','Moyenne'],['basse','Basse']]},
+  {k:'statut',l:'Statut',t:'select',opts:[['ouvert','Ouvert'],['en-cours','En cours'],['traite','Traité']]},
+  {k:'aRemonter',l:'À remonter à la direction ?',t:'select',opts:[['non','Non'],['oui','Oui']]}
+];
+function openBesoin(i){ const isNew=(i==null); openModal(isNew?'Ajouter un besoin':'Modifier le besoin',BESOIN_FIELDS,isNew?{type:'materiel',priorite:'moyenne',statut:'ouvert',aRemonter:'non'}:FT.besoins[i],
+  ()=>{ const v=readForm(BESOIN_FIELDS); if(isNew)FT.besoins.push(v); else FT.besoins[i]=v; ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>besoinDel(i)); }
+function besoinDel(i){ if(!confirm('Supprimer ce besoin ?')) return; FT.besoins.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
 
 /* Paramètres du pôle (manager, contact, rythme) */
 const POLE_FIELDS=[

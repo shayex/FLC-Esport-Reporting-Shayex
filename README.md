@@ -23,6 +23,10 @@ automatique dans le navigateur) :
   appréciation** mis en évidence sur la carte ;
 - **Comptes-rendus de réunions** — date, thème, participants et compte-rendu, avec
   une liste d'**actions à suivre cochables** (à faire / fait) par réunion ;
+- **Objectifs du pôle** — objectifs court/moyen terme avec échéance et statut
+  (En cours / Atteint / Abandonné) ;
+- **Besoins du pôle** — manques staff / matériel / budget, avec priorité, statut et
+  case **« à remonter à la direction »** (triés par priorité) ;
 - **Avancées, blocages & problèmes** — chaque entrée a un type (avancée / blocage /
   problème) et un statut (ouvert / en cours / résolu) ; filtrable par type. Le nombre de
   blocages et problèmes non résolus s'affiche en pastille sur l'onglet.
