@@ -26,7 +26,11 @@ Agrège **tous les pôles** :
 - **Vue par pôle** : carte par pôle (manager, cadence / prochain point, nb de blocages·problèmes
   ouverts, besoins à remonter, objectifs en cours) — cliquable pour ouvrir le pôle ;
 - **À remonter à la direction** : tous les besoins marqués « à remonter », triés par priorité ;
-- **Points de vigilance** : tous les blocages et problèmes en cours, tous pôles confondus.
+- **Points de vigilance** : tous les blocages et problèmes en cours, tous pôles confondus ;
+- **Harmonisation des pratiques entre jeux** : matrice *pratiques × pôles* — pour chaque standard
+  commun, un clic sur la case cycle le niveau d'adoption (Adopté / En cours / À faire) par pôle ;
+- **Diffusion aux managers** : annonces / décisions / consignes que la direction fait circuler
+  (l'information qui redescend et se partage entre pôles).
 
 ### Fortnite / FIFA / Delta Force — un espace par pôle
 

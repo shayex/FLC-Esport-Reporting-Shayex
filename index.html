@@ -200,6 +200,22 @@ button{font-family:inherit}
 .dp-next{font-size:12px;color:var(--muted)}
 .dp-next b{color:var(--text)}
 
+/* Matrice des pratiques */
+.table-wrap{overflow-x:auto;border:1px solid var(--line-soft);border-radius:12px;background:var(--surface)}
+table.matrix{width:100%;border-collapse:collapse;font-size:13px;min-width:540px}
+table.matrix th{text-align:left;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700;padding:12px 14px;border-bottom:1px solid var(--line)}
+table.matrix td{padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+table.matrix tbody tr:last-child td{border-bottom:none}
+.matrix .pr-nom{font-weight:600}
+.matrix .pr-desc{font-size:11.5px;color:var(--muted);font-weight:400;margin-top:3px;max-width:36ch}
+.matrix .pr-acts{white-space:nowrap;text-align:right}
+.matrix .pr-acts .ic-btn{margin-left:4px}
+.cell{border:1px solid transparent;border-radius:999px;padding:5px 12px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;transition:filter .12s}
+.cell.pos{color:#5FD08C;background:rgba(95,208,140,.10);border-color:rgba(95,208,140,.28)}
+.cell.warn{color:#E8935B;background:rgba(232,147,91,.10);border-color:rgba(232,147,91,.30)}
+.cell.neutral{color:var(--muted);background:var(--surface-2);border-color:var(--line)}
+.cell:hover{filter:brightness(1.18)}
+
 /* En-tête récap du pôle */
 .pole-head{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;
   background:linear-gradient(180deg,var(--surface),#101014);border:1px solid var(--line-soft);
@@ -366,6 +382,14 @@ button{font-family:inherit}
 
       <div class="section-title"><span class="rail"></span><h3>Points de vigilance — blocages &amp; problèmes en cours</h3><span class="cnt" id="dash-vig-cnt"></span></div>
       <div id="dash-vigilance"></div>
+
+      <div class="section-title"><span class="rail"></span><h3>Harmonisation des pratiques entre jeux</h3>
+        <button class="add-btn" onclick="openPratique()">+ Ajouter une pratique</button></div>
+      <div id="dash-pratiques"></div>
+
+      <div class="section-title"><span class="rail"></span><h3>Diffusion aux managers</h3><span class="cnt" id="dash-diff-cnt"></span>
+        <button class="add-btn" onclick="openDiffusion()">+ Nouvelle diffusion</button></div>
+      <div id="dash-diffusion"></div>
     </section>
 
     <!-- PÔLE (vue partagée : Fortnite / FIFA / Delta Force) -->
@@ -501,12 +525,22 @@ let CUR="fortnite";
 let FT=POLES[CUR];        // pôle courant (l'onglet-pôle affiché)
 function ftSave(){ savePoles(); }
 
+/* Données transversales (organisation) : pratiques communes + diffusion managers */
+const ORG_KEY="flc-org-v1";
+function loadOrg(){ let d; try{ d=JSON.parse(localStorage.getItem(ORG_KEY)); }catch(e){}
+  d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; return d; }
+function saveOrg(){ try{ localStorage.setItem(ORG_KEY, JSON.stringify(ORG)); }catch(e){} }
+let ORG=loadOrg();
+
 const TYPE_SUIVI={avancee:{l:"Avancée",c:"pos"}, blocage:{l:"Blocage",c:"neg"}, probleme:{l:"Problème",c:"warn"}};
 const STATUT_SUIVI={ouvert:{l:"Ouvert",c:"neg"}, "en-cours":{l:"En cours",c:"warn"}, resolu:{l:"Résolu",c:"pos"}};
 const STATUT_OBJ={"en-cours":{l:"En cours",c:"warn"}, atteint:{l:"Atteint",c:"pos"}, abandonne:{l:"Abandonné",c:"neutral"}};
 const TYPE_BESOIN={staff:{l:"Staff",ic:"👥"}, materiel:{l:"Matériel",ic:"🖥"}, budget:{l:"Budget",ic:"€"}};
 const PRIO_BESOIN={haute:{l:"Haute",c:"neg"}, moyenne:{l:"Moyenne",c:"warn"}, basse:{l:"Basse",c:"neutral"}};
 const STATUT_BESOIN={ouvert:{l:"Ouvert",c:"neutral"}, "en-cours":{l:"En cours",c:"warn"}, traite:{l:"Traité",c:"pos"}};
+const ADOPTION={adopte:{l:"Adopté",c:"pos"}, "en-cours":{l:"En cours",c:"warn"}, "a-faire":{l:"À faire",c:"neutral"}};
+const ADOPT_CYCLE=["a-faire","en-cours","adopte"];
+const DIFF_TYPE={annonce:{l:"Annonce",c:"gold"}, decision:{l:"Décision",c:"pos"}, consigne:{l:"Consigne",c:"warn"}};
 const MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 function ftEsc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function ftDate(iso){ if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return ""; const p=iso.split("-"); return Number(p[2])+" "+(MOIS[(Number(p[1])||1)-1]||"")+" "+p[0]; }
@@ -671,8 +705,47 @@ function renderDashboard(){
       <div class="sv-meta">${chip('gold',POLE_NAMES[id])}${chip(t.c,t.l)}${st?chip(st.c,st.l):''}</div></div></div>`;
   }).join('') : `<div class="empty">Aucun blocage ou problème en cours.</div>`;
 
+  renderPratiques();
+  renderDiffusion();
   updateTabBadges();
 }
+
+/* Harmonisation des pratiques entre jeux — matrice pratiques × pôles */
+function renderPratiques(){
+  const wrap=document.getElementById('dash-pratiques');
+  if(!ORG.pratiques.length){ wrap.innerHTML=`<div class="empty">Aucune pratique. Ajoute un standard commun (ex. « Brief d'avant-match », « Revue vidéo hebdo »).</div>`; return; }
+  const head=`<tr><th>Pratique</th>${POLE_IDS.map(id=>`<th>${POLE_NAMES[id]}</th>`).join('')}<th></th></tr>`;
+  const rows=ORG.pratiques.map((pr,i)=>{
+    const cells=POLE_IDS.map(id=>{ const ad=ADOPTION[(pr.adoption||{})[id]]||ADOPTION['a-faire'];
+      return `<td><button class="cell ${ad.c}" onclick="cyclePratique(${i},'${id}')" title="Cliquer pour changer">${ad.l}</button></td>`; }).join('');
+    return `<tr><td class="pr-nom">${ftEsc(pr.nom)}${pr.description?`<div class="pr-desc">${ftEsc(pr.description)}</div>`:''}</td>${cells}
+      <td class="pr-acts"><button class="ic-btn" onclick="openPratique(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="pratiqueDel(${i})" title="Supprimer">🗑</button></td></tr>`;
+  }).join('');
+  wrap.innerHTML=`<div class="table-wrap"><table class="matrix"><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
+}
+function cyclePratique(i,id){ const pr=ORG.pratiques[i]; pr.adoption=pr.adoption||{}; const cur=pr.adoption[id]||'a-faire';
+  pr.adoption[id]=ADOPT_CYCLE[(ADOPT_CYCLE.indexOf(cur)+1)%3]; saveOrg(); renderPratiques(); }
+const PRATIQUE_FIELDS=[{k:'nom',l:'Pratique / standard',t:'text',req:true},{k:'description',l:'Description (optionnel)',t:'textarea'}];
+function openPratique(i){ const isNew=(i==null); openModal(isNew?'Ajouter une pratique':'Modifier la pratique',PRATIQUE_FIELDS,isNew?{}:ORG.pratiques[i],
+  ()=>{ const v=readForm(PRATIQUE_FIELDS); if(isNew){ v.adoption={}; POLE_IDS.forEach(id=>v.adoption[id]='a-faire'); ORG.pratiques.push(v); } else ORG.pratiques[i]=Object.assign({},ORG.pratiques[i],v); saveOrg(); closeModal(); renderPratiques(); }, isNew?null:()=>pratiqueDel(i)); }
+function pratiqueDel(i){ if(!confirm('Supprimer cette pratique ?')) return; ORG.pratiques.splice(i,1); saveOrg(); closeModal(); renderPratiques(); }
+
+/* Diffusion aux managers — annonces / décisions / consignes */
+const DIFF_FIELDS=[{k:'date',l:'Date',t:'date'},{k:'type',l:'Type',t:'select',opts:[['annonce','Annonce'],['decision','Décision'],['consigne','Consigne']]},{k:'titre',l:'Titre',t:'text',req:true},{k:'message',l:'Message',t:'textarea'}];
+function renderDiffusion(){
+  const list=[...ORG.diffusion].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  document.getElementById('dash-diff-cnt').textContent=ORG.diffusion.length?`(${ORG.diffusion.length})`:'';
+  document.getElementById('dash-diffusion').innerHTML = list.length ? list.map(d=>{
+    const i=ORG.diffusion.indexOf(d); const t=DIFF_TYPE[d.type]||DIFF_TYPE.annonce;
+    return `<div class="cr"><div class="cr-head"><span class="cr-date">${ftDate(d.date)||'—'}</span>
+      <div><div class="cr-titre">${ftEsc(d.titre)}</div><div class="cr-part">${chip(t.c,t.l)}</div></div>
+      <span class="acts"><button class="ic-btn" onclick="openDiffusion(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="diffusionDel(${i})" title="Supprimer">🗑</button></span></div>
+      ${d.message?`<div class="cr-body">${ftEsc(d.message)}</div>`:''}</div>`;
+  }).join('') : `<div class="empty">Aucune annonce. Diffuse une info, une décision ou une consigne aux managers.</div>`;
+}
+function openDiffusion(i){ const isNew=(i==null); openModal(isNew?'Nouvelle diffusion':'Modifier la diffusion',DIFF_FIELDS,isNew?{date:ftToday(),type:'annonce'}:ORG.diffusion[i],
+  ()=>{ const v=readForm(DIFF_FIELDS); if(isNew)ORG.diffusion.push(v); else ORG.diffusion[i]=v; saveOrg(); closeModal(); renderDiffusion(); }, isNew?null:()=>diffusionDel(i)); }
+function diffusionDel(i){ if(!confirm('Supprimer cette diffusion ?')) return; ORG.diffusion.splice(i,1); saveOrg(); closeModal(); renderDiffusion(); }
 document.getElementById('ft-filters').addEventListener('click',e=>{
   const b=e.target.closest('.fbtn'); if(!b) return;
   document.querySelectorAll('#ft-filters .fbtn').forEach(x=>x.classList.remove('active'));
