@@ -267,12 +267,19 @@ table.matrix tbody tr:last-child td{border-bottom:none}
   padding:8px 13px;border-radius:9px;font-size:12.5px;cursor:pointer;transition:color .15s,border-color .15s}
 .ph-cog:hover{color:var(--gold);border-color:var(--gold-deep)}
 
-.sv{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--line-soft);
-  border-left:2px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:8px}
+.sv{display:flex;align-items:flex-start;gap:13px;background:var(--surface);border:1px solid var(--line-soft);
+  border-left:3px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:9px;transition:border-color .15s}
+.sv:hover{border-color:var(--line)}
 .sv.avancee{border-left-color:#5FD08C}
 .sv.blocage{border-left-color:#F0575C}
 .sv.probleme{border-left-color:#E8935B}
-.sv-main{flex:1;min-width:0}
+.sv-ic{width:38px;height:38px;flex:none;border-radius:10px;display:grid;place-items:center;font-size:16px}
+.sv-ic svg{width:18px;height:18px}
+.sv.avancee .sv-ic{background:rgba(95,208,140,.14);color:#5FD08C}
+.sv.blocage .sv-ic{background:rgba(229,72,77,.14);color:#F0575C}
+.sv.probleme .sv-ic{background:rgba(232,147,91,.14);color:#E8935B}
+.sv-ic.gold{background:rgba(228,180,76,.14);color:var(--gold)}
+.sv-main{flex:1;min-width:0;padding-top:1px}
 .sv-txt{font-size:13.5px;line-height:1.45}
 .sv-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;font-size:11.5px;color:var(--faint)}
 .sv .acts{flex:none}
@@ -280,8 +287,9 @@ table.matrix tbody tr:last-child td{border-bottom:none}
 .sv.abandonne{border-left-color:var(--line)}
 .remonter{color:var(--gold);font-weight:700;font-size:11.5px;white-space:nowrap}
 .cout{color:var(--gold);font-weight:700;font-size:12.5px}
-.sv-notes{margin-top:11px;border-top:1px solid var(--line-soft);padding-top:10px;display:flex;flex-direction:column;gap:8px}
-.note-item{display:flex;align-items:flex-start;gap:9px;font-size:12.5px}
+.sv-notes{margin-top:11px;border-top:1px solid var(--line-soft);padding-top:11px;display:flex;flex-direction:column;gap:9px}
+.note-item{position:relative;display:flex;align-items:flex-start;gap:9px;font-size:12.5px;padding-left:15px}
+.note-item::before{content:"";position:absolute;left:2px;top:5px;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(228,180,76,.12)}
 .note-item .nd{color:var(--gold);font-weight:600;white-space:nowrap;font-size:11px;padding-top:1px}
 .note-item .nt{color:var(--text);line-height:1.5;flex:1;white-space:pre-wrap}
 .note-item .nx{color:var(--faint);cursor:pointer;background:none;border:none;font-size:12px;line-height:1;padding:0}
@@ -703,6 +711,11 @@ const ADOPTION={adopte:{l:"Adopté",c:"pos"}, "en-cours":{l:"En cours",c:"warn"}
 const ADOPT_CYCLE=["a-faire","en-cours","adopte"];
 const DIFF_TYPE={annonce:{l:"Annonce",c:"gold"}, decision:{l:"Décision",c:"pos"}, consigne:{l:"Consigne",c:"warn"}};
 const ISSUE_RES={victoire:{l:"Victoire",c:"pos"}, podium:{l:"Podium",c:"gold"}, defaite:{l:"Défaite",c:"neg"}, participation:{l:"Participation",c:"neutral"}};
+const SUIVI_ICON={
+  avancee:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
+  blocage:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/></svg>',
+  probleme:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13.5"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+};
 const MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 function ftEsc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function ftDate(iso){ if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return ""; const p=iso.split("-"); return Number(p[2])+" "+(MOIS[(Number(p[1])||1)-1]||"")+" "+p[0]; }
@@ -786,6 +799,7 @@ function renderFortnite(){
       return `<div class="note-item"><span class="nd">${ftDate(n.date)||'—'}</span><span class="nt">${ftEsc(n.texte)}</span><button class="nx" onclick="suiviNoteDel(${i},${j})" title="Supprimer la note">🗑</button></div>`;
     }).join('');
     return `<div class="sv ${ftEsc(s.type)}">
+      <div class="sv-ic">${SUIVI_ICON[s.type]||''}</div>
       <div class="sv-main"><div class="sv-txt">${ftEsc(s.texte)}</div>
         <div class="sv-meta">${chip(t.c,t.l)}${showStatut&&st?chip(st.c,st.l):''}${s.date?`<span>${ftDate(s.date)}</span>`:''}</div>
         <div class="sv-notes">${notesHTML}<button class="add-note" onclick="addSuiviNote(${i})">+ Note d'avancement</button></div>
@@ -825,7 +839,8 @@ function renderFortnite(){
     const tb=TYPE_BESOIN[b.type]||TYPE_BESOIN.materiel, pr=PRIO_BESOIN[b.priorite]||PRIO_BESOIN.moyenne, ar=ARBITRAGE[b.arbitrage||'a-cadrer'];
     const cout=parseFloat(b.cout)||0;
     return `<div class="sv">
-      <div class="sv-main"><div class="sv-txt">${tb.ic} ${ftEsc(b.libelle)}${cout>0?` <span class="cout">${fmtEuro(cout)}</span>`:''}</div>
+      <div class="sv-ic gold">${tb.ic}</div>
+      <div class="sv-main"><div class="sv-txt">${ftEsc(b.libelle)}${cout>0?` <span class="cout">${fmtEuro(cout)}</span>`:''}</div>
         <div class="sv-meta">${chip('neutral',tb.l)}${chip(pr.c,'Priorité '+pr.l)}${chip(ar.c,ar.l)}${(b.aRemonter==='oui'&&besoinEnAttente(b))?'<span class="remonter">↗ À remonter</span>':''}</div></div>
       <span class="acts"><button class="ic-btn" onclick="openBesoin(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="poleBesoinDel(${i})" title="Supprimer">🗑</button></span>
     </div>`;
@@ -1097,7 +1112,8 @@ function renderBesoinsTab(){
     const tb=TYPE_BESOIN[b.type]||TYPE_BESOIN.materiel, pr=PRIO_BESOIN[b.priorite]||PRIO_BESOIN.moyenne, ar=ARBITRAGE[b.arbitrage||'a-cadrer'];
     const cout=parseFloat(b.cout)||0;
     return `<div class="sv">
-      <div class="sv-main"><div class="sv-txt">${tb.ic} ${ftEsc(b.libelle)}${cout>0?` <span class="cout">${fmtEuro(cout)}</span>`:''}</div>
+      <div class="sv-ic gold">${tb.ic}</div>
+      <div class="sv-main"><div class="sv-txt">${ftEsc(b.libelle)}${cout>0?` <span class="cout">${fmtEuro(cout)}</span>`:''}</div>
         <div class="sv-meta">${chip('gold',POLE_NAMES[poleId])}${chip('neutral',tb.l)}${chip(pr.c,'Priorité '+pr.l)}${chip(ar.c,ar.l)}${(b.aRemonter==='oui'&&besoinEnAttente(b))?'<span class="remonter">↗ À remonter</span>':''}</div></div>
       <span class="acts"><button class="ic-btn" onclick="besoinModal('${poleId}',${idx})" title="Cadrer / modifier">✎</button><button class="ic-btn del" onclick="besoinDel('${poleId}',${idx})" title="Supprimer">🗑</button></span>
     </div>`;
