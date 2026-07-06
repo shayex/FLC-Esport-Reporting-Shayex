@@ -227,7 +227,7 @@ button{font-family:inherit}
   padding:15px;cursor:pointer;display:flex;flex-direction:column;gap:9px;transition:border-color .15s,transform .15s}
 .dash-pole:hover{border-color:var(--gold-deep);transform:translateY(-2px)}
 .dp-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.dp-name{font-weight:800;font-size:15px}
+.dp-name{font-weight:800;font-size:15px;color:var(--gold)}
 .dp-mgr{font-size:12px;color:var(--muted);margin-top:-2px}
 .dp-stats{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);border-top:1px solid var(--line-soft);padding-top:9px}
 .dp-stats b{color:var(--text)}
@@ -442,10 +442,6 @@ table.matrix tbody tr:last-child td{border-bottom:none}
 
       <div class="section-title"><span class="rail"></span><h3>Points de vigilance — blocages &amp; problèmes en cours</h3><span class="cnt" id="dash-vig-cnt"></span></div>
       <div id="dash-vigilance"></div>
-
-      <div class="section-title"><span class="rail"></span><h3>Harmonisation des pratiques entre jeux</h3>
-        <button class="add-btn" onclick="openPratique()">+ Ajouter une pratique</button></div>
-      <div id="dash-pratiques"></div>
 
       <div class="section-title"><span class="rail"></span><h3>Diffusion aux managers</h3><span class="cnt" id="dash-diff-cnt"></span>
         <button class="add-btn" onclick="openDiffusion()">+ Nouvelle diffusion</button></div>
@@ -878,7 +874,6 @@ function renderDashboard(){
       <div class="sv-meta">${chip('gold',POLE_NAMES[id])}${chip(t.c,t.l)}${st?chip(st.c,st.l):''}</div></div></div>`;
   }).join('') : `<div class="empty">Aucun blocage ou problème en cours.</div>`;
 
-  renderPratiques();
   renderDiffusion();
   updateTabBadges();
 }
