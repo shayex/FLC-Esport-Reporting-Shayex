@@ -21,8 +21,12 @@ Cherche dans **tout le site** (staff, besoins, comptes-rendus, résultats, objec
 
 ### Calendrier
 
-Agenda **tous pôles** : compétitions, bootcamps, réunions, échéances… séparés en « À venir » et
-« Passés ». Chaque évènement a un type et un pôle (ou « tous »).
+Agenda **tous pôles** avec deux vues : **Mois** (grille du mois, navigation ‹ › + « Aujourd'hui »,
+jour du jour encadré) et **Liste** (À venir / Passés). Chaque évènement a un **type** (compétition,
+réunion, début/fin de contrat, alerte renouvellement, anniversaire, absence, rappel, bootcamp,
+échéance, autre — chacun sa couleur), un **pôle** (ou « tous ») et, en option, une **date de fin**
+pour les évènements sur **plusieurs jours** (vacances, absences…). Cliquer un jour crée un évènement
+à cette date ; cliquer un évènement l'ouvre.
 
 ---
 
