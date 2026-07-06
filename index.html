@@ -297,6 +297,10 @@ button{font-family:inherit}
 .nc-meta{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted)}
 .nc-body{font-size:12.5px;color:var(--muted);line-height:1.6;word-wrap:break-word}
 .kb-link{color:var(--gold);text-decoration:underline;word-break:break-all}
+.catpill{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.fbtn .fdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:middle}
+.fbtn-add{border-style:dashed;color:var(--gold)}
+.fbtn-add:hover{border-color:var(--gold-deep);color:var(--gold-hi)}
 
 @media print{
   :root{ --bg:#fff; --bg-2:#fff; --surface:#fff; --surface-2:#f3f3f5; --line:#c9c9cf; --line-soft:#e3e3e8; --text:#14141a; --muted:#4a4a52; --faint:#7a7a82; }
@@ -649,14 +653,7 @@ table.matrix tbody tr:last-child td{border-bottom:none}
     <section class="view" id="view-notes">
       <div class="section-title"><span class="rail"></span><h3>Notes &amp; base de connaissances</h3><span class="cnt" id="notes-cnt"></span>
         <button class="add-btn" onclick="openNote()">+ Nouvelle note</button></div>
-      <div class="suivi-filters" id="notes-filters">
-        <button class="fbtn active" data-f="toutes">Toutes</button>
-        <button class="fbtn" data-f="procedure">Procédures</button>
-        <button class="fbtn" data-f="info">Infos</button>
-        <button class="fbtn" data-f="decision">Décisions</button>
-        <button class="fbtn" data-f="lien">Liens utiles</button>
-        <button class="fbtn" data-f="autre">Autre</button>
-      </div>
+      <div class="suivi-filters" id="notes-filters"></div>
       <div id="notes-list"></div>
     </section>
 
@@ -827,7 +824,9 @@ function ftSave(){ savePoles(); }
 /* Données transversales (organisation) : pratiques communes + diffusion managers */
 const ORG_KEY="flc-org-v1";
 function loadOrg(){ let d; try{ d=JSON.parse(localStorage.getItem(ORG_KEY)); }catch(e){}
-  d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; d.evenements=Array.isArray(d.evenements)?d.evenements:[]; d.notes=Array.isArray(d.notes)?d.notes:[]; return d; }
+  d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; d.evenements=Array.isArray(d.evenements)?d.evenements:[]; d.notes=Array.isArray(d.notes)?d.notes:[];
+  if(!Array.isArray(d.noteCats)||!d.noteCats.length) d.noteCats=[{id:'procedure',label:'Procédure',color:'#E4B44C'},{id:'info',label:'Info',color:'#8B8B94'},{id:'decision',label:'Décision',color:'#5FD08C'},{id:'lien',label:'Liens utiles',color:'#F5B944'},{id:'autre',label:'Autre',color:'#8B8B94'}];
+  return d; }
 function saveOrg(){ try{ localStorage.setItem(ORG_KEY, JSON.stringify(ORG)); }catch(e){} }
 let ORG=loadOrg();
 
@@ -1095,6 +1094,7 @@ let MCTX=null;
 function mField(f,val){
   if(f.t==='select'){ return `<select name="${f.k}">${f.opts.map(([v,l])=>`<option value="${v}"${String(val)===String(v)?' selected':''}>${ftEsc(l)}</option>`).join('')}</select>`; }
   if(f.t==='textarea'){ return `<textarea name="${f.k}" placeholder="${ftEsc(f.ph||'')}">${ftEsc(val==null?'':val)}</textarea>`; }
+  if(f.t==='color'){ return `<input type="color" name="${f.k}" value="${val||'#E4B44C'}" style="height:42px;padding:4px;cursor:pointer">`; }
   const type=f.t==='date'?'date':(f.t==='number'?'number':'text');
   return `<input type="${type}" name="${f.k}" value="${ftEsc(val==null?'':val)}" placeholder="${ftEsc(f.ph||'')}" ${f.req?'required':''}>`;
 }
@@ -1349,33 +1349,51 @@ document.querySelectorAll('#view-calendrier .cal-mode').forEach(btn=>btn.addEven
 /* =========================================================================
    NOTES — base de connaissances (procédures, infos, décisions, liens)
    ========================================================================= */
-const KB_CAT={procedure:{l:"Procédure",c:"gold"}, info:{l:"Info",c:"neutral"}, decision:{l:"Décision",c:"pos"}, lien:{l:"Liens utiles",c:"warn"}, autre:{l:"Autre",c:"neutral"}};
-const KB_FIELDS=[
+let KB_FILTER='toutes';
+function catOf(id){ return ORG.noteCats.find(c=>c.id===id) || {id:id||'autre',label:id||'—',color:'#8B8B94'}; }
+function hexA(hex,a){ let h=String(hex||'#8B8B94').replace('#',''); if(h.length===3) h=h.split('').map(x=>x+x).join(''); const n=parseInt(h,16)||0; return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; }
+function catPill(id){ const c=catOf(id); return `<span class="catpill" style="color:${c.color};background:${hexA(c.color,.13)};border-color:${hexA(c.color,.33)}">${ftEsc(c.label)}</span>`; }
+function kbFields(){ return [
   {k:'titre',l:'Titre',t:'text',req:true},
-  {k:'categorie',l:'Catégorie',t:'select',opts:[['procedure','Procédure'],['info','Info'],['decision','Décision'],['lien','Liens utiles'],['autre','Autre']]},
+  {k:'categorie',l:'Catégorie',t:'select',opts:ORG.noteCats.map(c=>[c.id,c.label])},
   {k:'contenu',l:'Contenu (les liens http… deviennent cliquables)',t:'textarea'},
   {k:'epingle',l:'Épingler en haut ?',t:'select',opts:[['non','Non'],['oui','Oui']]}
-];
-let KB_FILTER='toutes';
+]; }
 function linkify(txt){ return ftEsc(txt).replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noopener" class="kb-link">$1</a>').replace(/\n/g,'<br>'); }
+function renderNotesFilters(){
+  document.getElementById('notes-filters').innerHTML =
+    `<button class="fbtn${KB_FILTER==='toutes'?' active':''}" data-f="toutes">Toutes</button>`
+    + ORG.noteCats.map(c=>`<button class="fbtn${KB_FILTER===c.id?' active':''}" data-f="${c.id}"><span class="fdot" style="background:${c.color}"></span>${ftEsc(c.label)}</button>`).join('')
+    + `<button class="fbtn fbtn-add" onclick="openCategory()" title="Créer une catégorie">+ Catégorie</button>`;
+}
 function renderNotes(){
+  renderNotesFilters();
   const notes=[...ORG.notes].sort((a,b)=> ((b.epingle==='oui')-(a.epingle==='oui')) || String(b.date).localeCompare(String(a.date)));
   const list = KB_FILTER==='toutes'? notes : notes.filter(n=>n.categorie===KB_FILTER);
   document.getElementById('notes-cnt').textContent=ORG.notes.length?`(${ORG.notes.length})`:'';
   document.getElementById('notes-list').innerHTML = list.length? list.map(n=>{
-    const i=ORG.notes.indexOf(n), cat=KB_CAT[n.categorie]||KB_CAT.autre;
+    const i=ORG.notes.indexOf(n);
     return `<div class="note-card">
       <div class="nc-head"><div class="nc-title">${n.epingle==='oui'?'<span class="nc-pin">📌</span>':''}${ftEsc(n.titre)}</div>
         <span class="acts"><button class="ic-btn" onclick="openNote(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="noteDel(${i})" title="Supprimer">🗑</button></span></div>
-      <div class="nc-meta">${chip(cat.c,cat.l)}${n.date?`<span>${ftDate(n.date)}</span>`:''}</div>
+      <div class="nc-meta">${catPill(n.categorie)}${n.date?`<span>${ftDate(n.date)}</span>`:''}</div>
       ${n.contenu?`<div class="nc-body">${linkify(n.contenu)}</div>`:''}
     </div>`;
-  }).join('') : `<div class="empty">Aucune note. Ajoute une procédure, une info, une décision ou des liens utiles.</div>`;
+  }).join('') : `<div class="empty">Aucune note dans ce filtre.</div>`;
 }
-function openNote(i){ const isNew=(i==null); openModal(isNew?'Nouvelle note':'Modifier la note',KB_FIELDS,isNew?{categorie:'info',epingle:'non'}:ORG.notes[i],
-  ()=>{ const v=readForm(KB_FIELDS); if(isNew){ v.date=ftToday(); ORG.notes.push(v); } else { v.date=ORG.notes[i].date||ftToday(); ORG.notes[i]=v; } saveOrg(); closeModal(); renderNotes(); }, isNew?null:()=>noteDel(i)); }
+function openNote(i){ const F=kbFields(); const isNew=(i==null); openModal(isNew?'Nouvelle note':'Modifier la note',F,isNew?{categorie:(ORG.noteCats[0]&&ORG.noteCats[0].id)||'info',epingle:'non'}:ORG.notes[i],
+  ()=>{ const v=readForm(F); if(isNew){ v.date=ftToday(); ORG.notes.push(v); } else { v.date=ORG.notes[i].date||ftToday(); ORG.notes[i]=v; } saveOrg(); closeModal(); renderNotes(); }, isNew?null:()=>noteDel(i)); }
 function noteDel(i){ if(!confirm('Supprimer cette note ?')) return; ORG.notes.splice(i,1); saveOrg(); closeModal(); renderNotes(); }
-document.getElementById('notes-filters').addEventListener('click',e=>{ const b=e.target.closest('.fbtn'); if(!b) return;
+
+/* Catégories personnalisées */
+const CAT_FIELDS=[{k:'label',l:'Nom de la catégorie',t:'text',req:true},{k:'color',l:'Couleur',t:'color'}];
+function slugify(s){ return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||('cat'); }
+function openCategory(){ openModal('Nouvelle catégorie',CAT_FIELDS,{color:'#E4B44C'},
+  ()=>{ const v=readForm(CAT_FIELDS); if(!v.label){ alert('Donne un nom à la catégorie.'); return; }
+    let id=slugify(v.label); if(ORG.noteCats.some(c=>c.id===id)) id=id+'-'+Date.now().toString(36).slice(-4);
+    ORG.noteCats.push({id,label:v.label,color:v.color||'#E4B44C'}); saveOrg(); closeModal(); renderNotes(); }, null); }
+
+document.getElementById('notes-filters').addEventListener('click',e=>{ const b=e.target.closest('.fbtn'); if(!b||!b.dataset.f) return;
   document.querySelectorAll('#notes-filters .fbtn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); KB_FILTER=b.dataset.f; renderNotes(); });
 
 /* =========================================================================

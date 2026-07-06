@@ -116,7 +116,8 @@ Les trois pôles partagent le **même moteur**. Chaque pôle contient, tout édi
 
 Procédures, infos, décisions et **liens utiles** : chaque note a une **catégorie**, une date, peut être
 **épinglée** en tête, et ses URLs deviennent **cliquables**. Filtrable par catégorie et **cherchable**
-via la recherche globale.
+via la recherche globale. Les **catégories sont personnalisables** : bouton **« + Catégorie »** pour en
+créer (nom + couleur), disponibles ensuite dans le formulaire et les filtres.
 
 ## Évolutions possibles
 
