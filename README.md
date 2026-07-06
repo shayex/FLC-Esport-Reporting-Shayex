@@ -7,16 +7,32 @@ Design **sombre avec accent doré**, navigation en **barre supérieure** :
 
 ---
 
-## Ouvrir le site
+## Ouvrir le site & se connecter
 
-Double-cliquez sur `index.html`. Mot de passe par défaut : **`flc-esport`**
-(modifiable dans `index.html`, variable `MOT_DE_PASSE`).
+Double-cliquez sur `index.html`. Connexion par **identifiant + mot de passe**.
+Compte par défaut : **`shayex` / `flc-esport`** (Directeur, Admin).
+
+## Comptes & rôles
+
+Les administrateurs voient un onglet **Comptes** (masqué pour les autres) pour **créer / modifier /
+supprimer** des comptes et attribuer un **rôle** : CEO, CO-CEO, Directeur, Manager — avec une
+option **Administrateur** (droit de gérer les comptes).
+
+> ⚠️ **Sécurité** : comptes et données vivent **dans le navigateur** (localStorage). C'est un système
+> fonctionnel de rôles, **pas un contrôle d'accès serveur** — pour un vrai partage sécurisé entre
+> plusieurs personnes, il faut héberger l'application avec une base et une authentification réelles.
+
+## Sauvegarde (export / import)
+
+Deux boutons dans la barre du haut : **Exporter** télécharge un fichier `.json` contenant toutes les
+données (pôles + transversal), **Importer** restaure une sauvegarde. Pratique pour sauvegarder ou
+transférer les données sur un autre poste.
 
 ## Structure
 
 Un seul fichier : `index.html` (HTML + CSS + JavaScript). Aucune installation.
-Les données sont enregistrées **dans le navigateur** (localStorage, clé `flc-poles-v1`).
-Pensez à sauvegarder si besoin (voir « Évolutions »).
+Les données sont enregistrées **dans le navigateur** (localStorage : `flc-poles-v1`, `flc-org-v1`,
+`flc-users-v1`).
 
 ## Onglets
 

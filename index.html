@@ -123,7 +123,7 @@ button{font-family:inherit}
 
 .section-title{display:flex;align-items:center;gap:10px;margin:26px 0 14px}
 .section-title .rail{width:22px;height:2px;border-radius:2px;background:var(--gold)}
-.section-title h3{font-size:13px;margin:0;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.section-title h3{font-size:13px;margin:0;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
 
 .missions{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 .mcard{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);
@@ -328,15 +328,19 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <svg viewBox="0 0 48 40" fill="none"><path d="M4 35 L9 13 L18 23 L24 5 L30 23 L39 13 L44 35 Z" fill="url(#g)" stroke="#C79A31" stroke-width="1.2" stroke-linejoin="round"/><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#F4CF74"/><stop offset="1" stop-color="#C79A31"/></linearGradient></defs></svg>
       <span class="wm">FLC ESPORT</span>
     </div>
-    <h1>Accès réservé</h1>
+    <h1>Connexion</h1>
     <p>Espace interne de reporting esport. Réservé à la direction et à la coordination.</p>
     <div class="field">
+      <label for="login-user">Identifiant</label>
+      <input type="text" id="login-user" autocomplete="off" placeholder="ex. shayex" />
+    </div>
+    <div class="field" style="margin-top:12px">
       <label for="pw">Mot de passe</label>
       <input type="password" id="pw" autocomplete="off" placeholder="••••••••" />
     </div>
-    <button id="gate-btn">Entrer</button>
+    <button id="gate-btn">Se connecter</button>
     <div class="err" id="gate-err"></div>
-    <div class="foot">Protection légère côté navigateur. Mot de passe par défaut : flc-esport</div>
+    <div class="foot">Comptes gérés dans l'application (côté navigateur). Compte par défaut : shayex / flc-esport</div>
   </div>
 </div>
 
@@ -350,12 +354,15 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <span class="wm">FLC ESPORT</span>
     </div>
     <div class="topbar-right">
-      <button class="icon-btn" title="Notifications" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <button class="icon-btn" id="btn-export" title="Exporter une sauvegarde" aria-label="Exporter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-import" title="Importer une sauvegarde" aria-label="Importer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
       </button>
       <div class="user-chip">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-        <span class="name">SHAYEX</span><span class="role">MANAGER</span>
+        <span class="name" id="chip-name">SHAYEX</span><span class="role" id="chip-role">DIRECTEUR</span>
       </div>
       <button class="icon-btn" id="logout" title="Se déconnecter" aria-label="Se déconnecter">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
@@ -396,6 +403,10 @@ table.matrix tbody tr:last-child td{border-bottom:none}
     <button class="tab" data-view="notes">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h6"/></svg>
       Notes
+    </button>
+    <button class="tab" data-view="comptes" id="tab-comptes" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+      Comptes
     </button>
   </nav>
 
@@ -503,8 +514,17 @@ table.matrix tbody tr:last-child td{border-bottom:none}
     <!-- Onglets à construire -->
     <section class="view" id="view-calendrier"></section>
     <section class="view" id="view-notes"></section>
+
+    <!-- COMPTES (admin) -->
+    <section class="view" id="view-comptes">
+      <div class="section-title"><span class="rail"></span><h3>Comptes &amp; rôles</h3><span class="cnt" id="comptes-cnt"></span>
+        <button class="add-btn" onclick="openUser()">+ Créer un compte</button></div>
+      <div id="comptes-list"></div>
+    </section>
   </main>
 </div>
+
+<input type="file" id="import-file" accept="application/json" style="display:none" />
 
 <!-- ===================== MODALE ===================== -->
 <div class="modal-backdrop" id="modal">
@@ -521,18 +541,31 @@ table.matrix tbody tr:last-child td{border-bottom:none}
 </div>
 
 <script>
-/* ---------- Portail : accès par mot de passe (protection légère) ---------- */
-const MOT_DE_PASSE = "flc-esport";
+/* ---------- Portail : connexion par compte (côté navigateur) ---------- */
 const gate = document.getElementById('gate');
 const app = document.getElementById('app');
-function unlock(){ gate.classList.add('hidden'); app.classList.add('show'); }
+function unlock(user){
+  CURRENT_USER = user || USERSDB.users.find(x=>x.username===sessionStorage.getItem('flc-user'));
+  if(!CURRENT_USER){ sessionStorage.removeItem('flc-user'); return; }
+  gate.classList.add('hidden'); app.classList.add('show');
+  applyUser();
+}
+function applyUser(){
+  document.getElementById('chip-name').textContent=(CURRENT_USER.nom||CURRENT_USER.username||'').toUpperCase();
+  document.getElementById('chip-role').textContent=(ROLES[CURRENT_USER.role]||CURRENT_USER.role||'').toUpperCase();
+  document.getElementById('tab-comptes').style.display = CURRENT_USER.admin ? '' : 'none';
+}
 function tryUnlock(){
-  if(document.getElementById('pw').value === MOT_DE_PASSE){ sessionStorage.setItem('flc-ok','1'); unlock(); }
-  else{ document.getElementById('gate-err').textContent = "Mot de passe incorrect."; }
+  const u=(document.getElementById('login-user').value||'').trim().toLowerCase();
+  const pw=document.getElementById('pw').value;
+  const found=USERSDB.users.find(x=>(x.username||'').toLowerCase()===u && x.password===pw);
+  if(found){ sessionStorage.setItem('flc-user', found.username); unlock(found); }
+  else document.getElementById('gate-err').textContent="Identifiant ou mot de passe incorrect.";
 }
 document.getElementById('gate-btn').addEventListener('click', tryUnlock);
+document.getElementById('login-user').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('pw').focus(); });
 document.getElementById('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
-document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage.removeItem('flc-ok'); location.reload(); });
+document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage.removeItem('flc-user'); location.reload(); });
 
 /* ---------- Navigation par onglets ---------- */
 const VIEWS = {
@@ -540,7 +573,8 @@ const VIEWS = {
   besoins:{title:"Besoins", eyebrow:"Cadrage & arbitrage", sub:"Vue d'ensemble et arbitrage des besoins de tous les pôles"},
   rapport:{title:"Rapport", eyebrow:"Reporting & lisibilité", sub:"Synthèse consolidée de tous les pôles, à présenter à la direction"},
   calendrier:{title:"Calendrier", eyebrow:"Compétitions", sub:"Compétitions à venir et passées"},
-  notes:{title:"Notes", eyebrow:"Suivi", sub:"Comptes-rendus et informations"}
+  notes:{title:"Notes", eyebrow:"Suivi", sub:"Comptes-rendus et informations"},
+  comptes:{title:"Comptes", eyebrow:"Administration", sub:"Gestion des comptes et des rôles"}
 };
 const PLACEHOLDER = `
   <div class="placeholder">
@@ -573,6 +607,7 @@ function showPage(v, poleId){
     if(v==='dashboard') renderDashboard();
     if(v==='besoins') renderBesoinsTab();
     if(v==='rapport') renderRapport();
+    if(v==='comptes') renderComptes();
   }
   window.scrollTo(0,0);
 }
@@ -614,6 +649,16 @@ function loadOrg(){ let d; try{ d=JSON.parse(localStorage.getItem(ORG_KEY)); }ca
   d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; return d; }
 function saveOrg(){ try{ localStorage.setItem(ORG_KEY, JSON.stringify(ORG)); }catch(e){} }
 let ORG=loadOrg();
+
+/* Comptes utilisateurs + rôles (côté navigateur — pas une sécurité serveur) */
+const USERS_KEY="flc-users-v1";
+const ROLES={ceo:"CEO","co-ceo":"CO-CEO",directeur:"Directeur",manager:"Manager"};
+function loadUsers(){ let d; try{ d=JSON.parse(localStorage.getItem(USERS_KEY)); }catch(e){}
+  d=d||{}; if(!Array.isArray(d.users)||!d.users.length){ d.users=[{username:"shayex",password:"flc-esport",nom:"Shayex",role:"directeur",admin:true}]; }
+  return d; }
+function saveUsers(){ try{ localStorage.setItem(USERS_KEY, JSON.stringify(USERSDB)); }catch(e){} }
+let USERSDB=loadUsers();
+let CURRENT_USER=null;
 
 const TYPE_SUIVI={avancee:{l:"Avancée",c:"pos"}, blocage:{l:"Blocage",c:"neg"}, probleme:{l:"Problème",c:"warn"}};
 const STATUT_SUIVI={ouvert:{l:"Ouvert",c:"neg"}, "en-cours":{l:"En cours",c:"warn"}, resolu:{l:"Résolu",c:"pos"}};
@@ -1051,12 +1096,84 @@ function addSuiviNote(i){ openModal("Ajouter une note d'avancement",NOTE_FIELDS,
   ()=>{ const v=readForm(NOTE_FIELDS); const s=FT.suivi[i]; (s.notes||(s.notes=[])).push(v); ftSave(); closeModal(); renderFortnite(); }, null); }
 function suiviNoteDel(i,j){ if(!confirm('Supprimer cette note ?')) return; FT.suivi[i].notes.splice(j,1); ftSave(); renderFortnite(); }
 
+/* =========================================================================
+   EXPORT / IMPORT — sauvegarde complète (pôles + données transversales)
+   ========================================================================= */
+function refreshEverything(){ renderDashboard(); renderBesoinsTab(); renderRapport(); renderFortnite(); updateTabBadges(); }
+function normalizeOrg(d){ d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; return d; }
+document.getElementById('btn-export').addEventListener('click', ()=>{
+  const data={ app:"FLC Esport", version:1, exportedAt:new Date().toISOString(), poles:POLES, org:ORG };
+  const blob=new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const url=URL.createObjectURL(blob), a=document.createElement('a');
+  a.href=url; a.download='flc-esport-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json'; a.click(); URL.revokeObjectURL(url);
+});
+document.getElementById('btn-import').addEventListener('click', ()=>document.getElementById('import-file').click());
+document.getElementById('import-file').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  if(!confirm('Importer cette sauvegarde ? Les données actuelles seront remplacées.')){ e.target.value=''; return; }
+  const r=new FileReader();
+  r.onload=()=>{ try{
+    const d=JSON.parse(r.result);
+    if(d.poles){ POLES=d.poles||{}; POLE_IDS.forEach(id=>{ POLES[id]=normalizePole(POLES[id]); }); savePoles(); FT=POLES[CUR]; }
+    if(d.org){ ORG=normalizeOrg(d.org); saveOrg(); }
+    refreshEverything();
+    alert('Sauvegarde importée avec succès.');
+  }catch(err){ alert('Fichier invalide : impossible de lire la sauvegarde.'); } };
+  r.readAsText(f); e.target.value='';
+});
+
+/* =========================================================================
+   COMPTES & RÔLES (administration)
+   ========================================================================= */
+const USER_FIELDS=[
+  {k:'nom',l:'Nom',t:'text',req:true},
+  {k:'username',l:'Identifiant de connexion',t:'text',req:true,ph:'ex. jdupont'},
+  {k:'password',l:'Mot de passe',t:'text',req:true},
+  {k:'role',l:'Rôle',t:'select',opts:[['ceo','CEO'],['co-ceo','CO-CEO'],['directeur','Directeur'],['manager','Manager']]},
+  {k:'admin',l:'Administrateur (peut gérer les comptes)',t:'select',opts:[['non','Non'],['oui','Oui']]}
+];
+function renderComptes(){
+  const list=document.getElementById('comptes-list'); if(!list) return;
+  document.getElementById('comptes-cnt').textContent=USERSDB.users.length?`(${USERSDB.users.length})`:'';
+  list.innerHTML=USERSDB.users.map((u,i)=>`
+    <div class="sv"><div class="sv-main">
+      <div class="sv-txt">${ftEsc(u.nom||u.username)}${(CURRENT_USER&&u.username===CURRENT_USER.username)?' <span class="chip gold">Vous</span>':''}</div>
+      <div class="sv-meta"><span>@${ftEsc(u.username)}</span>${chip('neutral',ROLES[u.role]||u.role||'—')}${u.admin?chip('gold','Admin'):''}</div></div>
+      <span class="acts"><button class="ic-btn" onclick="openUser(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="userDel(${i})" title="Supprimer">🗑</button></span>
+    </div>`).join('');
+}
+function openUser(i){
+  const isNew=(i==null);
+  const src=isNew?{role:'manager',admin:'non'}:Object.assign({},USERSDB.users[i],{admin:USERSDB.users[i].admin?'oui':'non'});
+  openModal(isNew?'Créer un compte':'Modifier le compte', USER_FIELDS, src, ()=>{
+    const v=readForm(USER_FIELDS);
+    const rec={nom:v.nom, username:(v.username||'').trim().toLowerCase(), password:v.password, role:v.role, admin:v.admin==='oui'};
+    if(!rec.username){ alert("L'identifiant est obligatoire."); return; }
+    const dup=USERSDB.users.findIndex(x=>(x.username||'').toLowerCase()===rec.username);
+    if(isNew ? dup>=0 : (dup>=0 && dup!==i)){ alert('Cet identifiant existe déjà.'); return; }
+    if(isNew) USERSDB.users.push(rec); else USERSDB.users[i]=rec;
+    saveUsers(); closeModal();
+    if(CURRENT_USER && !isNew && USERSDB.users[i].username===CURRENT_USER.username){ CURRENT_USER=USERSDB.users[i]; applyUser(); }
+    renderComptes();
+  }, isNew?null:()=>userDel(i));
+}
+function userDel(i){
+  const u=USERSDB.users[i];
+  if(CURRENT_USER && u.username===CURRENT_USER.username){ alert('Vous ne pouvez pas supprimer votre propre compte.'); return; }
+  if(u.admin && USERSDB.users.filter(x=>x.admin).length<=1){ alert('Impossible de supprimer le dernier administrateur.'); return; }
+  if(!confirm('Supprimer ce compte ?')) return;
+  USERSDB.users.splice(i,1); saveUsers(); closeModal(); renderComptes();
+}
+
 updateTabBadges();
 renderDashboard();
 renderBesoinsTab();
 renderRapport();
+renderComptes();
 
-if(sessionStorage.getItem('flc-ok')==='1') unlock(); else document.getElementById('pw').focus();
+const savedUser=sessionStorage.getItem('flc-user');
+const su=savedUser?USERSDB.users.find(x=>x.username===savedUser):null;
+if(su) unlock(su); else document.getElementById('login-user').focus();
 </script>
 </body>
 </html>
