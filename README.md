@@ -112,9 +112,11 @@ Les trois pôles partagent le **même moteur**. Chaque pôle contient, tout édi
 - **Besoins du pôle** — type (staff/matériel/budget), priorité, **coût estimé**, statut
   d'**arbitrage** et case **« à remonter à la direction »** (alimentent l'onglet Besoins et le Dashboard).
 
-### Calendrier / Notes
+### Notes — base de connaissances
 
-À construire.
+Procédures, infos, décisions et **liens utiles** : chaque note a une **catégorie**, une date, peut être
+**épinglée** en tête, et ses URLs deviennent **cliquables**. Filtrable par catégorie et **cherchable**
+via la recherche globale.
 
 ## Évolutions possibles
 

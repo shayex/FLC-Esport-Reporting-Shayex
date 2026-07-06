@@ -288,6 +288,16 @@ button{font-family:inherit}
 .ev-lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (max-width:760px){ .cal-cell{min-height:64px} .cell-ev .ev-lbl{display:none} .cell-ev{padding:3px} }
 
+/* Notes / base de connaissances */
+#notes-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.note-card{background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:9px}
+.nc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.nc-title{font-weight:700;font-size:14.5px;line-height:1.25}
+.nc-pin{margin-right:5px}
+.nc-meta{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted)}
+.nc-body{font-size:12.5px;color:var(--muted);line-height:1.6;word-wrap:break-word}
+.kb-link{color:var(--gold);text-decoration:underline;word-break:break-all}
+
 @media print{
   :root{ --bg:#fff; --bg-2:#fff; --surface:#fff; --surface-2:#f3f3f5; --line:#c9c9cf; --line-soft:#e3e3e8; --text:#14141a; --muted:#4a4a52; --faint:#7a7a82; }
   body{background:#fff!important}
@@ -635,8 +645,20 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       </div>
     </section>
 
-    <!-- Onglet à construire -->
-    <section class="view" id="view-notes"></section>
+    <!-- NOTES / base de connaissances -->
+    <section class="view" id="view-notes">
+      <div class="section-title"><span class="rail"></span><h3>Notes &amp; base de connaissances</h3><span class="cnt" id="notes-cnt"></span>
+        <button class="add-btn" onclick="openNote()">+ Nouvelle note</button></div>
+      <div class="suivi-filters" id="notes-filters">
+        <button class="fbtn active" data-f="toutes">Toutes</button>
+        <button class="fbtn" data-f="procedure">Procédures</button>
+        <button class="fbtn" data-f="info">Infos</button>
+        <button class="fbtn" data-f="decision">Décisions</button>
+        <button class="fbtn" data-f="lien">Liens utiles</button>
+        <button class="fbtn" data-f="autre">Autre</button>
+      </div>
+      <div id="notes-list"></div>
+    </section>
 
     <!-- COMPTES (admin) -->
     <section class="view" id="view-comptes">
@@ -733,7 +755,7 @@ const VIEWS = {
   besoins:{title:"Besoins", eyebrow:"Cadrage & arbitrage", sub:"Vue d'ensemble et arbitrage des besoins de tous les pôles"},
   rapport:{title:"Rapport", eyebrow:"Reporting & lisibilité", sub:"Synthèse consolidée de tous les pôles, à présenter à la direction"},
   calendrier:{title:"Calendrier", eyebrow:"Compétitions", sub:"Compétitions à venir et passées"},
-  notes:{title:"Notes", eyebrow:"Suivi", sub:"Comptes-rendus et informations"},
+  notes:{title:"Notes", eyebrow:"Base de connaissances", sub:"Procédures, infos, décisions et liens utiles"},
   comptes:{title:"Comptes", eyebrow:"Administration", sub:"Gestion des comptes et des rôles"}
 };
 const PLACEHOLDER = `
@@ -742,9 +764,6 @@ const PLACEHOLDER = `
     <h3>Section à construire</h3>
     <p>On l'ajoute prochainement, étape par étape. Dis-moi quand tu veux attaquer cet onglet.</p>
   </div>`;
-['notes'].forEach(v=>{
-  document.getElementById('view-'+v).innerHTML = PLACEHOLDER;
-});
 
 function setHead(eyebrow,title,sub){
   document.getElementById('ph-eyebrow').textContent=eyebrow;
@@ -768,6 +787,7 @@ function showPage(v, poleId){
     if(v==='besoins') renderBesoinsTab();
     if(v==='rapport') renderRapport();
     if(v==='calendrier') renderCalendrier();
+    if(v==='notes') renderNotes();
     if(v==='comptes') renderComptes();
   }
   window.scrollTo(0,0);
@@ -807,7 +827,7 @@ function ftSave(){ savePoles(); }
 /* Données transversales (organisation) : pratiques communes + diffusion managers */
 const ORG_KEY="flc-org-v1";
 function loadOrg(){ let d; try{ d=JSON.parse(localStorage.getItem(ORG_KEY)); }catch(e){}
-  d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; d.evenements=Array.isArray(d.evenements)?d.evenements:[]; return d; }
+  d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; d.evenements=Array.isArray(d.evenements)?d.evenements:[]; d.notes=Array.isArray(d.notes)?d.notes:[]; return d; }
 function saveOrg(){ try{ localStorage.setItem(ORG_KEY, JSON.stringify(ORG)); }catch(e){} }
 let ORG=loadOrg();
 
@@ -1327,6 +1347,38 @@ document.getElementById('cal-today').addEventListener('click',()=>{ calInitMonth
 document.querySelectorAll('#view-calendrier .cal-mode').forEach(btn=>btn.addEventListener('click',()=>{ calMode=btn.dataset.mode; renderCalendrier(); }));
 
 /* =========================================================================
+   NOTES — base de connaissances (procédures, infos, décisions, liens)
+   ========================================================================= */
+const KB_CAT={procedure:{l:"Procédure",c:"gold"}, info:{l:"Info",c:"neutral"}, decision:{l:"Décision",c:"pos"}, lien:{l:"Liens utiles",c:"warn"}, autre:{l:"Autre",c:"neutral"}};
+const KB_FIELDS=[
+  {k:'titre',l:'Titre',t:'text',req:true},
+  {k:'categorie',l:'Catégorie',t:'select',opts:[['procedure','Procédure'],['info','Info'],['decision','Décision'],['lien','Liens utiles'],['autre','Autre']]},
+  {k:'contenu',l:'Contenu (les liens http… deviennent cliquables)',t:'textarea'},
+  {k:'epingle',l:'Épingler en haut ?',t:'select',opts:[['non','Non'],['oui','Oui']]}
+];
+let KB_FILTER='toutes';
+function linkify(txt){ return ftEsc(txt).replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noopener" class="kb-link">$1</a>').replace(/\n/g,'<br>'); }
+function renderNotes(){
+  const notes=[...ORG.notes].sort((a,b)=> ((b.epingle==='oui')-(a.epingle==='oui')) || String(b.date).localeCompare(String(a.date)));
+  const list = KB_FILTER==='toutes'? notes : notes.filter(n=>n.categorie===KB_FILTER);
+  document.getElementById('notes-cnt').textContent=ORG.notes.length?`(${ORG.notes.length})`:'';
+  document.getElementById('notes-list').innerHTML = list.length? list.map(n=>{
+    const i=ORG.notes.indexOf(n), cat=KB_CAT[n.categorie]||KB_CAT.autre;
+    return `<div class="note-card">
+      <div class="nc-head"><div class="nc-title">${n.epingle==='oui'?'<span class="nc-pin">📌</span>':''}${ftEsc(n.titre)}</div>
+        <span class="acts"><button class="ic-btn" onclick="openNote(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="noteDel(${i})" title="Supprimer">🗑</button></span></div>
+      <div class="nc-meta">${chip(cat.c,cat.l)}${n.date?`<span>${ftDate(n.date)}</span>`:''}</div>
+      ${n.contenu?`<div class="nc-body">${linkify(n.contenu)}</div>`:''}
+    </div>`;
+  }).join('') : `<div class="empty">Aucune note. Ajoute une procédure, une info, une décision ou des liens utiles.</div>`;
+}
+function openNote(i){ const isNew=(i==null); openModal(isNew?'Nouvelle note':'Modifier la note',KB_FIELDS,isNew?{categorie:'info',epingle:'non'}:ORG.notes[i],
+  ()=>{ const v=readForm(KB_FIELDS); if(isNew){ v.date=ftToday(); ORG.notes.push(v); } else { v.date=ORG.notes[i].date||ftToday(); ORG.notes[i]=v; } saveOrg(); closeModal(); renderNotes(); }, isNew?null:()=>noteDel(i)); }
+function noteDel(i){ if(!confirm('Supprimer cette note ?')) return; ORG.notes.splice(i,1); saveOrg(); closeModal(); renderNotes(); }
+document.getElementById('notes-filters').addEventListener('click',e=>{ const b=e.target.closest('.fbtn'); if(!b) return;
+  document.querySelectorAll('#notes-filters .fbtn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); KB_FILTER=b.dataset.f; renderNotes(); });
+
+/* =========================================================================
    RECHERCHE GLOBALE
    ========================================================================= */
 function openSearch(){ const o=document.getElementById('search-overlay'); o.style.display=''; const inp=document.getElementById('search-input'); inp.value=''; document.getElementById('search-results').innerHTML='<div class="search-hint">Tape pour rechercher dans tous les pôles.</div>'; setTimeout(()=>inp.focus(),30); }
@@ -1334,7 +1386,7 @@ function closeSearch(){ document.getElementById('search-overlay').style.display=
 function doSearch(){
   const q=(document.getElementById('search-input').value||'').trim().toLowerCase(), box=document.getElementById('search-results');
   if(q.length<2){ box.innerHTML='<div class="search-hint">Tape au moins 2 caractères.</div>'; return; }
-  const groups={Staff:[],Besoins:[],'Comptes-rendus':[],Résultats:[],Objectifs:[],'Avancées & blocages':[],'Évènements':[]};
+  const groups={Staff:[],Besoins:[],'Comptes-rendus':[],Résultats:[],Objectifs:[],'Avancées & blocages':[],'Évènements':[],'Notes':[]};
   const hit=(x)=> x && String(x).toLowerCase().includes(q);
   const mark=(x)=>{ x=ftEsc(x||''); const i=x.toLowerCase().indexOf(q); return i<0?x:x.slice(0,i)+'<b>'+x.slice(i,i+q.length)+'</b>'+x.slice(i+q.length); };
   POLE_IDS.forEach(id=>{ const p=POLES[id], nm=POLE_NAMES[id];
@@ -1346,6 +1398,7 @@ function doSearch(){
     p.suivi.forEach(s=>{ if(hit(s.texte)) groups['Avancées & blocages'].push({pole:id,txt:`${mark(s.texte)} · ${nm}`}); });
   });
   ORG.evenements.forEach(e=>{ if(hit(e.titre)||hit(e.note)) groups['Évènements'].push({view:'calendrier',txt:`${mark(e.titre)} · ${poleLabel(e.pole)}`}); });
+  ORG.notes.forEach(n=>{ if(hit(n.titre)||hit(n.contenu)) groups['Notes'].push({view:'notes',txt:`${mark(n.titre)}`}); });
   let html='', total=0;
   Object.keys(groups).forEach(g=>{ const arr=groups[g]; if(!arr.length) return; total+=arr.length;
     html+=`<div class="sr-group-h">${g} (${arr.length})</div>`+arr.slice(0,8).map(r=>`<div class="sr-item" onclick="${r.view?`gotoSearchView('${r.view}')`:`gotoSearchPole('${r.pole}')`}"><span class="sr-txt">${r.txt}</span></div>`).join(''); });
@@ -1497,6 +1550,7 @@ renderBesoinsTab();
 renderRapport();
 renderComptes();
 renderCalendrier();
+renderNotes();
 updateAlertsBadge();
 
 const savedUser=sessionStorage.getItem('flc-user');
