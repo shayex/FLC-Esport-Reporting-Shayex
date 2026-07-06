@@ -5,6 +5,25 @@ Espace interne (privé) pour donner à la **direction** une lecture claire de l'
 Design **sombre avec accent doré**, navigation en **barre supérieure** :
 `Dashboard · Fortnite · FIFA · Delta Force · Besoins · Rapport · Calendrier · Notes`.
 
+Dans la barre du haut : **recherche globale** (🔍), **centre d'alertes** (🔔), export/import et déconnexion.
+
+### Centre d'alertes (🔔)
+
+La cloche agrège tout ce qui demande l'attention du directeur, tous pôles confondus :
+points **en retard**, objectifs **à échéance / dépassés**, blocages & problèmes **ouverts depuis
+longtemps**, besoins **à cadrer** ou **à remonter**, **actions de réunion** non faites. Une pastille
+indique le nombre ; un clic sur une alerte ouvre le pôle concerné.
+
+### Recherche globale (🔍)
+
+Cherche dans **tout le site** (staff, besoins, comptes-rendus, résultats, objectifs, suivi,
+évènements). Les résultats sont groupés par type et cliquables.
+
+### Calendrier
+
+Agenda **tous pôles** : compétitions, bootcamps, réunions, échéances… séparés en « À venir » et
+« Passés ». Chaque évènement a un type et un pôle (ou « tous »).
+
 ---
 
 ## Ouvrir le site & se connecter
