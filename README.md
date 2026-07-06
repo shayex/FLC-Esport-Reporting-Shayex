@@ -3,7 +3,7 @@
 Espace interne (privé) pour donner à la **direction** une lecture claire de l'activité esport.
 
 Design **sombre avec accent doré**, navigation en **barre supérieure** :
-`Dashboard · Fortnite · FIFA · Delta Force · Besoins · Calendrier · Notes`.
+`Dashboard · Fortnite · FIFA · Delta Force · Besoins · Rapport · Calendrier · Notes`.
 
 ---
 
@@ -32,6 +32,19 @@ Agrège **tous les pôles** :
 - **Diffusion aux managers** : annonces / décisions / consignes que la direction fait circuler
   (l'information qui redescend et se partage entre pôles).
 
+### Rapport — reporting & lisibilité (mission 03)
+
+Synthèse consolidée de tous les pôles, pensée pour la direction :
+- **Indicateurs clés** (KPIs) calculés automatiquement : pôles, points tenus, objectifs atteints,
+  compétitions, victoires/podiums, blocages ouverts, besoins à remonter, budget estimé ;
+- **Par pôle** : cadence, objectifs en cours, blocages, besoins à remonter et derniers résultats ;
+- **À remonter à la direction** : la synthèse des besoins prioritaires ;
+- Bouton **Imprimer / PDF** : le rapport bascule en version claire (sans la navigation) pour
+  être imprimé ou enregistré en PDF et présenté en réunion.
+
+Les **résultats de compétition** (date, compétition, classement, issue) se saisissent dans chaque
+onglet-pôle (section « Résultats récents ») et alimentent ce rapport.
+
 ### Besoins — cadrage & arbitrage (mission 02)
 
 Vue d'ensemble de **tous les besoins des 3 pôles** au même endroit :
@@ -47,6 +60,7 @@ Les trois pôles partagent le **même moteur**. Chaque pôle contient, tout édi
 - **En-tête récap** — manager & contact, rythme des points, dernier point, **prochain point calculé**
   avec badge de cadence, compteurs blocages/avancées. Bouton **Paramètres** (manager, contact, rythme) ;
 - **Objectifs du pôle** — intitulé, échéance, statut (En cours / Atteint / Abandonné) ;
+- **Résultats récents** — résultats de compétition (date, compétition, classement, issue) ;
 - **Staff de la section** — membres (nom, rôle, notes) + champ **Avis / appréciation** ;
 - **Comptes-rendus de réunions** — date, thème, participants, compte-rendu, + **actions à suivre cochables** ;
 - **Avancées, blocages & problèmes** — type + statut (Ouvert / En cours / Résolu), filtrables,
