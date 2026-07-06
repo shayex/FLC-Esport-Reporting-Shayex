@@ -9,14 +9,18 @@ Design **sombre avec accent doré**, navigation en **barre supérieure** :
 
 ## Ouvrir le site & se connecter
 
-Double-cliquez sur `index.html`. Connexion par **identifiant + mot de passe**.
-Compte par défaut : **`shayex` / `flc-esport`** (Directeur, Admin).
+Double-cliquez sur `index.html`. Connexion par **identifiant + code PIN** (4 à 6 chiffres).
+Compte par défaut : **`shayex` / PIN `0000`** (Directeur, Admin) — à **changer à la première connexion**.
 
 ## Comptes & rôles
 
 Les administrateurs voient un onglet **Comptes** (masqué pour les autres) pour **créer / modifier /
 supprimer** des comptes et attribuer un **rôle** : CEO, CO-CEO, Directeur, Manager — avec une
 option **Administrateur** (droit de gérer les comptes).
+
+**Code PIN & première connexion** : l'admin fixe un **PIN initial** à la création. À sa première
+connexion (ou après un reset du PIN par l'admin), la personne doit **définir son propre PIN** avant
+d'accéder au site. Les comptes concernés affichent un repère « PIN à changer » dans la liste.
 
 > ⚠️ **Sécurité** : comptes et données vivent **dans le navigateur** (localStorage). C'est un système
 > fonctionnel de rôles, **pas un contrôle d'accès serveur** — pour un vrai partage sécurisé entre

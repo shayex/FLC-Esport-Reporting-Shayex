@@ -323,7 +323,7 @@ table.matrix tbody tr:last-child td{border-bottom:none}
 
 <!-- ===================== PORTAIL ===================== -->
 <div class="gate" id="gate">
-  <div class="gate-card">
+  <div class="gate-card" id="login-card">
     <div class="gate-logo">
       <svg viewBox="0 0 48 40" fill="none"><path d="M4 35 L9 13 L18 23 L24 5 L30 23 L39 13 L44 35 Z" fill="url(#g)" stroke="#C79A31" stroke-width="1.2" stroke-linejoin="round"/><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#F4CF74"/><stop offset="1" stop-color="#C79A31"/></linearGradient></defs></svg>
       <span class="wm">FLC ESPORT</span>
@@ -335,12 +335,28 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <input type="text" id="login-user" autocomplete="off" placeholder="ex. shayex" />
     </div>
     <div class="field" style="margin-top:12px">
-      <label for="pw">Mot de passe</label>
-      <input type="password" id="pw" autocomplete="off" placeholder="••••••••" />
+      <label for="pw">Code PIN</label>
+      <input type="password" id="pw" inputmode="numeric" autocomplete="off" placeholder="••••" />
     </div>
     <button id="gate-btn">Se connecter</button>
     <div class="err" id="gate-err"></div>
-    <div class="foot">Comptes gérés dans l'application (côté navigateur). Compte par défaut : shayex / flc-esport</div>
+    <div class="foot">Comptes gérés dans l'application (côté navigateur). Compte par défaut : shayex / PIN 0000 — à changer à la 1re connexion.</div>
+  </div>
+
+  <div class="gate-card" id="pin-card" style="display:none">
+    <div class="gate-logo"><span class="wm" style="color:var(--gold)">FLC ESPORT</span></div>
+    <h1>Choisir votre code PIN</h1>
+    <p>Première connexion : définissez votre nouveau code PIN (4 à 6 chiffres).</p>
+    <div class="field">
+      <label for="new-pin">Nouveau PIN</label>
+      <input type="password" id="new-pin" inputmode="numeric" autocomplete="off" placeholder="••••" />
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label for="new-pin2">Confirmer le PIN</label>
+      <input type="password" id="new-pin2" inputmode="numeric" autocomplete="off" placeholder="••••" />
+    </div>
+    <button id="pin-btn">Valider mon PIN</button>
+    <div class="err" id="pin-err"></div>
   </div>
 </div>
 
@@ -555,16 +571,35 @@ function applyUser(){
   document.getElementById('chip-role').textContent=(ROLES[CURRENT_USER.role]||CURRENT_USER.role||'').toUpperCase();
   document.getElementById('tab-comptes').style.display = CURRENT_USER.admin ? '' : 'none';
 }
+let PENDING_USER=null;
 function tryUnlock(){
   const u=(document.getElementById('login-user').value||'').trim().toLowerCase();
   const pw=document.getElementById('pw').value;
   const found=USERSDB.users.find(x=>(x.username||'').toLowerCase()===u && x.password===pw);
-  if(found){ sessionStorage.setItem('flc-user', found.username); unlock(found); }
-  else document.getElementById('gate-err').textContent="Identifiant ou mot de passe incorrect.";
+  if(!found){ document.getElementById('gate-err').textContent="Identifiant ou code PIN incorrect."; return; }
+  if(found.mustChangePin){ PENDING_USER=found; document.getElementById('gate-err').textContent=''; showPinChange(); return; }
+  sessionStorage.setItem('flc-user', found.username); unlock(found);
+}
+function showPinChange(){
+  document.getElementById('login-card').style.display='none';
+  document.getElementById('pin-card').style.display='';
+  document.getElementById('new-pin').value=''; document.getElementById('new-pin2').value='';
+  document.getElementById('new-pin').focus();
+}
+function submitNewPin(){
+  const a=document.getElementById('new-pin').value, b=document.getElementById('new-pin2').value, err=document.getElementById('pin-err');
+  if(!validPin(a)){ err.textContent="Le PIN doit contenir 4 à 6 chiffres."; return; }
+  if(a!==b){ err.textContent="Les deux codes ne correspondent pas."; return; }
+  if(PENDING_USER && a===PENDING_USER.password){ err.textContent="Choisissez un PIN différent du code initial."; return; }
+  PENDING_USER.password=a; PENDING_USER.mustChangePin=false; saveUsers();
+  sessionStorage.setItem('flc-user', PENDING_USER.username);
+  const u=PENDING_USER; PENDING_USER=null; unlock(u);
 }
 document.getElementById('gate-btn').addEventListener('click', tryUnlock);
 document.getElementById('login-user').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('pw').focus(); });
 document.getElementById('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
+document.getElementById('pin-btn').addEventListener('click', submitNewPin);
+document.getElementById('new-pin2').addEventListener('keydown', e=>{ if(e.key==='Enter') submitNewPin(); });
 document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage.removeItem('flc-user'); location.reload(); });
 
 /* ---------- Navigation par onglets ---------- */
@@ -653,8 +688,10 @@ let ORG=loadOrg();
 /* Comptes utilisateurs + rôles (côté navigateur — pas une sécurité serveur) */
 const USERS_KEY="flc-users-v1";
 const ROLES={ceo:"CEO","co-ceo":"CO-CEO",directeur:"Directeur",manager:"Manager"};
+function validPin(p){ return /^\d{4,6}$/.test(p||''); }
 function loadUsers(){ let d; try{ d=JSON.parse(localStorage.getItem(USERS_KEY)); }catch(e){}
-  d=d||{}; if(!Array.isArray(d.users)||!d.users.length){ d.users=[{username:"shayex",password:"flc-esport",nom:"Shayex",role:"directeur",admin:true}]; }
+  d=d||{}; if(!Array.isArray(d.users)||!d.users.length){ d.users=[{username:"shayex",password:"0000",nom:"Shayex",role:"directeur",admin:true,mustChangePin:true}]; }
+  d.users.forEach(u=>{ if(u.mustChangePin==null) u.mustChangePin=!validPin(u.password); });
   return d; }
 function saveUsers(){ try{ localStorage.setItem(USERS_KEY, JSON.stringify(USERSDB)); }catch(e){} }
 let USERSDB=loadUsers();
@@ -1128,7 +1165,7 @@ document.getElementById('import-file').addEventListener('change', e=>{
 const USER_FIELDS=[
   {k:'nom',l:'Nom',t:'text',req:true},
   {k:'username',l:'Identifiant de connexion',t:'text',req:true,ph:'ex. jdupont'},
-  {k:'password',l:'Mot de passe',t:'text',req:true},
+  {k:'password',l:'Code PIN initial (4 à 6 chiffres)',t:'text',req:true,ph:'ex. 0000'},
   {k:'role',l:'Rôle',t:'select',opts:[['ceo','CEO'],['co-ceo','CO-CEO'],['directeur','Directeur'],['manager','Manager']]},
   {k:'admin',l:'Administrateur (peut gérer les comptes)',t:'select',opts:[['non','Non'],['oui','Oui']]}
 ];
@@ -1138,7 +1175,7 @@ function renderComptes(){
   list.innerHTML=USERSDB.users.map((u,i)=>`
     <div class="sv"><div class="sv-main">
       <div class="sv-txt">${ftEsc(u.nom||u.username)}${(CURRENT_USER&&u.username===CURRENT_USER.username)?' <span class="chip gold">Vous</span>':''}</div>
-      <div class="sv-meta"><span>@${ftEsc(u.username)}</span>${chip('neutral',ROLES[u.role]||u.role||'—')}${u.admin?chip('gold','Admin'):''}</div></div>
+      <div class="sv-meta"><span>@${ftEsc(u.username)}</span>${chip('neutral',ROLES[u.role]||u.role||'—')}${u.admin?chip('gold','Admin'):''}${u.mustChangePin?chip('warn','PIN à changer'):''}</div></div>
       <span class="acts"><button class="ic-btn" onclick="openUser(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="userDel(${i})" title="Supprimer">🗑</button></span>
     </div>`).join('');
 }
@@ -1147,11 +1184,13 @@ function openUser(i){
   const src=isNew?{role:'manager',admin:'non'}:Object.assign({},USERSDB.users[i],{admin:USERSDB.users[i].admin?'oui':'non'});
   openModal(isNew?'Créer un compte':'Modifier le compte', USER_FIELDS, src, ()=>{
     const v=readForm(USER_FIELDS);
-    const rec={nom:v.nom, username:(v.username||'').trim().toLowerCase(), password:v.password, role:v.role, admin:v.admin==='oui'};
+    const rec={nom:v.nom, username:(v.username||'').trim().toLowerCase(), password:(v.password||'').trim(), role:v.role, admin:v.admin==='oui'};
     if(!rec.username){ alert("L'identifiant est obligatoire."); return; }
+    if(!validPin(rec.password)){ alert('Le code PIN doit contenir 4 à 6 chiffres.'); return; }
     const dup=USERSDB.users.findIndex(x=>(x.username||'').toLowerCase()===rec.username);
     if(isNew ? dup>=0 : (dup>=0 && dup!==i)){ alert('Cet identifiant existe déjà.'); return; }
-    if(isNew) USERSDB.users.push(rec); else USERSDB.users[i]=rec;
+    if(isNew){ rec.mustChangePin=true; USERSDB.users.push(rec); }
+    else { const old=USERSDB.users[i]; rec.mustChangePin = (rec.password!==old.password) ? true : !!old.mustChangePin; USERSDB.users[i]=rec; }
     saveUsers(); closeModal();
     if(CURRENT_USER && !isNew && USERSDB.users[i].username===CURRENT_USER.username){ CURRENT_USER=USERSDB.users[i]; applyUser(); }
     renderComptes();
