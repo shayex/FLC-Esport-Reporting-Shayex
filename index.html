@@ -240,6 +240,7 @@ table.matrix tbody tr:last-child td{border-bottom:none}
 .sv.atteint{border-left-color:#5FD08C}
 .sv.abandonne{border-left-color:var(--line)}
 .remonter{color:var(--gold);font-weight:700;font-size:11.5px;white-space:nowrap}
+.cout{color:var(--gold);font-weight:700;font-size:12.5px}
 .sv-notes{margin-top:11px;border-top:1px solid var(--line-soft);padding-top:10px;display:flex;flex-direction:column;gap:8px}
 .note-item{display:flex;align-items:flex-start;gap:9px;font-size:12.5px}
 .note-item .nd{color:var(--gold);font-weight:600;white-space:nowrap;font-size:11px;padding-top:1px}
@@ -348,6 +349,10 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 5v6c0 5-3.5 8-9 9-5.5-1-9-4-9-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
       Delta Force <span class="badge alert" id="badge-deltaforce" style="display:none"></span>
     </button>
+    <button class="tab" data-view="besoins">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1z"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
+      Besoins
+    </button>
     <button class="tab" data-view="calendrier">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
       Calendrier
@@ -390,6 +395,25 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <div class="section-title"><span class="rail"></span><h3>Diffusion aux managers</h3><span class="cnt" id="dash-diff-cnt"></span>
         <button class="add-btn" onclick="openDiffusion()">+ Nouvelle diffusion</button></div>
       <div id="dash-diffusion"></div>
+    </section>
+
+    <!-- BESOINS (vue d'ensemble + arbitrage) -->
+    <section class="view" id="view-besoins">
+      <div class="pole-head" id="bes-recap"></div>
+      <div class="suivi-filters" id="bes-filter-pole">
+        <button class="fbtn active" data-f="tous">Tous les pôles</button>
+        <button class="fbtn" data-f="fortnite">Fortnite</button>
+        <button class="fbtn" data-f="fifa">FIFA</button>
+        <button class="fbtn" data-f="deltaforce">Delta Force</button>
+      </div>
+      <div class="suivi-filters" id="bes-filter-arb">
+        <button class="fbtn active" data-f="tous">Tous statuts</button>
+        <button class="fbtn" data-f="a-cadrer">À cadrer</button>
+        <button class="fbtn" data-f="cadre">Cadré</button>
+        <button class="fbtn" data-f="valide">Validé</button>
+        <button class="fbtn" data-f="refuse">Refusé</button>
+      </div>
+      <div id="bes-list"></div>
     </section>
 
     <!-- PÔLE (vue partagée : Fortnite / FIFA / Delta Force) -->
@@ -460,6 +484,7 @@ document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage
 /* ---------- Navigation par onglets ---------- */
 const VIEWS = {
   dashboard:{title:"Tableau de bord", eyebrow:"Organisation", sub:"Vue direction — agrégé de tous les pôles"},
+  besoins:{title:"Besoins", eyebrow:"Cadrage & arbitrage", sub:"Vue d'ensemble et arbitrage des besoins de tous les pôles"},
   calendrier:{title:"Calendrier", eyebrow:"Compétitions", sub:"Compétitions à venir et passées"},
   notes:{title:"Notes", eyebrow:"Suivi", sub:"Comptes-rendus et informations"}
 };
@@ -492,6 +517,7 @@ function showPage(v, poleId){
     const tab=document.querySelector(`.tab[data-view="${v}"]`); if(tab) tab.classList.add('active');
     const m=VIEWS[v]; setHead(m.eyebrow, m.title, m.sub);
     if(v==='dashboard') renderDashboard();
+    if(v==='besoins') renderBesoinsTab();
   }
   window.scrollTo(0,0);
 }
@@ -510,6 +536,7 @@ function normalizePole(p){
   p=p||{};
   p.meta=Object.assign({manager:"",contact:"",rythmeJours:7}, p.meta||{});
   ["staff","reunions","suivi","objectifs","besoins"].forEach(k=>{ p[k]=Array.isArray(p[k])?p[k]:[]; });
+  p.besoins=p.besoins.map(b=>{ if(b&&b.arbitrage==null) b.arbitrage=(b.statut==='traite'?'valide':'a-cadrer'); return b; });
   return p;
 }
 function loadPoles(){
@@ -521,6 +548,7 @@ function loadPoles(){
 }
 function savePoles(){ try{ localStorage.setItem(POLES_KEY, JSON.stringify(POLES)); }catch(e){} }
 let POLES=loadPoles();
+try{ localStorage.setItem(POLES_KEY, JSON.stringify(POLES)); }catch(e){}   // persiste la normalisation/migration
 let CUR="fortnite";
 let FT=POLES[CUR];        // pôle courant (l'onglet-pôle affiché)
 function ftSave(){ savePoles(); }
@@ -538,6 +566,9 @@ const STATUT_OBJ={"en-cours":{l:"En cours",c:"warn"}, atteint:{l:"Atteint",c:"po
 const TYPE_BESOIN={staff:{l:"Staff",ic:"👥"}, materiel:{l:"Matériel",ic:"🖥"}, budget:{l:"Budget",ic:"€"}};
 const PRIO_BESOIN={haute:{l:"Haute",c:"neg"}, moyenne:{l:"Moyenne",c:"warn"}, basse:{l:"Basse",c:"neutral"}};
 const STATUT_BESOIN={ouvert:{l:"Ouvert",c:"neutral"}, "en-cours":{l:"En cours",c:"warn"}, traite:{l:"Traité",c:"pos"}};
+const ARBITRAGE={"a-cadrer":{l:"À cadrer",c:"neutral"}, cadre:{l:"Cadré",c:"warn"}, valide:{l:"Validé",c:"pos"}, refuse:{l:"Refusé",c:"neg"}};
+function besoinEnAttente(b){ return !['valide','refuse'].includes(b.arbitrage); }
+function fmtEuro(n){ return Math.round(n||0).toLocaleString('fr-FR')+' €'; }
 const ADOPTION={adopte:{l:"Adopté",c:"pos"}, "en-cours":{l:"En cours",c:"warn"}, "a-faire":{l:"À faire",c:"neutral"}};
 const ADOPT_CYCLE=["a-faire","en-cours","adopte"];
 const DIFF_TYPE={annonce:{l:"Annonce",c:"gold"}, decision:{l:"Décision",c:"pos"}, consigne:{l:"Consigne",c:"warn"}};
@@ -647,11 +678,12 @@ function renderFortnite(){
   document.getElementById('ft-bes-cnt').textContent = FT.besoins.length?`(${FT.besoins.length})`:'';
   document.getElementById('ft-besoins').innerHTML = besoins.length ? besoins.map(b=>{
     const i=FT.besoins.indexOf(b);
-    const tb=TYPE_BESOIN[b.type]||TYPE_BESOIN.materiel, pr=PRIO_BESOIN[b.priorite]||PRIO_BESOIN.moyenne, bs=STATUT_BESOIN[b.statut]||STATUT_BESOIN.ouvert;
+    const tb=TYPE_BESOIN[b.type]||TYPE_BESOIN.materiel, pr=PRIO_BESOIN[b.priorite]||PRIO_BESOIN.moyenne, ar=ARBITRAGE[b.arbitrage||'a-cadrer'];
+    const cout=parseFloat(b.cout)||0;
     return `<div class="sv">
-      <div class="sv-main"><div class="sv-txt">${tb.ic} ${ftEsc(b.libelle)}</div>
-        <div class="sv-meta">${chip('neutral',tb.l)}${chip(pr.c,'Priorité '+pr.l)}${chip(bs.c,bs.l)}${(b.aRemonter==='oui'&&b.statut!=='traite')?'<span class="remonter">↗ À remonter</span>':''}</div></div>
-      <span class="acts"><button class="ic-btn" onclick="openBesoin(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="besoinDel(${i})" title="Supprimer">🗑</button></span>
+      <div class="sv-main"><div class="sv-txt">${tb.ic} ${ftEsc(b.libelle)}${cout>0?` <span class="cout">${fmtEuro(cout)}</span>`:''}</div>
+        <div class="sv-meta">${chip('neutral',tb.l)}${chip(pr.c,'Priorité '+pr.l)}${chip(ar.c,ar.l)}${(b.aRemonter==='oui'&&besoinEnAttente(b))?'<span class="remonter">↗ À remonter</span>':''}</div></div>
+      <span class="acts"><button class="ic-btn" onclick="openBesoin(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="poleBesoinDel(${i})" title="Supprimer">🗑</button></span>
     </div>`;
   }).join('') : `<div class="empty">Aucun besoin. Note les manques (staff, matériel, budget) à faire remonter.</div>`;
 
@@ -675,7 +707,7 @@ function renderDashboard(){
   document.getElementById('dash-poles').innerHTML = POLE_IDS.map(id=>{
     const p=POLES[id], cad=cadenceOf(p);
     const openBloc=p.suivi.filter(s=>(s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu').length;
-    const besRem=p.besoins.filter(b=>b.aRemonter==='oui'&&b.statut!=='traite').length;
+    const besRem=p.besoins.filter(b=>b.aRemonter==='oui'&&besoinEnAttente(b)).length;
     const objEnCours=p.objectifs.filter(o=>o.statut==='en-cours').length;
     return `<button class="dash-pole" onclick="gotoPole('${id}')">
       <div class="dp-head"><span class="dp-name">${POLE_NAMES[id]}</span>${chip(cad.c,cad.label)}</div>
@@ -687,7 +719,7 @@ function renderDashboard(){
 
   const ordreP={haute:0,moyenne:1,basse:2};
   const rem=[];
-  POLE_IDS.forEach(id=>POLES[id].besoins.forEach(b=>{ if(b.aRemonter==='oui'&&b.statut!=='traite') rem.push({id,b}); }));
+  POLE_IDS.forEach(id=>POLES[id].besoins.forEach(b=>{ if(b.aRemonter==='oui'&&besoinEnAttente(b)) rem.push({id,b}); }));
   rem.sort((a,b)=>(ordreP[a.b.priorite]??9)-(ordreP[b.b.priorite]??9));
   document.getElementById('dash-rem-cnt').textContent = rem.length?`(${rem.length})`:'';
   document.getElementById('dash-remonter').innerHTML = rem.length ? rem.map(({id,b})=>{
@@ -757,7 +789,7 @@ let MCTX=null;
 function mField(f,val){
   if(f.t==='select'){ return `<select name="${f.k}">${f.opts.map(([v,l])=>`<option value="${v}"${String(val)===String(v)?' selected':''}>${ftEsc(l)}</option>`).join('')}</select>`; }
   if(f.t==='textarea'){ return `<textarea name="${f.k}" placeholder="${ftEsc(f.ph||'')}">${ftEsc(val==null?'':val)}</textarea>`; }
-  const type=f.t==='date'?'date':'text';
+  const type=f.t==='date'?'date':(f.t==='number'?'number':'text');
   return `<input type="${type}" name="${f.k}" value="${ftEsc(val==null?'':val)}" placeholder="${ftEsc(f.ph||'')}" ${f.req?'required':''}>`;
 }
 function openModal(title,fields,src,onSave,onDelete){
@@ -812,12 +844,58 @@ const BESOIN_FIELDS=[
   {k:'type',l:'Type',t:'select',opts:[['staff','Staff'],['materiel','Matériel'],['budget','Budget']]},
   {k:'libelle',l:'Besoin',t:'text',req:true},
   {k:'priorite',l:'Priorité',t:'select',opts:[['haute','Haute'],['moyenne','Moyenne'],['basse','Basse']]},
-  {k:'statut',l:'Statut',t:'select',opts:[['ouvert','Ouvert'],['en-cours','En cours'],['traite','Traité']]},
+  {k:'cout',l:'Coût estimé (€)',t:'number',ph:'ex. 500'},
+  {k:'arbitrage',l:'Arbitrage',t:'select',opts:[['a-cadrer','À cadrer'],['cadre','Cadré'],['valide','Validé'],['refuse','Refusé']]},
   {k:'aRemonter',l:'À remonter à la direction ?',t:'select',opts:[['non','Non'],['oui','Oui']]}
 ];
-function openBesoin(i){ const isNew=(i==null); openModal(isNew?'Ajouter un besoin':'Modifier le besoin',BESOIN_FIELDS,isNew?{type:'materiel',priorite:'moyenne',statut:'ouvert',aRemonter:'non'}:FT.besoins[i],
-  ()=>{ const v=readForm(BESOIN_FIELDS); if(isNew)FT.besoins.push(v); else FT.besoins[i]=v; ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>besoinDel(i)); }
-function besoinDel(i){ if(!confirm('Supprimer ce besoin ?')) return; FT.besoins.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
+function refreshBesoins(){ renderFortnite(); renderDashboard(); renderBesoinsTab(); }
+function besoinModal(poleId, index){
+  const arr=POLES[poleId].besoins, isNew=(index==null);
+  openModal(isNew?'Ajouter un besoin':'Modifier le besoin', BESOIN_FIELDS,
+    isNew?{type:'materiel',priorite:'moyenne',cout:'',arbitrage:'a-cadrer',aRemonter:'non'}:arr[index],
+    ()=>{ const v=readForm(BESOIN_FIELDS); if(isNew)arr.push(v); else arr[index]=Object.assign({},arr[index],v); savePoles(); closeModal(); refreshBesoins(); },
+    isNew?null:()=>besoinDel(poleId,index));
+}
+function openBesoin(i){ besoinModal(CUR, i); }
+function poleBesoinDel(i){ besoinDel(CUR, i); }
+function besoinDel(poleId,index){ if(!confirm('Supprimer ce besoin ?')) return; POLES[poleId].besoins.splice(index,1); savePoles(); closeModal(); refreshBesoins(); }
+
+/* =========================================================================
+   ONGLET BESOINS — vue d'ensemble + cadrage/arbitrage (mission 02)
+   ========================================================================= */
+let BES_FILTER_POLE="tous", BES_FILTER_ARB="tous";
+function allBesoins(){ const out=[]; POLE_IDS.forEach(id=>POLES[id].besoins.forEach((b,idx)=>out.push({poleId:id,idx,b}))); return out; }
+function renderBesoinsTab(){
+  const all=allBesoins();
+  const cost=list=>list.reduce((s,x)=>s+(parseFloat(x.b.cout)||0),0);
+  const rem=all.filter(x=>x.b.aRemonter==='oui'&&besoinEnAttente(x.b));
+  const valide=all.filter(x=>x.b.arbitrage==='valide');
+  document.getElementById('bes-recap').innerHTML=`
+    <div class="ph-item"><span class="phi-l">Besoins</span><span class="phi-v">${all.length}</span></div>
+    <div class="ph-item"><span class="phi-l">À remonter</span><span class="phi-v">${rem.length}</span></div>
+    <div class="ph-item"><span class="phi-l">Budget estimé total</span><span class="phi-v">${fmtEuro(cost(all))}</span></div>
+    <div class="ph-item"><span class="phi-l">Dont validé</span><span class="phi-v">${fmtEuro(cost(valide))}</span></div>`;
+
+  let items=all.slice();
+  if(BES_FILTER_POLE!=='tous') items=items.filter(x=>x.poleId===BES_FILTER_POLE);
+  if(BES_FILTER_ARB!=='tous') items=items.filter(x=>(x.b.arbitrage||'a-cadrer')===BES_FILTER_ARB);
+  const ordreP={haute:0,moyenne:1,basse:2};
+  items.sort((a,b)=>(ordreP[a.b.priorite]??9)-(ordreP[b.b.priorite]??9));
+
+  document.getElementById('bes-list').innerHTML = items.length ? items.map(({poleId,idx,b})=>{
+    const tb=TYPE_BESOIN[b.type]||TYPE_BESOIN.materiel, pr=PRIO_BESOIN[b.priorite]||PRIO_BESOIN.moyenne, ar=ARBITRAGE[b.arbitrage||'a-cadrer'];
+    const cout=parseFloat(b.cout)||0;
+    return `<div class="sv">
+      <div class="sv-main"><div class="sv-txt">${tb.ic} ${ftEsc(b.libelle)}${cout>0?` <span class="cout">${fmtEuro(cout)}</span>`:''}</div>
+        <div class="sv-meta">${chip('gold',POLE_NAMES[poleId])}${chip('neutral',tb.l)}${chip(pr.c,'Priorité '+pr.l)}${chip(ar.c,ar.l)}${(b.aRemonter==='oui'&&besoinEnAttente(b))?'<span class="remonter">↗ À remonter</span>':''}</div></div>
+      <span class="acts"><button class="ic-btn" onclick="besoinModal('${poleId}',${idx})" title="Cadrer / modifier">✎</button><button class="ic-btn del" onclick="besoinDel('${poleId}',${idx})" title="Supprimer">🗑</button></span>
+    </div>`;
+  }).join('') : `<div class="empty">Aucun besoin pour ce filtre.</div>`;
+}
+document.addEventListener('click',e=>{
+  const pb=e.target.closest('#bes-filter-pole .fbtn'); if(pb){ document.querySelectorAll('#bes-filter-pole .fbtn').forEach(x=>x.classList.remove('active')); pb.classList.add('active'); BES_FILTER_POLE=pb.dataset.f; renderBesoinsTab(); return; }
+  const ab=e.target.closest('#bes-filter-arb .fbtn'); if(ab){ document.querySelectorAll('#bes-filter-arb .fbtn').forEach(x=>x.classList.remove('active')); ab.classList.add('active'); BES_FILTER_ARB=ab.dataset.f; renderBesoinsTab(); }
+});
 
 /* Paramètres du pôle (manager, contact, rythme) */
 const POLE_FIELDS=[
@@ -840,6 +918,7 @@ function suiviNoteDel(i,j){ if(!confirm('Supprimer cette note ?')) return; FT.su
 
 updateTabBadges();
 renderDashboard();
+renderBesoinsTab();
 
 if(sessionStorage.getItem('flc-ok')==='1') unlock(); else document.getElementById('pw').focus();
 </script>
