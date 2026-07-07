@@ -556,10 +556,6 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.06 1.44.06 2.9.29 4.33.24 1.5.68 3.09 2.11 3.5 1.35.4 2.2-.6 2.98-1.55.55-.68 1.15-1.44 2.06-1.44h1.68c.91 0 1.51.76 2.06 1.44.78.95 1.63 1.95 2.98 1.55 1.43-.41 1.87-2 2.11-3.5.23-1.43.35-2.89.29-4.33A4 4 0 0 0 17.32 5z"/></svg>
       Delta Force <span class="badge alert" id="badge-deltaforce" style="display:none"></span>
     </button>
-    <button class="tab" data-view="besoins">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1z"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
-      Besoins
-    </button>
     <button class="tab" data-view="reunion">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       Réunions
@@ -632,24 +628,6 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <div id="reu-list"></div>
     </section>
 
-    <!-- BESOINS (vue d'ensemble + arbitrage) -->
-    <section class="view" id="view-besoins">
-      <div class="pole-head" id="bes-recap"></div>
-      <div class="suivi-filters" id="bes-filter-pole">
-        <button class="fbtn active" data-f="tous">Tous les pôles</button>
-        <button class="fbtn" data-f="fortnite">Fortnite</button>
-        <button class="fbtn" data-f="fifa">FIFA</button>
-        <button class="fbtn" data-f="deltaforce">Delta Force</button>
-      </div>
-      <div class="suivi-filters" id="bes-filter-arb">
-        <button class="fbtn active" data-f="tous">Tous statuts</button>
-        <button class="fbtn" data-f="a-cadrer">À cadrer</button>
-        <button class="fbtn" data-f="cadre">Cadré</button>
-        <button class="fbtn" data-f="valide">Validé</button>
-        <button class="fbtn" data-f="refuse">Refusé</button>
-      </div>
-      <div id="bes-list"></div>
-    </section>
 
     <!-- PÔLE (vue partagée : Fortnite / FIFA / Delta Force) -->
     <section class="view" id="view-pole">
@@ -826,7 +804,6 @@ const VIEWS = {
   dashboard:{title:"Tableau de bord", eyebrow:"Organisation", sub:"Vue direction — agrégé de tous les pôles"},
   masemaine:{title:"Ma semaine", eyebrow:"Centre d'action", sub:"Ce que tu dois traiter — points, actions, échéances et besoins"},
   reunion:{title:"Réunions", eyebrow:"Suivi des managers", sub:"Comptes-rendus de réunions de tous les pôles"},
-  besoins:{title:"Besoins", eyebrow:"Cadrage & arbitrage", sub:"Vue d'ensemble et arbitrage des besoins de tous les pôles"},
   calendrier:{title:"Calendrier", eyebrow:"Compétitions", sub:"Compétitions à venir et passées"},
   notes:{title:"Notes", eyebrow:"Base de connaissances", sub:"Procédures, infos, décisions et liens utiles"},
   parametres:{title:"Paramètres", eyebrow:"Administration", sub:"Sauvegarde des données, comptes et rôles"}
@@ -859,7 +836,6 @@ function showPage(v, poleId){
     if(v==='dashboard') renderDashboard();
     if(v==='masemaine') renderMaSemaine();
     if(v==='reunion') renderReunions();
-    if(v==='besoins') renderBesoinsTab();
     if(v==='calendrier') renderCalendrier();
     if(v==='notes') renderNotes();
     if(v==='parametres') renderComptes();
@@ -1338,7 +1314,7 @@ const BESOIN_FIELDS=[
   {k:'arbitrage',l:'Arbitrage',t:'select',opts:[['a-cadrer','À cadrer'],['cadre','Cadré'],['valide','Validé'],['refuse','Refusé']]},
   {k:'aRemonter',l:'À remonter à la direction ?',t:'select',opts:[['non','Non'],['oui','Oui']]}
 ];
-function refreshBesoins(){ renderFortnite(); renderDashboard(); renderBesoinsTab(); }
+function refreshBesoins(){ renderFortnite(); renderDashboard(); }
 function besoinModal(poleId, index){
   const arr=POLES[poleId].besoins, isNew=(index==null);
   openModal(isNew?'Ajouter un besoin':'Modifier le besoin', BESOIN_FIELDS,
@@ -1559,43 +1535,6 @@ document.getElementById('search-overlay').addEventListener('click',e=>{ if(e.tar
 document.addEventListener('click',e=>{ const pan=document.getElementById('alerts-panel'); if(pan.style.display!=='none' && !pan.contains(e.target) && !document.getElementById('btn-alerts').contains(e.target)) pan.style.display='none'; });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSearch(); const pan=document.getElementById('alerts-panel'); if(pan) pan.style.display='none'; } });
 
-/* =========================================================================
-   ONGLET BESOINS — vue d'ensemble + cadrage/arbitrage (mission 02)
-   ========================================================================= */
-let BES_FILTER_POLE="tous", BES_FILTER_ARB="tous";
-function allBesoins(){ const out=[]; POLE_IDS.forEach(id=>POLES[id].besoins.forEach((b,idx)=>out.push({poleId:id,idx,b}))); return out; }
-function renderBesoinsTab(){
-  const all=allBesoins();
-  const cost=list=>list.reduce((s,x)=>s+(parseFloat(x.b.cout)||0),0);
-  const rem=all.filter(x=>x.b.aRemonter==='oui'&&besoinEnAttente(x.b));
-  const valide=all.filter(x=>x.b.arbitrage==='valide');
-  document.getElementById('bes-recap').innerHTML=`
-    <div class="ph-item"><span class="phi-l">Besoins</span><span class="phi-v">${all.length}</span></div>
-    <div class="ph-item"><span class="phi-l">À remonter</span><span class="phi-v">${rem.length}</span></div>
-    <div class="ph-item"><span class="phi-l">Budget estimé total</span><span class="phi-v">${fmtEuro(cost(all))}</span></div>
-    <div class="ph-item"><span class="phi-l">Dont validé</span><span class="phi-v">${fmtEuro(cost(valide))}</span></div>`;
-
-  let items=all.slice();
-  if(BES_FILTER_POLE!=='tous') items=items.filter(x=>x.poleId===BES_FILTER_POLE);
-  if(BES_FILTER_ARB!=='tous') items=items.filter(x=>(x.b.arbitrage||'a-cadrer')===BES_FILTER_ARB);
-  const ordreP={haute:0,moyenne:1,basse:2};
-  items.sort((a,b)=>(ordreP[a.b.priorite]??9)-(ordreP[b.b.priorite]??9));
-
-  document.getElementById('bes-list').innerHTML = items.length ? items.map(({poleId,idx,b})=>{
-    const tb=TYPE_BESOIN[b.type]||TYPE_BESOIN.materiel, pr=PRIO_BESOIN[b.priorite]||PRIO_BESOIN.moyenne, ar=ARBITRAGE[b.arbitrage||'a-cadrer'];
-    const cout=parseFloat(b.cout)||0;
-    return `<div class="sv">
-      <div class="sv-ic gold">${tb.ic}</div>
-      <div class="sv-main"><div class="sv-txt">${ftEsc(b.libelle)}${cout>0?` <span class="cout">${fmtEuro(cout)}</span>`:''}</div>
-        <div class="sv-meta">${chip('gold',POLE_NAMES[poleId])}${chip('neutral',tb.l)}${chip(pr.c,'Priorité '+pr.l)}${chip(ar.c,ar.l)}${(b.aRemonter==='oui'&&besoinEnAttente(b))?'<span class="remonter">↗ À remonter</span>':''}</div></div>
-      <span class="acts"><button class="ic-btn" onclick="besoinModal('${poleId}',${idx})" title="Cadrer / modifier">✎</button><button class="ic-btn del" onclick="besoinDel('${poleId}',${idx})" title="Supprimer">🗑</button></span>
-    </div>`;
-  }).join('') : `<div class="empty">Aucun besoin pour ce filtre.</div>`;
-}
-document.addEventListener('click',e=>{
-  const pb=e.target.closest('#bes-filter-pole .fbtn'); if(pb){ document.querySelectorAll('#bes-filter-pole .fbtn').forEach(x=>x.classList.remove('active')); pb.classList.add('active'); BES_FILTER_POLE=pb.dataset.f; renderBesoinsTab(); return; }
-  const ab=e.target.closest('#bes-filter-arb .fbtn'); if(ab){ document.querySelectorAll('#bes-filter-arb .fbtn').forEach(x=>x.classList.remove('active')); ab.classList.add('active'); BES_FILTER_ARB=ab.dataset.f; renderBesoinsTab(); }
-});
 
 /* Paramètres du pôle (manager, contact, rythme) */
 const POLE_FIELDS=[
@@ -1619,7 +1558,7 @@ function suiviNoteDel(i,j){ if(!confirm('Supprimer cette note ?')) return; FT.su
 /* =========================================================================
    EXPORT / IMPORT — sauvegarde complète (pôles + données transversales)
    ========================================================================= */
-function refreshEverything(){ renderDashboard(); renderBesoinsTab(); renderReunions(); renderFortnite(); renderCalendrier(); updateTabBadges(); updateAlertsBadge(); }
+function refreshEverything(){ renderDashboard(); renderReunions(); renderFortnite(); renderCalendrier(); updateTabBadges(); updateAlertsBadge(); }
 function normalizeOrg(d){ d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; return d; }
 document.getElementById('btn-export').addEventListener('click', ()=>{
   const data={ app:"FLC Esport", version:1, exportedAt:new Date().toISOString(), poles:POLES, org:ORG };
@@ -1689,7 +1628,6 @@ function userDel(i){
 
 updateTabBadges();
 renderDashboard();
-renderBesoinsTab();
 renderReunions();
 renderComptes();
 renderCalendrier();

@@ -3,7 +3,7 @@
 Espace interne (privé) pour donner à la **direction** une lecture claire de l'activité esport.
 
 Design **sombre avec accent doré**, navigation en **barre supérieure** :
-`Dashboard · Ma semaine · Fortnite · FIFA · Delta Force · Réunions · Besoins · Calendrier · Notes · Paramètres` (admin).
+`Dashboard · Ma semaine · Fortnite · FIFA · Delta Force · Réunions · Calendrier · Notes · Paramètres` (admin).
 
 Dans la barre du haut : **recherche globale** (🔍), **centre d'alertes** (🔔) et déconnexion.
 
@@ -104,15 +104,6 @@ Tous les **comptes-rendus de réunions** des 3 pôles au même endroit :
 
 Les actions non cochées alimentent l'onglet **Ma semaine** et le **centre d'alertes**.
 
-### Besoins — cadrage & arbitrage (mission 02)
-
-Vue d'ensemble de **tous les besoins des 3 pôles** au même endroit :
-- **Récap budget** : nombre de besoins, nombre à remonter, **budget estimé total** et part validée ;
-- **Filtres** par pôle et par statut d'arbitrage ;
-- chaque besoin porte un **coût estimé (€)** et un statut d'**arbitrage** (À cadrer → Cadré →
-  Validé / Refusé), éditable directement depuis cette vue ou depuis l'onglet du pôle. Les besoins
-  « validé »/« refusé » sortent automatiquement des remontées à la direction.
-
 ### Fortnite / FIFA / Delta Force — un espace par pôle
 
 Les trois pôles partagent le **même moteur**. Chaque pôle contient, tout éditable directement :
@@ -125,7 +116,8 @@ Les trois pôles partagent le **même moteur**. Chaque pôle contient, tout édi
   avec des **notes d'avancement** datées par sujet. Une pastille sur l'onglet indique le nombre de
   blocages/problèmes non résolus ;
 - **Besoins du pôle** — type (staff/matériel/budget), priorité, **coût estimé**, statut
-  d'**arbitrage** et case **« à remonter à la direction »** (alimentent l'onglet Besoins et le Dashboard).
+  d'**arbitrage** et case **« à remonter à la direction »** (les besoins à remonter alimentent le
+  Dashboard, l'onglet Ma semaine et le centre d'alertes).
 
 ### Notes — base de connaissances
 
