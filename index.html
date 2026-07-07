@@ -353,14 +353,13 @@ button{font-family:inherit}
 @media print{
   :root{ --bg:#fff; --bg-2:#fff; --surface:#fff; --surface-2:#f3f3f5; --line:#c9c9cf; --line-soft:#e3e3e8; --text:#14141a; --muted:#4a4a52; --faint:#7a7a82; }
   body{background:#fff!important}
-  .topbar,.tabs,.rapport-actions,.icon-btn{display:none!important}
+  .topbar,.tabs,.icon-btn{display:none!important}
   .app{display:block!important}
   .view{display:none!important}
-  #view-rapport{display:block!important;animation:none!important}
-  .kpi,.rap-pole,.sv{break-inside:avoid}
+  .view.active{display:block!important;animation:none!important}
+  .sv,.cr{break-inside:avoid}
   .chip{color:#333!important;background:#eee!important;border-color:#ccc!important}
-  .cout,.remonter,.kpi{color:#111}
-  .kpi{border-top-color:#111}
+  .cout,.remonter{color:#111}
 }
 
 /* Dashboard direction */
@@ -561,9 +560,9 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1z"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
       Besoins
     </button>
-    <button class="tab" data-view="rapport">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="7"/><rect x="12" y="7" width="3" height="11"/><rect x="17" y="4" width="3" height="14"/></svg>
-      Rapport
+    <button class="tab" data-view="reunion">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Réunions
     </button>
     <button class="tab" data-view="calendrier">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -620,21 +619,17 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <div id="week-besoins"></div>
     </section>
 
-    <!-- RAPPORT (indicateurs consolidés + export) -->
-    <section class="view" id="view-rapport">
-      <div class="rapport-actions">
-        <span class="rapport-note">Synthèse en lecture directe — imprimable pour la direction.</span>
-        <button class="add-btn" onclick="window.print()">🖨 Imprimer / PDF</button>
+    <!-- RÉUNIONS (comptes-rendus de tous les pôles) -->
+    <section class="view" id="view-reunion">
+      <div class="section-title" style="margin-top:4px"><span class="rail"></span><h3>Comptes-rendus de réunions</h3><span class="cnt" id="reu-cnt"></span>
+        <button class="add-btn" onclick="openReunionNew()">+ Nouveau compte-rendu</button></div>
+      <div class="suivi-filters" id="reu-filter-pole">
+        <button class="fbtn active" data-f="tous">Tous les pôles</button>
+        <button class="fbtn" data-f="fortnite">Fortnite</button>
+        <button class="fbtn" data-f="fifa">FIFA</button>
+        <button class="fbtn" data-f="deltaforce">Delta Force</button>
       </div>
-      <div class="kpis" id="rap-kpis"></div>
-
-      <div class="section-title"><span class="rail"></span><h3>Tendances — 6 derniers mois</h3></div>
-      <div class="trends" id="rap-trends"></div>
-
-      <div class="section-title"><span class="rail"></span><h3>Par pôle</h3></div>
-      <div id="rap-poles"></div>
-      <div class="section-title"><span class="rail"></span><h3>À remonter à la direction</h3><span class="cnt" id="rap-rem-cnt"></span></div>
-      <div id="rap-remonter"></div>
+      <div id="reu-list"></div>
     </section>
 
     <!-- BESOINS (vue d'ensemble + arbitrage) -->
@@ -671,10 +666,6 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <div class="section-title"><span class="rail"></span><h3>Staff de la section</h3><span class="cnt" id="ft-staff-cnt"></span>
         <button class="add-btn" onclick="openStaff()">+ Ajouter un membre</button></div>
       <div class="staff-grid" id="ft-staff"></div>
-
-      <div class="section-title"><span class="rail"></span><h3>Comptes-rendus de réunions</h3><span class="cnt" id="ft-cr-cnt"></span>
-        <button class="add-btn" onclick="openReunion()">+ Nouveau compte-rendu</button></div>
-      <div id="ft-reunions"></div>
 
       <div class="section-title"><span class="rail"></span><h3>Avancées, blocages &amp; problèmes</h3><span class="cnt" id="ft-sv-cnt"></span>
         <button class="add-btn" onclick="openSuivi()">+ Ajouter</button></div>
@@ -834,8 +825,8 @@ document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage
 const VIEWS = {
   dashboard:{title:"Tableau de bord", eyebrow:"Organisation", sub:"Vue direction — agrégé de tous les pôles"},
   masemaine:{title:"Ma semaine", eyebrow:"Centre d'action", sub:"Ce que tu dois traiter — points, actions, échéances et besoins"},
+  reunion:{title:"Réunions", eyebrow:"Suivi des managers", sub:"Comptes-rendus de réunions de tous les pôles"},
   besoins:{title:"Besoins", eyebrow:"Cadrage & arbitrage", sub:"Vue d'ensemble et arbitrage des besoins de tous les pôles"},
-  rapport:{title:"Rapport", eyebrow:"Reporting & lisibilité", sub:"Synthèse consolidée de tous les pôles, à présenter à la direction"},
   calendrier:{title:"Calendrier", eyebrow:"Compétitions", sub:"Compétitions à venir et passées"},
   notes:{title:"Notes", eyebrow:"Base de connaissances", sub:"Procédures, infos, décisions et liens utiles"},
   parametres:{title:"Paramètres", eyebrow:"Administration", sub:"Sauvegarde des données, comptes et rôles"}
@@ -867,8 +858,8 @@ function showPage(v, poleId){
     const m=VIEWS[v]; setHead(m.eyebrow, m.title, m.sub);
     if(v==='dashboard') renderDashboard();
     if(v==='masemaine') renderMaSemaine();
+    if(v==='reunion') renderReunions();
     if(v==='besoins') renderBesoinsTab();
-    if(v==='rapport') renderRapport();
     if(v==='calendrier') renderCalendrier();
     if(v==='notes') renderNotes();
     if(v==='parametres') renderComptes();
@@ -1001,26 +992,6 @@ function renderFortnite(){
       ${m.notes?`<div class="m-notes">${ftEsc(m.notes)}</div>`:''}
       ${m.avis?`<div class="m-avis"><span class="lbl">Avis</span>${ftEsc(m.avis)}</div>`:''}
     </div>`).join('') : `<div class="empty">Aucun membre. Ajoutez le staff présent dans le pôle ${ftEsc(POLE_NAMES[CUR]||'')}.</div>`;
-
-  /* Comptes-rendus */
-  const rs=[...FT.reunions].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  document.getElementById('ft-cr-cnt').textContent = FT.reunions.length?`(${FT.reunions.length})`:'';
-  document.getElementById('ft-reunions').innerHTML = rs.length ? rs.map(r=>{
-    const i=FT.reunions.indexOf(r);
-    const acts=(r.actions||[]);
-    const actHTML=acts.map((a,ai)=>`
-      <label class="act ${a.fait?'done':''}"><input type="checkbox" ${a.fait?'checked':''} onchange="reunionActionToggle(${i},${ai})">
-        <span>${ftEsc(a.texte)}</span><button class="nx" onclick="reunionActionDel(${i},${ai})" title="Supprimer">🗑</button></label>`).join('');
-    const done=acts.filter(a=>a.fait).length;
-    return `<div class="cr">
-      <div class="cr-head"><span class="cr-date">${ftDate(r.date)||'—'}</span>
-        <div><div class="cr-titre">${ftEsc(r.titre||'Réunion')}</div>${r.participants?`<div class="cr-part">${ftEsc(r.participants)}</div>`:''}</div>
-        <span class="acts"><button class="ic-btn" onclick="openReunion(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="reunionDel(${i})" title="Supprimer">🗑</button></span></div>
-      ${r.contenu?`<div class="cr-body">${ftEsc(r.contenu)}</div>`:''}
-      <div class="cr-actions"><div class="cr-actions-h">Actions à suivre${acts.length?` · ${done}/${acts.length}`:''}</div>
-        ${actHTML}<button class="add-note" onclick="reunionActionAdd(${i})">+ Action</button></div>
-    </div>`;
-  }).join('') : `<div class="empty">Aucun compte-rendu. Ajoutez le compte-rendu d'une réunion.</div>`;
 
   /* Suivi */
   let list=[...FT.suivi].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
@@ -1287,16 +1258,54 @@ function openStaff(i){ const isNew=(i==null); openModal(isNew?'Ajouter un membre
   ()=>{ const v=readForm(STAFF_FIELDS); if(isNew)FT.staff.push(v); else FT.staff[i]=v; ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>staffDel(i)); }
 function staffDel(i){ if(!confirm('Supprimer ce membre ?')) return; FT.staff.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
 
-function openReunion(i){ const isNew=(i==null); openModal(isNew?'Nouveau compte-rendu':'Modifier le compte-rendu',REUNION_FIELDS,isNew?{date:ftToday()}:FT.reunions[i],
-  ()=>{ const v=readForm(REUNION_FIELDS); if(isNew){ v.actions=[]; FT.reunions.push(v); } else FT.reunions[i]=Object.assign({},FT.reunions[i],v); ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>reunionDel(i)); }
-function reunionDel(i){ if(!confirm('Supprimer ce compte-rendu ?')) return; FT.reunions.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
+/* =========================================================================
+   ONGLET RÉUNIONS — comptes-rendus de tous les pôles au même endroit
+   ========================================================================= */
+const REUNION_POLE_FIELD={k:'pole',l:'Pôle',t:'select',opts:[['fortnite','Fortnite'],['fifa','FIFA'],['deltaforce','Delta Force']]};
+let REU_FILTER='tous';
+function afterReunionChange(){ renderReunions(); renderDashboard(); }
+function openReunionNew(){
+  const fields=[REUNION_POLE_FIELD,...REUNION_FIELDS];
+  openModal('Nouveau compte-rendu', fields, {date:ftToday(), pole:(REU_FILTER!=='tous'?REU_FILTER:'fortnite')},
+    ()=>{ const v=readForm(fields); const pid=v.pole; delete v.pole; if(!POLES[pid]) return; v.actions=[]; POLES[pid].reunions.push(v); savePoles(); closeModal(); afterReunionChange(); }, null);
+}
+function openReunion(poleId,i){ const arr=POLES[poleId].reunions;
+  openModal('Modifier le compte-rendu', REUNION_FIELDS, arr[i],
+    ()=>{ const v=readForm(REUNION_FIELDS); arr[i]=Object.assign({},arr[i],v); savePoles(); closeModal(); afterReunionChange(); }, ()=>reunionDel(poleId,i)); }
+function reunionDel(poleId,i){ if(!confirm('Supprimer ce compte-rendu ?')) return; POLES[poleId].reunions.splice(i,1); savePoles(); closeModal(); afterReunionChange(); }
 
 /* Actions à suivre d'un compte-rendu */
 const ACTION_FIELDS=[{k:'texte',l:'Action à suivre',t:'text',req:true}];
-function reunionActionAdd(i){ openModal('Ajouter une action',ACTION_FIELDS,{},
-  ()=>{ const v=readForm(ACTION_FIELDS); const r=FT.reunions[i]; (r.actions||(r.actions=[])).push({texte:v.texte,fait:false}); ftSave(); closeModal(); renderFortnite(); }, null); }
-function reunionActionToggle(i,ai){ const a=FT.reunions[i].actions[ai]; a.fait=!a.fait; ftSave(); renderFortnite(); }
-function reunionActionDel(i,ai){ FT.reunions[i].actions.splice(ai,1); ftSave(); renderFortnite(); }
+function reunionActionAdd(poleId,i){ openModal('Ajouter une action',ACTION_FIELDS,{},
+  ()=>{ const v=readForm(ACTION_FIELDS); const r=POLES[poleId].reunions[i]; (r.actions||(r.actions=[])).push({texte:v.texte,fait:false}); savePoles(); closeModal(); afterReunionChange(); }, null); }
+function reunionActionToggle(poleId,i,ai){ const a=POLES[poleId].reunions[i].actions[ai]; a.fait=!a.fait; savePoles(); afterReunionChange(); }
+function reunionActionDel(poleId,i,ai){ POLES[poleId].reunions[i].actions.splice(ai,1); savePoles(); afterReunionChange(); }
+function renderReunions(){
+  const items=[];
+  POLE_IDS.forEach(id=>POLES[id].reunions.forEach((r,idx)=>items.push({id,r,idx})));
+  let list=items.slice();
+  if(REU_FILTER!=='tous') list=list.filter(x=>x.id===REU_FILTER);
+  list.sort((a,b)=>String(b.r.date).localeCompare(String(a.r.date)));
+  document.getElementById('reu-cnt').textContent=list.length?`(${list.length})`:'';
+  document.getElementById('reu-list').innerHTML= list.length ? list.map(({id,r,idx})=>{
+    const acts=(r.actions||[]);
+    const actHTML=acts.map((a,ai)=>`
+      <label class="act ${a.fait?'done':''}"><input type="checkbox" ${a.fait?'checked':''} onchange="reunionActionToggle('${id}',${idx},${ai})">
+        <span>${ftEsc(a.texte)}</span><button class="nx" onclick="reunionActionDel('${id}',${idx},${ai})" title="Supprimer">🗑</button></label>`).join('');
+    const done=acts.filter(a=>a.fait).length;
+    return `<div class="cr">
+      <div class="cr-head"><span class="cr-date">${ftDate(r.date)||'—'}</span>
+        <div><div class="cr-titre">${ftEsc(r.titre||'Réunion')} ${chip('gold',POLE_NAMES[id])}</div>${r.participants?`<div class="cr-part">${ftEsc(r.participants)}</div>`:''}</div>
+        <span class="acts"><button class="ic-btn" onclick="openReunion('${id}',${idx})" title="Modifier">✎</button><button class="ic-btn del" onclick="reunionDel('${id}',${idx})" title="Supprimer">🗑</button></span></div>
+      ${r.contenu?`<div class="cr-body">${ftEsc(r.contenu)}</div>`:''}
+      <div class="cr-actions"><div class="cr-actions-h">Actions à suivre${acts.length?` · ${done}/${acts.length}`:''}</div>
+        ${actHTML}<button class="add-note" onclick="reunionActionAdd('${id}',${idx})">+ Action</button></div>
+    </div>`;
+  }).join('') : `<div class="empty">Aucun compte-rendu${REU_FILTER!=='tous'?' pour ce pôle':''}. Ajoutez le compte-rendu d'une réunion.</div>`;
+}
+document.addEventListener('click',e=>{
+  const pb=e.target.closest('#reu-filter-pole .fbtn'); if(pb){ document.querySelectorAll('#reu-filter-pole .fbtn').forEach(x=>x.classList.remove('active')); pb.classList.add('active'); REU_FILTER=pb.dataset.f; renderReunions(); }
+});
 
 /* Objectifs du pôle */
 const OBJ_FIELDS=[
@@ -1317,8 +1326,8 @@ const RESULTAT_FIELDS=[
   {k:'note',l:'Note (optionnel)',t:'textarea'}
 ];
 function openResultat(i){ const isNew=(i==null); openModal(isNew?'Ajouter un résultat':'Modifier le résultat',RESULTAT_FIELDS,isNew?{date:ftToday(),issue:'participation'}:FT.resultats[i],
-  ()=>{ const v=readForm(RESULTAT_FIELDS); if(isNew)FT.resultats.push(v); else FT.resultats[i]=v; ftSave(); closeModal(); renderFortnite(); renderRapport(); }, isNew?null:()=>resultatDel(i)); }
-function resultatDel(i){ if(!confirm('Supprimer ce résultat ?')) return; FT.resultats.splice(i,1); ftSave(); closeModal(); renderFortnite(); renderRapport(); }
+  ()=>{ const v=readForm(RESULTAT_FIELDS); if(isNew)FT.resultats.push(v); else FT.resultats[i]=v; ftSave(); closeModal(); renderFortnite(); }, isNew?null:()=>resultatDel(i)); }
+function resultatDel(i){ if(!confirm('Supprimer ce résultat ?')) return; FT.resultats.splice(i,1); ftSave(); closeModal(); renderFortnite(); }
 
 /* Besoins du pôle */
 const BESOIN_FIELDS=[
@@ -1342,112 +1351,6 @@ function poleBesoinDel(i){ besoinDel(CUR, i); }
 function besoinDel(poleId,index){ if(!confirm('Supprimer ce besoin ?')) return; POLES[poleId].besoins.splice(index,1); savePoles(); closeModal(); refreshBesoins(); }
 
 /* =========================================================================
-   ONGLET RAPPORT — indicateurs consolidés + export (mission 03)
-   ========================================================================= */
-/* Tendances — graphiques 6 derniers mois (sans budget) */
-function lastMonths(n){ const out=[], now=new Date();
-  for(let i=n-1;i>=0;i--){ const d=new Date(now.getFullYear(),now.getMonth()-i,1);
-    out.push({key:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`, label:MOIS[d.getMonth()], year:d.getFullYear()}); }
-  return out;
-}
-function monthKey(iso){ return (iso&&/^\d{4}-\d{2}/.test(iso))?iso.slice(0,7):''; }
-function barCol(hClass,pct,val,extra){ return `<div class="tc-col"${extra||''}>
-    <div class="tc-val">${val>0?val:''}</div>
-    <div class="tc-track"><div class="tc-fill ${hClass}" style="height:${pct}%"></div></div></div>`; }
-function renderTrends(){
-  const months=lastMonths(6);
-  // Série 1 : points tenus (réunions) par mois, tous pôles
-  const pts=months.map(m=>{ let c=0; POLE_IDS.forEach(id=>POLES[id].reunions.forEach(r=>{ if(monthKey(r.date)===m.key) c++; })); return c; });
-  const ptsMax=Math.max(1,...pts);
-  // Série 2 : résultats par mois — podiums/victoires vs autres
-  const win=months.map(m=>{ let c=0; POLE_IDS.forEach(id=>POLES[id].resultats.forEach(r=>{ if(monthKey(r.date)===m.key&&(r.issue==='victoire'||r.issue==='podium')) c++; })); return c; });
-  const oth=months.map(m=>{ let c=0; POLE_IDS.forEach(id=>POLES[id].resultats.forEach(r=>{ if(monthKey(r.date)===m.key&&r.issue!=='victoire'&&r.issue!=='podium') c++; })); return c; });
-  const resMax=Math.max(1,...months.map((m,i)=>win[i]+oth[i]));
-
-  const chartPts=`<div class="tc-chart">${months.map((m,i)=>
-    `<div class="tc-slot" title="${m.label} ${m.year} · ${pts[i]} point(s)">
-       ${barCol('f-gold', Math.round(pts[i]/ptsMax*100), pts[i])}
-       <div class="tc-x">${m.label}</div></div>`).join('')}</div>`;
-
-  const chartRes=`<div class="tc-chart">${months.map((m,i)=>{
-    const total=win[i]+oth[i];
-    const wh=Math.round(win[i]/resMax*100), oh=Math.round(oth[i]/resMax*100);
-    return `<div class="tc-slot" title="${m.label} ${m.year} · ${win[i]} podium/victoire, ${oth[i]} autre(s)">
-       <div class="tc-col"><div class="tc-val">${total>0?total:''}</div>
-         <div class="tc-track">
-           <div class="tc-fill f-gray" style="height:${oh}%"></div>
-           <div class="tc-fill f-green" style="height:${wh}%"></div>
-         </div></div>
-       <div class="tc-x">${m.label}</div></div>`; }).join('')}</div>`;
-
-  document.getElementById('rap-trends').innerHTML=`
-    <div class="trend-card">
-      <div class="trend-h">Points tenus par mois</div>
-      <div class="trend-sub">Rythme des points managers, tous pôles</div>
-      ${chartPts}
-    </div>
-    <div class="trend-card">
-      <div class="trend-h">Résultats par mois</div>
-      <div class="trend-legend"><span class="lg"><i class="sw f-green"></i>Podiums &amp; victoires</span><span class="lg"><i class="sw f-gray"></i>Autres résultats</span></div>
-      ${chartRes}
-    </div>`;
-}
-function renderRapport(){
-  const totReunions=POLE_IDS.reduce((s,id)=>s+POLES[id].reunions.length,0);
-  const objAll=[]; POLE_IDS.forEach(id=>POLES[id].objectifs.forEach(o=>objAll.push(o)));
-  const objAtteint=objAll.filter(o=>o.statut==='atteint').length;
-  const vigil=[]; POLE_IDS.forEach(id=>POLES[id].suivi.forEach(s=>{ if((s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu') vigil.push(s); }));
-  const resAll=[]; POLE_IDS.forEach(id=>POLES[id].resultats.forEach(r=>resAll.push(r)));
-  const wins=resAll.filter(r=>r.issue==='victoire'||r.issue==='podium').length;
-  const bes=allBesoins();
-  const budgetEst=bes.reduce((s,x)=>s+(parseFloat(x.b.cout)||0),0);
-  let rem=bes.filter(x=>x.b.aRemonter==='oui'&&besoinEnAttente(x.b));
-  const kpis=[
-    {l:'Pôles', v:POLE_IDS.length},
-    {l:'Points tenus', v:totReunions},
-    {l:'Objectifs atteints', v:`${objAtteint}/${objAll.length}`},
-    {l:'Compétitions', v:resAll.length},
-    {l:'Victoires / podiums', v:wins},
-    {l:'Blocages ouverts', v:vigil.length},
-    {l:'Besoins à remonter', v:rem.length},
-    {l:'Budget estimé', v:fmtEuro(budgetEst)}
-  ];
-  document.getElementById('rap-kpis').innerHTML=kpis.map(k=>`<div class="kpi"><div class="kpi-v">${k.v}</div><div class="kpi-l">${ftEsc(k.l)}</div></div>`).join('');
-
-  renderTrends();
-
-  document.getElementById('rap-poles').innerHTML=POLE_IDS.map(id=>{
-    const p=POLES[id], cad=cadenceOf(p);
-    const rs=[...p.resultats].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,3);
-    const objEnCours=p.objectifs.filter(o=>o.statut==='en-cours').length;
-    const openBloc=p.suivi.filter(s=>(s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu').length;
-    const besRem=p.besoins.filter(b=>b.aRemonter==='oui'&&besoinEnAttente(b)).length;
-    return `<div class="rap-pole">
-      <div class="rap-pole-head"><h4>${POLE_NAMES[id]}</h4>${chip(cad.c,cad.label)}<span class="rp-mgr">${p.meta.manager?ftEsc(p.meta.manager):'Manager à renseigner'}</span></div>
-      <div class="rap-grid">
-        <div><div class="rp-lbl">Prochain point</div><div class="rp-val">${cad.prochain?ftDate(cad.prochain):'—'}</div></div>
-        <div><div class="rp-lbl">Objectifs en cours</div><div class="rp-val">${objEnCours}</div></div>
-        <div><div class="rp-lbl">Blocages ouverts</div><div class="rp-val">${openBloc}</div></div>
-        <div><div class="rp-lbl">Besoins à remonter</div><div class="rp-val">${besRem}</div></div>
-      </div>
-      <div class="rp-lbl" style="margin-top:14px">Derniers résultats</div>
-      ${rs.length? rs.map(r=>{ const is=ISSUE_RES[r.issue]||ISSUE_RES.participation;
-        return `<div class="rp-res">${chip(is.c,is.l)}<b>${ftEsc(r.competition)}</b>${r.resultat?` — ${ftEsc(r.resultat)}`:''}<span class="rp-date">${ftDate(r.date)}</span></div>`; }).join('')
-        : '<div class="rp-empty">Aucun résultat enregistré.</div>'}
-    </div>`;
-  }).join('');
-
-  const ordreP={haute:0,moyenne:1,basse:2};
-  rem=rem.slice().sort((a,b)=>(ordreP[a.b.priorite]??9)-(ordreP[b.b.priorite]??9));
-  document.getElementById('rap-rem-cnt').textContent=rem.length?`(${rem.length})`:'';
-  document.getElementById('rap-remonter').innerHTML=rem.length? rem.map(({poleId,b})=>{
-    const tb=TYPE_BESOIN[b.type]||TYPE_BESOIN.materiel, pr=PRIO_BESOIN[b.priorite]||PRIO_BESOIN.moyenne, cout=parseFloat(b.cout)||0;
-    return `<div class="sv"><div class="sv-main"><div class="sv-txt">${tb.ic} ${ftEsc(b.libelle)}${cout>0?` <span class="cout">${fmtEuro(cout)}</span>`:''}</div>
-      <div class="sv-meta">${chip('gold',POLE_NAMES[poleId])}${chip(pr.c,'Priorité '+pr.l)}</div></div></div>`;
-  }).join('') : `<div class="empty">Rien à remonter à la direction.</div>`;
-}
-
-/* =========================================================================
    CENTRE D'ALERTES — ce qui demande l'attention du directeur
    ========================================================================= */
 function poleLabel(id){ return id==='tous'?'Tous les pôles':(POLE_NAMES[id]||id||'—'); }
@@ -1463,7 +1366,7 @@ function computeAlerts(){
       if(j>10) A.push({key:`suivi|${id}|${s.texte}`,sev:'high',txt:`${s.type==='blocage'?'Blocage':'Problème'} ancien — ${nm}`,sub:`${s.texte} (ouvert depuis ${j} j)`,pole:id}); } });
     p.besoins.forEach(b=>{ if(b.arbitrage==='a-cadrer') A.push({key:`bes-cadrer|${id}|${b.libelle}`,sev:'med',txt:`Besoin à cadrer — ${nm}`,sub:b.libelle,pole:id});
       if(b.aRemonter==='oui'&&besoinEnAttente(b)) A.push({key:`bes-remonter|${id}|${b.libelle}`,sev:'med',txt:`À remonter à la direction — ${nm}`,sub:b.libelle,pole:id}); });
-    p.reunions.forEach(r=>(r.actions||[]).forEach(a=>{ if(!a.fait) A.push({key:`action|${id}|${a.texte}`,sev:'low',txt:`Action à suivre — ${nm}`,sub:a.texte,pole:id}); }));
+    p.reunions.forEach(r=>(r.actions||[]).forEach(a=>{ if(!a.fait) A.push({key:`action|${id}|${a.texte}`,sev:'low',txt:`Action à suivre — ${nm}`,sub:a.texte,pole:'reunion'}); }));
   });
   const live=A.filter(a=>!ALERTS_DISMISSED.includes(a.key));
   // purge les clés masquées qui n'existent plus (l'alerte a été résolue) pour éviter l'accumulation
@@ -1632,7 +1535,7 @@ function doSearch(){
   POLE_IDS.forEach(id=>{ const p=POLES[id], nm=POLE_NAMES[id];
     p.staff.forEach(m=>{ if(hit(m.nom)||hit(m.role)||hit(m.notes)||hit(m.avis)) groups.Staff.push({pole:id,txt:`${mark(m.nom)} — ${ftEsc(m.role||'')} · ${nm}`}); });
     p.besoins.forEach(b=>{ if(hit(b.libelle)) groups.Besoins.push({pole:id,txt:`${mark(b.libelle)} · ${nm}`}); });
-    p.reunions.forEach(r=>{ if(hit(r.titre)||hit(r.contenu)||hit(r.participants)) groups['Comptes-rendus'].push({pole:id,txt:`${mark(r.titre||'Réunion')} · ${nm}`}); });
+    p.reunions.forEach(r=>{ if(hit(r.titre)||hit(r.contenu)||hit(r.participants)) groups['Comptes-rendus'].push({view:'reunion',txt:`${mark(r.titre||'Réunion')} · ${nm}`}); });
     p.resultats.forEach(r=>{ if(hit(r.competition)||hit(r.resultat)) groups.Résultats.push({pole:id,txt:`${mark(r.competition)} — ${ftEsc(r.resultat||'')} · ${nm}`}); });
     p.objectifs.forEach(o=>{ if(hit(o.texte)) groups.Objectifs.push({pole:id,txt:`${mark(o.texte)} · ${nm}`}); });
     p.suivi.forEach(s=>{ if(hit(s.texte)) groups['Avancées & blocages'].push({pole:id,txt:`${mark(s.texte)} · ${nm}`}); });
@@ -1716,7 +1619,7 @@ function suiviNoteDel(i,j){ if(!confirm('Supprimer cette note ?')) return; FT.su
 /* =========================================================================
    EXPORT / IMPORT — sauvegarde complète (pôles + données transversales)
    ========================================================================= */
-function refreshEverything(){ renderDashboard(); renderBesoinsTab(); renderRapport(); renderFortnite(); renderCalendrier(); updateTabBadges(); updateAlertsBadge(); }
+function refreshEverything(){ renderDashboard(); renderBesoinsTab(); renderReunions(); renderFortnite(); renderCalendrier(); updateTabBadges(); updateAlertsBadge(); }
 function normalizeOrg(d){ d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; return d; }
 document.getElementById('btn-export').addEventListener('click', ()=>{
   const data={ app:"FLC Esport", version:1, exportedAt:new Date().toISOString(), poles:POLES, org:ORG };
@@ -1787,7 +1690,7 @@ function userDel(i){
 updateTabBadges();
 renderDashboard();
 renderBesoinsTab();
-renderRapport();
+renderReunions();
 renderComptes();
 renderCalendrier();
 renderNotes();
