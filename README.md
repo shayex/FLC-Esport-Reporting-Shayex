@@ -70,6 +70,18 @@ Les données sont enregistrées **dans le navigateur** (localStorage : `flc-pole
 
 ## Onglets
 
+### Ma semaine — centre d'action du directeur
+
+Consolide, en un seul écran, **tout ce que le directeur doit traiter**, tous pôles confondus :
+- **Points managers à tenir** : les pôles dont le prochain point est en retard ou prévu sous 7 jours
+  (ou sans rythme défini, « à planifier ») — cliquables pour ouvrir le pôle ;
+- **Actions à suivre** : toutes les actions de comptes-rendus non faites, **cochables directement**
+  (la case coche l'action dans le pôle et la retire de la liste) ;
+- **Échéances à venir** : objectifs en cours arrivant à échéance sous 7 jours (ou dépassés) ;
+- **Besoins à traiter** : besoins à cadrer ou à remonter.
+
+Une pastille sur l'onglet indique le nombre total d'éléments à traiter.
+
 ### Dashboard — vue direction
 
 Agrège **tous les pôles** :
@@ -87,6 +99,8 @@ Agrège **tous les pôles** :
 Synthèse consolidée de tous les pôles, pensée pour la direction :
 - **Indicateurs clés** (KPIs) calculés automatiquement : pôles, points tenus, objectifs atteints,
   compétitions, victoires/podiums, blocages ouverts, besoins à remonter, budget estimé ;
+- **Tendances (6 derniers mois)** : deux graphiques — *Points tenus par mois* (rythme des points
+  managers) et *Résultats par mois* (podiums & victoires vs autres résultats) ;
 - **Par pôle** : cadence, objectifs en cours, blocages, besoins à remonter et derniers résultats ;
 - **À remonter à la direction** : la synthèse des besoins prioritaires ;
 - Bouton **Imprimer / PDF** : le rapport bascule en version claire (sans la navigation) pour
