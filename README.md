@@ -68,6 +68,9 @@ Les données sont enregistrées **dans le navigateur** (localStorage : `flc-pole
 Agrège **tous les pôles** :
 - **Objectifs communs de l'organisation** : objectifs partagés par tous les pôles (statut + échéance),
   qui remontent dans le centre d'alertes et la recherche ;
+- **Objectifs suivis par pôle** : matrice *objectif × pôle* — un même objectif suivi pour Fortnite,
+  FIFA et Delta Force, avec un clic sur la case pour cycler le statut (À faire → En cours → Atteint)
+  et un compteur d'avancement homogène entre les jeux ;
 - **Vue par pôle** : carte par pôle (manager, cadence / prochain point, nb de blocages·problèmes
   ouverts, besoins à remonter, objectifs en cours) — cliquable pour ouvrir le pôle ;
 - **À remonter à la direction** : tous les besoins marqués « à remonter », triés par priorité ;

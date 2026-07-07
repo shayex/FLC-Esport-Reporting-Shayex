@@ -547,6 +547,11 @@ table.matrix tbody tr:last-child td{border-bottom:none}
         <button class="add-btn" onclick="openObjCommun()">+ Ajouter un objectif</button></div>
       <div id="dash-objectifs" style="margin-bottom:6px"></div>
 
+      <div class="section-title"><span class="rail"></span><h3>Objectifs suivis par pôle</h3><span class="cnt" id="dash-objm-cnt"></span>
+        <button class="add-btn" onclick="openObjM()">+ Ajouter un objectif</button></div>
+      <div class="muted-hint" style="margin:-2px 0 8px;color:var(--muted);font-size:12px">Un même objectif suivi pour les 3 pôles — cliquez une case pour changer le statut (À faire → En cours → Atteint).</div>
+      <div id="dash-objm" style="margin-bottom:6px"></div>
+
       <div class="section-title"><span class="rail"></span><h3>Vue par pôle</h3></div>
       <div class="dash-poles" id="dash-poles"></div>
 
@@ -828,7 +833,7 @@ function ftSave(){ savePoles(); }
 /* Données transversales (organisation) : pratiques communes + diffusion managers */
 const ORG_KEY="flc-org-v1";
 function loadOrg(){ let d; try{ d=JSON.parse(localStorage.getItem(ORG_KEY)); }catch(e){}
-  d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; d.evenements=Array.isArray(d.evenements)?d.evenements:[]; d.notes=Array.isArray(d.notes)?d.notes:[]; d.objectifsCommuns=Array.isArray(d.objectifsCommuns)?d.objectifsCommuns:[];
+  d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; d.evenements=Array.isArray(d.evenements)?d.evenements:[]; d.notes=Array.isArray(d.notes)?d.notes:[]; d.objectifsCommuns=Array.isArray(d.objectifsCommuns)?d.objectifsCommuns:[]; d.objectifsMatrice=Array.isArray(d.objectifsMatrice)?d.objectifsMatrice:[];
   if(!Array.isArray(d.noteCats)||!d.noteCats.length) d.noteCats=[{id:'procedure',label:'Procédure',color:'#E4B44C'},{id:'info',label:'Info',color:'#8B8B94'},{id:'decision',label:'Décision',color:'#5FD08C'},{id:'lien',label:'Liens utiles',color:'#F5B944'},{id:'autre',label:'Autre',color:'#8B8B94'}];
   return d; }
 function saveOrg(){ try{ localStorage.setItem(ORG_KEY, JSON.stringify(ORG)); }catch(e){} }
@@ -857,6 +862,8 @@ function besoinEnAttente(b){ return !['valide','refuse'].includes(b.arbitrage); 
 function fmtEuro(n){ return Math.round(n||0).toLocaleString('fr-FR')+' €'; }
 const ADOPTION={adopte:{l:"Adopté",c:"pos"}, "en-cours":{l:"En cours",c:"warn"}, "a-faire":{l:"À faire",c:"neutral"}};
 const ADOPT_CYCLE=["a-faire","en-cours","adopte"];
+const OBJM_STATUS={"a-faire":{l:"À faire",c:"neutral"}, "en-cours":{l:"En cours",c:"warn"}, atteint:{l:"Atteint",c:"pos"}};
+const OBJM_CYCLE=["a-faire","en-cours","atteint"];
 const DIFF_TYPE={annonce:{l:"Annonce",c:"gold"}, decision:{l:"Décision",c:"pos"}, consigne:{l:"Consigne",c:"warn"}};
 const ISSUE_RES={victoire:{l:"Victoire",c:"pos"}, podium:{l:"Podium",c:"gold"}, defaite:{l:"Défaite",c:"neg"}, participation:{l:"Participation",c:"neutral"}};
 const SUIVI_ICON={
@@ -1020,6 +1027,29 @@ const OBJ_COMMUN_FIELDS=[
 function openObjCommun(i){ const isNew=(i==null); openModal(isNew?'Ajouter un objectif commun':"Modifier l'objectif",OBJ_COMMUN_FIELDS,isNew?{statut:'en-cours'}:ORG.objectifsCommuns[i],
   ()=>{ const v=readForm(OBJ_COMMUN_FIELDS); if(isNew)ORG.objectifsCommuns.push(v); else ORG.objectifsCommuns[i]=v; saveOrg(); closeModal(); renderDashboard(); }, isNew?null:()=>objCommunDel(i)); }
 function objCommunDel(i){ if(!confirm('Supprimer cet objectif commun ?')) return; ORG.objectifsCommuns.splice(i,1); saveOrg(); closeModal(); renderDashboard(); }
+
+/* Objectifs suivis par pôle — matrice objectif × pôle */
+const OBJM_FIELDS=[{k:'texte',l:'Objectif',t:'text',req:true}];
+function objmProgress(o){ const st=o.statut||{}; let done=0; POLE_IDS.forEach(id=>{ if(st[id]==='atteint')done++; }); return done; }
+function renderObjMatrice(){
+  const wrap=document.getElementById('dash-objm'), om=ORG.objectifsMatrice;
+  document.getElementById('dash-objm-cnt').textContent=om.length?`(${om.length})`:'';
+  if(!om.length){ wrap.innerHTML=`<div class="empty">Aucun objectif suivi par pôle. Ajoute un objectif commun aux 3 pôles (ex. « Points hebdo tenus », « Effectif complété ») pour comparer l'avancement.</div>`; return; }
+  const head=`<tr><th>Objectif</th>${POLE_IDS.map(id=>`<th>${POLE_NAMES[id]}</th>`).join('')}<th></th></tr>`;
+  const rows=om.map((o,i)=>{
+    const cells=POLE_IDS.map(id=>{ const s=OBJM_STATUS[(o.statut||{})[id]]||OBJM_STATUS['a-faire'];
+      return `<td><button class="cell ${s.c}" onclick="cycleObjM(${i},'${id}')" title="Cliquer pour changer">${s.l}</button></td>`; }).join('');
+    return `<tr><td class="pr-nom">${ftEsc(o.texte)}<div class="pr-desc">${objmProgress(o)}/${POLE_IDS.length} pôle(s) atteint(s)</div></td>${cells}
+      <td class="pr-acts"><button class="ic-btn" onclick="openObjM(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="objMDel(${i})" title="Supprimer">🗑</button></td></tr>`;
+  }).join('');
+  wrap.innerHTML=`<div class="table-wrap"><table class="matrix"><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
+}
+function cycleObjM(i,id){ const o=ORG.objectifsMatrice[i]; o.statut=o.statut||{}; const cur=o.statut[id]||'a-faire';
+  o.statut[id]=OBJM_CYCLE[(OBJM_CYCLE.indexOf(cur)+1)%3]; saveOrg(); renderObjMatrice(); updateAlertsBadge(); }
+function openObjM(i){ const isNew=(i==null); openModal(isNew?'Ajouter un objectif suivi par pôle':"Modifier l'objectif",OBJM_FIELDS,isNew?{}:ORG.objectifsMatrice[i],
+  ()=>{ const v=readForm(OBJM_FIELDS); if(isNew){ v.statut={}; POLE_IDS.forEach(id=>v.statut[id]='a-faire'); ORG.objectifsMatrice.push(v); } else ORG.objectifsMatrice[i]=Object.assign({},ORG.objectifsMatrice[i],v); saveOrg(); closeModal(); renderObjMatrice(); }, isNew?null:()=>objMDel(i)); }
+function objMDel(i){ if(!confirm('Supprimer cet objectif ?')) return; ORG.objectifsMatrice.splice(i,1); saveOrg(); closeModal(); renderObjMatrice(); }
+
 function renderDashboard(){
   const oc=ORG.objectifsCommuns;
   document.getElementById('dash-obj-cnt').textContent=oc.length?`(${oc.length})`:'';
@@ -1065,6 +1095,7 @@ function renderDashboard(){
       <div class="sv-meta">${chip('gold',POLE_NAMES[id])}${chip(t.c,t.l)}${st?chip(st.c,st.l):''}</div></div></div>`;
   }).join('') : `<div class="empty">Aucun blocage ou problème en cours.</div>`;
 
+  renderObjMatrice();
   renderDiffusion();
   updateTabBadges();
   updateAlertsBadge();
@@ -1444,6 +1475,7 @@ function doSearch(){
   ORG.evenements.forEach(e=>{ if(hit(e.titre)||hit(e.note)) groups['Évènements'].push({view:'calendrier',txt:`${mark(e.titre)} · ${poleLabel(e.pole)}`}); });
   ORG.notes.forEach(n=>{ if(hit(n.titre)||hit(n.contenu)) groups['Notes'].push({view:'notes',txt:`${mark(n.titre)}`}); });
   ORG.objectifsCommuns.forEach(o=>{ if(hit(o.texte)) groups.Objectifs.push({view:'dashboard',txt:`${mark(o.texte)} · Objectif commun`}); });
+  ORG.objectifsMatrice.forEach(o=>{ if(hit(o.texte)) groups.Objectifs.push({view:'dashboard',txt:`${mark(o.texte)} · Objectif suivi par pôle`}); });
   let html='', total=0;
   Object.keys(groups).forEach(g=>{ const arr=groups[g]; if(!arr.length) return; total+=arr.length;
     html+=`<div class="sr-group-h">${g} (${arr.length})</div>`+arr.slice(0,8).map(r=>`<div class="sr-item" onclick="${r.view?`gotoSearchView('${r.view}')`:`gotoSearchPole('${r.pole}')`}"><span class="sr-txt">${r.txt}</span></div>`).join(''); });
