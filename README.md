@@ -3,9 +3,9 @@
 Espace interne (privé) pour donner à la **direction** une lecture claire de l'activité esport.
 
 Design **sombre avec accent doré**, navigation en **barre supérieure** :
-`Dashboard · Fortnite · FIFA · Delta Force · Besoins · Rapport · Calendrier · Notes`.
+`Dashboard · Fortnite · FIFA · Delta Force · Besoins · Rapport · Calendrier · Notes · Paramètres` (admin).
 
-Dans la barre du haut : **recherche globale** (🔍), **centre d'alertes** (🔔), export/import et déconnexion.
+Dans la barre du haut : **recherche globale** (🔍), **centre d'alertes** (🔔) et déconnexion.
 
 ### Centre d'alertes (🔔)
 
@@ -37,11 +37,16 @@ pour les évènements sur **plusieurs jours** (vacances, absences…). Cliquer u
 Double-cliquez sur `index.html`. Connexion par **identifiant + code PIN** (4 à 6 chiffres).
 Compte par défaut : **`shayex` / PIN `0000`** (Directeur, Admin) — à **changer à la première connexion**.
 
-## Comptes & rôles
+## Paramètres (admin)
 
-Les administrateurs voient un onglet **Comptes** (masqué pour les autres) pour **créer / modifier /
-supprimer** des comptes et attribuer un **rôle** : CEO, CO-CEO, Directeur, Manager — avec une
-option **Administrateur** (droit de gérer les comptes).
+Les administrateurs voient un onglet **Paramètres** (masqué pour les autres) qui regroupe
+l'administration du site : la **sauvegarde des données** (export / import) et la gestion des
+**comptes & rôles**.
+
+### Comptes & rôles
+
+Depuis Paramètres : **créer / modifier / supprimer** des comptes et attribuer un **rôle** :
+CEO, CO-CEO, Directeur, Manager — avec une option **Administrateur** (droit de gérer les comptes).
 
 **Code PIN & première connexion** : l'admin fixe un **PIN initial** à la création. À sa première
 connexion (ou après un reset du PIN par l'admin), la personne doit **définir son propre PIN** avant
@@ -51,11 +56,11 @@ d'accéder au site. Les comptes concernés affichent un repère « PIN à change
 > fonctionnel de rôles, **pas un contrôle d'accès serveur** — pour un vrai partage sécurisé entre
 > plusieurs personnes, il faut héberger l'application avec une base et une authentification réelles.
 
-## Sauvegarde (export / import)
+### Sauvegarde (export / import)
 
-Deux boutons dans la barre du haut : **Exporter** télécharge un fichier `.json` contenant toutes les
-données (pôles + transversal), **Importer** restaure une sauvegarde. Pratique pour sauvegarder ou
-transférer les données sur un autre poste.
+Depuis l'onglet **Paramètres** : **Exporter les données** télécharge un fichier `.json` contenant
+toutes les données (pôles + transversal), **Importer une sauvegarde** les restaure (remplace les
+données actuelles). Pratique pour sauvegarder ou transférer les données sur un autre poste.
 
 ## Structure
 
