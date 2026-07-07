@@ -543,7 +543,11 @@ table.matrix tbody tr:last-child td{border-bottom:none}
 
     <!-- DASHBOARD -->
     <section class="view active" id="view-dashboard">
-      <div class="section-title" style="margin-top:4px"><span class="rail"></span><h3>Vue par pôle</h3></div>
+      <div class="section-title" style="margin-top:4px"><span class="rail"></span><h3>Objectifs communs de l'organisation</h3><span class="cnt" id="dash-obj-cnt"></span>
+        <button class="add-btn" onclick="openObjCommun()">+ Ajouter un objectif</button></div>
+      <div id="dash-objectifs" style="margin-bottom:6px"></div>
+
+      <div class="section-title"><span class="rail"></span><h3>Vue par pôle</h3></div>
       <div class="dash-poles" id="dash-poles"></div>
 
       <div class="section-title"><span class="rail"></span><h3>À remonter à la direction</h3><span class="cnt" id="dash-rem-cnt"></span></div>
@@ -824,7 +828,7 @@ function ftSave(){ savePoles(); }
 /* Données transversales (organisation) : pratiques communes + diffusion managers */
 const ORG_KEY="flc-org-v1";
 function loadOrg(){ let d; try{ d=JSON.parse(localStorage.getItem(ORG_KEY)); }catch(e){}
-  d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; d.evenements=Array.isArray(d.evenements)?d.evenements:[]; d.notes=Array.isArray(d.notes)?d.notes:[];
+  d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; d.evenements=Array.isArray(d.evenements)?d.evenements:[]; d.notes=Array.isArray(d.notes)?d.notes:[]; d.objectifsCommuns=Array.isArray(d.objectifsCommuns)?d.objectifsCommuns:[];
   if(!Array.isArray(d.noteCats)||!d.noteCats.length) d.noteCats=[{id:'procedure',label:'Procédure',color:'#E4B44C'},{id:'info',label:'Info',color:'#8B8B94'},{id:'decision',label:'Décision',color:'#5FD08C'},{id:'lien',label:'Liens utiles',color:'#F5B944'},{id:'autre',label:'Autre',color:'#8B8B94'}];
   return d; }
 function saveOrg(){ try{ localStorage.setItem(ORG_KEY, JSON.stringify(ORG)); }catch(e){} }
@@ -1008,7 +1012,26 @@ function updateTabBadges(){
    DASHBOARD DIRECTION — agrège tous les pôles (brique C)
    ========================================================================= */
 function gotoPole(id){ showPage('pole', id); }
+const OBJ_COMMUN_FIELDS=[
+  {k:'texte',l:'Objectif',t:'text',req:true},
+  {k:'echeance',l:'Échéance (optionnel)',t:'date'},
+  {k:'statut',l:'Statut',t:'select',opts:[['en-cours','En cours'],['atteint','Atteint'],['abandonne','Abandonné']]}
+];
+function openObjCommun(i){ const isNew=(i==null); openModal(isNew?'Ajouter un objectif commun':"Modifier l'objectif",OBJ_COMMUN_FIELDS,isNew?{statut:'en-cours'}:ORG.objectifsCommuns[i],
+  ()=>{ const v=readForm(OBJ_COMMUN_FIELDS); if(isNew)ORG.objectifsCommuns.push(v); else ORG.objectifsCommuns[i]=v; saveOrg(); closeModal(); renderDashboard(); }, isNew?null:()=>objCommunDel(i)); }
+function objCommunDel(i){ if(!confirm('Supprimer cet objectif commun ?')) return; ORG.objectifsCommuns.splice(i,1); saveOrg(); closeModal(); renderDashboard(); }
 function renderDashboard(){
+  const oc=ORG.objectifsCommuns;
+  document.getElementById('dash-obj-cnt').textContent=oc.length?`(${oc.length})`:'';
+  document.getElementById('dash-objectifs').innerHTML=oc.length? oc.map((o,i)=>{
+    const st=STATUT_OBJ[o.statut]||STATUT_OBJ['en-cours'];
+    return `<div class="sv ${o.statut==='atteint'?'atteint':(o.statut==='abandonne'?'abandonne':'')}">
+      <div class="sv-main"><div class="sv-txt">${ftEsc(o.texte)}</div>
+        <div class="sv-meta">${chip(st.c,st.l)}${o.echeance?`<span>Échéance : ${ftDate(o.echeance)}</span>`:''}</div></div>
+      <span class="acts"><button class="ic-btn" onclick="openObjCommun(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="objCommunDel(${i})" title="Supprimer">🗑</button></span>
+    </div>`;
+  }).join('') : `<div class="empty">Aucun objectif commun. Fixe des objectifs partagés par tous les pôles (ex. « Structurer le reporting », « Développer les partenariats »).</div>`;
+
   document.getElementById('dash-poles').innerHTML = POLE_IDS.map(id=>{
     const p=POLES[id], cad=cadenceOf(p);
     const openBloc=p.suivi.filter(s=>(s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu').length;
@@ -1252,6 +1275,9 @@ function computeAlerts(){
       if(b.aRemonter==='oui'&&besoinEnAttente(b)) A.push({sev:'med',txt:`À remonter à la direction — ${nm}`,sub:b.libelle,pole:id}); });
     p.reunions.forEach(r=>(r.actions||[]).forEach(a=>{ if(!a.fait) A.push({sev:'low',txt:`Action à suivre — ${nm}`,sub:a.texte,pole:id}); }));
   });
+  ORG.objectifsCommuns.forEach(o=>{ if(o.statut==='en-cours'&&o.echeance){ const j=joursEntre(t,o.echeance);
+    if(j<0) A.push({sev:'high',txt:'Objectif commun dépassé',sub:`${o.texte} (échéance ${ftDate(o.echeance)})`,pole:'dashboard'});
+    else if(j<=7) A.push({sev:'med',txt:'Objectif commun à échéance',sub:`${o.texte} (dans ${j} j)`,pole:'dashboard'}); } });
   const rank={high:0,med:1,low:2};
   A.sort((x,y)=>rank[x.sev]-rank[y.sev]);
   return A;
@@ -1266,7 +1292,7 @@ function renderAlerts(){
       <div class="alert-main"><div class="alert-txt">${ftEsc(a.txt)}</div><div class="alert-sub">${ftEsc(a.sub)}</div></div>
     </div>`).join('') : `<div class="alerts-empty">Rien à signaler. Tout est à jour 👌</div>`;
 }
-function gotoAlert(id){ document.getElementById('alerts-panel').style.display='none'; if(POLE_IDS.includes(id)) gotoPole(id); }
+function gotoAlert(id){ document.getElementById('alerts-panel').style.display='none'; if(POLE_IDS.includes(id)) gotoPole(id); else showPage(id, null); }
 function toggleAlerts(){ const el=document.getElementById('alerts-panel'); if(el.style.display==='none'){ renderAlerts(); el.style.display=''; } else el.style.display='none'; }
 
 /* =========================================================================
@@ -1417,6 +1443,7 @@ function doSearch(){
   });
   ORG.evenements.forEach(e=>{ if(hit(e.titre)||hit(e.note)) groups['Évènements'].push({view:'calendrier',txt:`${mark(e.titre)} · ${poleLabel(e.pole)}`}); });
   ORG.notes.forEach(n=>{ if(hit(n.titre)||hit(n.contenu)) groups['Notes'].push({view:'notes',txt:`${mark(n.titre)}`}); });
+  ORG.objectifsCommuns.forEach(o=>{ if(hit(o.texte)) groups.Objectifs.push({view:'dashboard',txt:`${mark(o.texte)} · Objectif commun`}); });
   let html='', total=0;
   Object.keys(groups).forEach(g=>{ const arr=groups[g]; if(!arr.length) return; total+=arr.length;
     html+=`<div class="sr-group-h">${g} (${arr.length})</div>`+arr.slice(0,8).map(r=>`<div class="sr-item" onclick="${r.view?`gotoSearchView('${r.view}')`:`gotoSearchPole('${r.pole}')`}"><span class="sr-txt">${r.txt}</span></div>`).join(''); });
