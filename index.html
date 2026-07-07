@@ -219,13 +219,18 @@ button{font-family:inherit}
 .alerts-panel{position:fixed;top:66px;right:24px;z-index:45;width:372px;max-width:calc(100vw - 32px);max-height:72vh;
   overflow-y:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
 .alerts-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line-soft);font-weight:700;font-size:14px;position:sticky;top:0;background:var(--surface)}
+.alerts-head-r{display:flex;align-items:center;gap:10px}
 .alerts-count{font-size:12px;color:var(--muted);font-weight:600}
-.alert-item{display:flex;gap:11px;align-items:flex-start;padding:12px 16px;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .12s}
+.alerts-clear{background:none;border:none;color:var(--gold);font-size:11.5px;font-weight:700;cursor:pointer;padding:2px 4px;border-radius:6px}
+.alerts-clear:hover{background:var(--surface-2);text-decoration:underline}
+.alert-item{display:flex;gap:11px;align-items:flex-start;padding:12px 16px;border-bottom:1px solid var(--line-soft);transition:background .12s}
 .alert-item:last-child{border-bottom:none}
 .alert-item:hover{background:var(--surface-2)}
 .alert-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex:none}
 .alert-dot.high{background:#F0575C}.alert-dot.med{background:var(--gold)}.alert-dot.low{background:var(--muted)}
-.alert-main{min-width:0;flex:1}
+.alert-main{min-width:0;flex:1;cursor:pointer}
+.alert-x{flex:none;background:none;border:none;color:var(--faint);font-size:13px;cursor:pointer;padding:2px 5px;border-radius:6px;line-height:1;margin-top:2px}
+.alert-x:hover{background:var(--crimson,#c0392b);color:#fff}
 .alert-txt{font-size:13px;line-height:1.4;font-weight:600}
 .alert-sub{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4}
 .alerts-empty{padding:28px 16px;text-align:center;color:var(--faint);font-size:13px}
@@ -670,7 +675,9 @@ table.matrix tbody tr:last-child td{border-bottom:none}
 
 <!-- ===================== CENTRE D'ALERTES ===================== -->
 <div class="alerts-panel" id="alerts-panel" style="display:none">
-  <div class="alerts-head"><span>Alertes</span><span class="alerts-count" id="alerts-count"></span></div>
+  <div class="alerts-head"><span>Alertes</span>
+    <span class="alerts-head-r"><span class="alerts-count" id="alerts-count"></span>
+    <button class="alerts-clear" id="alerts-clear" onclick="dismissAllAlerts()" style="display:none">Tout effacer</button></span></div>
   <div id="alerts-list"></div>
 </div>
 
@@ -829,6 +836,12 @@ function loadOrg(){ let d; try{ d=JSON.parse(localStorage.getItem(ORG_KEY)); }ca
   return d; }
 function saveOrg(){ try{ localStorage.setItem(ORG_KEY, JSON.stringify(ORG)); }catch(e){} }
 let ORG=loadOrg();
+
+/* Alertes masquées (« supprimées » par l'utilisateur) — clés persistées */
+const ALERTS_DISMISS_KEY="flc-alerts-dismissed-v1";
+function loadDismissed(){ let d; try{ d=JSON.parse(localStorage.getItem(ALERTS_DISMISS_KEY)); }catch(e){} return Array.isArray(d)?d:[]; }
+let ALERTS_DISMISSED=loadDismissed();
+function saveDismissed(){ try{ localStorage.setItem(ALERTS_DISMISS_KEY, JSON.stringify(ALERTS_DISMISSED)); }catch(e){} }
 
 /* Comptes utilisateurs + rôles (côté navigateur — pas une sécurité serveur) */
 const USERS_KEY="flc-users-v1";
@@ -1242,28 +1255,37 @@ function computeAlerts(){
   const A=[], t=ftToday();
   POLE_IDS.forEach(id=>{ const p=POLES[id], nm=POLE_NAMES[id];
     const cad=cadenceOf(p);
-    if(cad.label==='En retard') A.push({sev:'high',txt:`Point en retard — ${nm}`,sub:`Prochain point prévu le ${ftDate(cad.prochain)}`,pole:id});
+    if(cad.label==='En retard') A.push({key:`retard|${id}`,sev:'high',txt:`Point en retard — ${nm}`,sub:`Prochain point prévu le ${ftDate(cad.prochain)}`,pole:id});
     p.objectifs.forEach(o=>{ if(o.statut==='en-cours'&&o.echeance){ const j=joursEntre(t,o.echeance);
-      if(j<0) A.push({sev:'high',txt:`Objectif dépassé — ${nm}`,sub:`${o.texte} (échéance ${ftDate(o.echeance)})`,pole:id});
-      else if(j<=7) A.push({sev:'med',txt:`Objectif à échéance — ${nm}`,sub:`${o.texte} (dans ${j} j)`,pole:id}); } });
+      if(j<0) A.push({key:`obj|${id}|${o.texte}`,sev:'high',txt:`Objectif dépassé — ${nm}`,sub:`${o.texte} (échéance ${ftDate(o.echeance)})`,pole:id});
+      else if(j<=7) A.push({key:`obj|${id}|${o.texte}`,sev:'med',txt:`Objectif à échéance — ${nm}`,sub:`${o.texte} (dans ${j} j)`,pole:id}); } });
     p.suivi.forEach(s=>{ if((s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu'){ const j=s.date?joursEntre(s.date,t):0;
-      if(j>10) A.push({sev:'high',txt:`${s.type==='blocage'?'Blocage':'Problème'} ancien — ${nm}`,sub:`${s.texte} (ouvert depuis ${j} j)`,pole:id}); } });
-    p.besoins.forEach(b=>{ if(b.arbitrage==='a-cadrer') A.push({sev:'med',txt:`Besoin à cadrer — ${nm}`,sub:b.libelle,pole:id});
-      if(b.aRemonter==='oui'&&besoinEnAttente(b)) A.push({sev:'med',txt:`À remonter à la direction — ${nm}`,sub:b.libelle,pole:id}); });
-    p.reunions.forEach(r=>(r.actions||[]).forEach(a=>{ if(!a.fait) A.push({sev:'low',txt:`Action à suivre — ${nm}`,sub:a.texte,pole:id}); }));
+      if(j>10) A.push({key:`suivi|${id}|${s.texte}`,sev:'high',txt:`${s.type==='blocage'?'Blocage':'Problème'} ancien — ${nm}`,sub:`${s.texte} (ouvert depuis ${j} j)`,pole:id}); } });
+    p.besoins.forEach(b=>{ if(b.arbitrage==='a-cadrer') A.push({key:`bes-cadrer|${id}|${b.libelle}`,sev:'med',txt:`Besoin à cadrer — ${nm}`,sub:b.libelle,pole:id});
+      if(b.aRemonter==='oui'&&besoinEnAttente(b)) A.push({key:`bes-remonter|${id}|${b.libelle}`,sev:'med',txt:`À remonter à la direction — ${nm}`,sub:b.libelle,pole:id}); });
+    p.reunions.forEach(r=>(r.actions||[]).forEach(a=>{ if(!a.fait) A.push({key:`action|${id}|${a.texte}`,sev:'low',txt:`Action à suivre — ${nm}`,sub:a.texte,pole:id}); }));
   });
+  const live=A.filter(a=>!ALERTS_DISMISSED.includes(a.key));
+  // purge les clés masquées qui n'existent plus (l'alerte a été résolue) pour éviter l'accumulation
+  const liveKeys=A.map(a=>a.key);
+  if(ALERTS_DISMISSED.some(k=>!liveKeys.includes(k))){ ALERTS_DISMISSED=ALERTS_DISMISSED.filter(k=>liveKeys.includes(k)); saveDismissed(); }
   const rank={high:0,med:1,low:2};
-  A.sort((x,y)=>rank[x.sev]-rank[y.sev]);
-  return A;
+  live.sort((x,y)=>rank[x.sev]-rank[y.sev]);
+  return live;
 }
 function updateAlertsBadge(){ const el=document.getElementById('alerts-badge'); if(!el) return; const n=computeAlerts().length; el.textContent=n>99?'99+':n; el.style.display=n>0?'':'none'; }
+let LAST_ALERTS=[];
+function dismissAlert(i){ const a=LAST_ALERTS[i]; if(a && !ALERTS_DISMISSED.includes(a.key)){ ALERTS_DISMISSED.push(a.key); saveDismissed(); } renderAlerts(); updateAlertsBadge(); }
+function dismissAllAlerts(){ computeAlerts().forEach(a=>{ if(!ALERTS_DISMISSED.includes(a.key)) ALERTS_DISMISSED.push(a.key); }); saveDismissed(); renderAlerts(); updateAlertsBadge(); }
 function renderAlerts(){
-  const A=computeAlerts();
+  const A=computeAlerts(); LAST_ALERTS=A;
   document.getElementById('alerts-count').textContent=A.length?`${A.length}`:'';
-  document.getElementById('alerts-list').innerHTML = A.length? A.map(a=>`
-    <div class="alert-item" onclick="gotoAlert('${a.pole}')">
+  document.getElementById('alerts-clear').style.display=A.length?'':'none';
+  document.getElementById('alerts-list').innerHTML = A.length? A.map((a,i)=>`
+    <div class="alert-item">
       <span class="alert-dot ${a.sev}"></span>
-      <div class="alert-main"><div class="alert-txt">${ftEsc(a.txt)}</div><div class="alert-sub">${ftEsc(a.sub)}</div></div>
+      <div class="alert-main" onclick="gotoAlert('${a.pole}')"><div class="alert-txt">${ftEsc(a.txt)}</div><div class="alert-sub">${ftEsc(a.sub)}</div></div>
+      <button class="alert-x" onclick="event.stopPropagation();dismissAlert(${i})" title="Supprimer cette notification">✕</button>
     </div>`).join('') : `<div class="alerts-empty">Rien à signaler. Tout est à jour 👌</div>`;
 }
 function gotoAlert(id){ document.getElementById('alerts-panel').style.display='none'; if(POLE_IDS.includes(id)) gotoPole(id); else showPage(id, null); }

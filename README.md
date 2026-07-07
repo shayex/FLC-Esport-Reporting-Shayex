@@ -12,7 +12,9 @@ Dans la barre du haut : **recherche globale** (🔍), **centre d'alertes** (🔔
 La cloche agrège tout ce qui demande l'attention du directeur, tous pôles confondus :
 points **en retard**, objectifs **à échéance / dépassés**, blocages & problèmes **ouverts depuis
 longtemps**, besoins **à cadrer** ou **à remonter**, **actions de réunion** non faites. Une pastille
-indique le nombre ; un clic sur une alerte ouvre le pôle concerné.
+indique le nombre ; un clic sur une alerte ouvre le pôle concerné. Chaque notification peut être
+**supprimée** (croix ✕) ou toutes d'un coup (**Tout effacer**) — le masquage est mémorisé ; si la
+situation évolue à nouveau (nouvelle échéance, nouveau blocage…), l'alerte réapparaît.
 
 ### Recherche globale (🔍)
 
