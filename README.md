@@ -30,6 +30,11 @@ réunion, début/fin de contrat, alerte renouvellement, anniversaire, absence, r
 pour les évènements sur **plusieurs jours** (vacances, absences…). Cliquer un jour crée un évènement
 à cette date ; cliquer un évènement l'ouvre.
 
+Les **échéances des objectifs de pôle** (celles qui portent une date) apparaissent **automatiquement**
+dans le calendrier, avec une pastille dédiée « 🎯 Échéance objectif ». Elles se mettent à jour toutes
+seules quand tu modifies un objectif (elles ne sont pas saisies dans le calendrier) ; cliquer dessus
+ouvre le pôle concerné. Les objectifs **sans date** ou **abandonnés** n'y figurent pas.
+
 ---
 
 ## Synchronisation des données (partage entre tout le monde)

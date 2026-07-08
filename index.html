@@ -1477,6 +1477,7 @@ const EVENT_TYPE={
   rappel:{l:"Rappel",color:"#A78BFA",ic:"📌"},
   bootcamp:{l:"Bootcamp",color:"#5FD08C",ic:"🏕"},
   echeance:{l:"Échéance",color:"#F5B944",ic:"⏰"},
+  "obj-echeance":{l:"Échéance objectif",color:"#2DD4BF",ic:"🎯"},
   autre:{l:"Autre",color:"#8B8B94",ic:"•"}
 };
 const EVENT_FIELDS=[
@@ -1492,10 +1493,18 @@ const MOIS_FULL=['JANVIER','FÉVRIER','MARS','AVRIL','MAI','JUIN','JUILLET','AO�
 let calY=null, calM=null, calMode='mois';
 function calInitMonth(){ const t=new Date(); calY=t.getFullYear(); calM=t.getMonth(); }
 function isoOf(dt){ return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); }
-function eventsOn(iso){ return ORG.evenements.filter(e=>{ const s=e.date, en=e.dateFin||e.date; return s&&iso>=s&&iso<=en; }); }
+/* Évènements dérivés : échéances des objectifs de pôle (non stockés, calculés en direct) */
+function objectiveEvents(){ const out=[];
+  POLE_IDS.forEach(id=>POLES[id].objectifs.forEach(o=>{ if(o.echeance && o.statut!=='abandonne') out.push({date:o.echeance, titre:o.texte, type:'obj-echeance', pole:id, __virtual:true, __pole:id, __statut:o.statut}); }));
+  return out;
+}
+function allCalEvents(){ return ORG.evenements.concat(objectiveEvents()); }
+function eventsOn(iso){ return allCalEvents().filter(e=>{ const s=e.date, en=e.dateFin||e.date; return s&&iso>=s&&iso<=en; }); }
 function dpartsCal(iso){ if(!iso||!/^\d{4}-\d{2}-\d{2}/.test(iso)) return {d:'?',m:''}; const p=iso.split('-'); return {d:Number(p[2])||'', m:(MOIS[(Number(p[1])||1)-1]||'').replace('.','').toUpperCase().slice(0,4)}; }
 function renderCalLegend(){ document.getElementById('cal-legend').innerHTML=Object.keys(EVENT_TYPE).map(k=>{ const t=EVENT_TYPE[k]; return `<span class="cal-leg"><span class="d" style="background:${t.color}"></span>${t.ic||''} ${t.l}</span>`; }).join(''); }
-function cellEvHTML(e){ const ty=EVENT_TYPE[e.type]||EVENT_TYPE.autre, i=ORG.evenements.indexOf(e);
+function cellEvHTML(e){ const ty=EVENT_TYPE[e.type]||EVENT_TYPE.autre;
+  if(e.__virtual) return `<div class="cell-ev" onclick="event.stopPropagation();gotoPole('${e.__pole}')" title="Échéance objectif — ${ftEsc(e.titre)} (${POLE_NAMES[e.__pole]})"><span class="ev-dot" style="background:${ty.color}"></span><span class="ev-lbl">${ty.ic||''} ${ftEsc(e.titre)}</span></div>`;
+  const i=ORG.evenements.indexOf(e);
   return `<div class="cell-ev" onclick="event.stopPropagation();openEvent(${i})" title="${ftEsc(e.titre)}"><span class="ev-dot" style="background:${ty.color}"></span><span class="ev-lbl">${ty.ic||''} ${ftEsc(e.titre)}</span></div>`; }
 function renderCalGrid(){
   document.getElementById('cal-title').textContent=MOIS_FULL[calM]+' '+calY;
@@ -1506,17 +1515,24 @@ function renderCalGrid(){
       <div class="cell-day">${d.getDate()}</div><div class="cell-evs">${evs.map(cellEvHTML).join('')}</div></div>`; }
   document.getElementById('cal-grid').innerHTML=`<div class="cal-grid"><div class="cal-head">${JOURS_S.map(j=>`<div>${j}</div>`).join('')}</div><div class="cal-body">${cells}</div></div>`;
 }
-function evRow(e){ const i=ORG.evenements.indexOf(e), ty=EVENT_TYPE[e.type]||EVENT_TYPE.autre, dp=dpartsCal(e.date);
+function evRow(e){ const ty=EVENT_TYPE[e.type]||EVENT_TYPE.autre, dp=dpartsCal(e.date);
   const range=(e.dateFin&&e.dateFin!==e.date)?` <span class="ev-range">→ ${ftDate(e.dateFin)}</span>`:'';
+  if(e.__virtual){ const st=STATUT_OBJ[e.__statut];
+    return `<div class="ev-row wk-click" onclick="gotoPole('${e.__pole}')"><div class="ev-date"><div class="d tnum">${dp.d}</div><div class="m">${dp.m}</div></div>
+      <div class="ev-main"><div class="ev-titre">${ty.ic||''} ${ftEsc(e.titre)}${range}</div>
+        <div class="ev-meta"><span class="cal-leg"><span class="d" style="background:${ty.color}"></span>${ty.l}</span>${chip('gold',POLE_NAMES[e.__pole])}${st?chip(st.c,st.l):''}</div></div>
+      <span class="wk-go">Ouvrir ›</span></div>`;
+  }
+  const i=ORG.evenements.indexOf(e);
   return `<div class="ev-row"><div class="ev-date"><div class="d tnum">${dp.d}</div><div class="m">${dp.m}</div></div>
     <div class="ev-main"><div class="ev-titre">${ty.ic||''} ${ftEsc(e.titre)}${range}</div>
       <div class="ev-meta"><span class="cal-leg"><span class="d" style="background:${ty.color}"></span>${ty.l}</span>${chip('gold',poleLabel(e.pole))}</div>${e.note?`<div class="ev-note">${ftEsc(e.note)}</div>`:''}</div>
     <span class="acts"><button class="ic-btn" onclick="openEvent(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="eventDel(${i})" title="Supprimer">🗑</button></span></div>`;
 }
 function renderCalList(){
-  const t=ftToday();
-  const av=ORG.evenements.filter(e=>String(e.dateFin||e.date)>=t).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  const pa=ORG.evenements.filter(e=>String(e.dateFin||e.date)<t).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const t=ftToday(), src=allCalEvents();
+  const av=src.filter(e=>String(e.dateFin||e.date)>=t).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  const pa=src.filter(e=>String(e.dateFin||e.date)<t).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
   document.getElementById('cal-a-venir-cnt').textContent=av.length?`(${av.length})`:'';
   document.getElementById('cal-passes-cnt').textContent=pa.length?`(${pa.length})`:'';
   document.getElementById('cal-a-venir').innerHTML=av.length?av.map(evRow).join(''):`<div class="empty">Aucun évènement à venir.</div>`;
