@@ -32,9 +32,69 @@ pour les évènements sur **plusieurs jours** (vacances, absences…). Cliquer u
 
 ---
 
+## Synchronisation des données (partage entre tout le monde)
+
+Par défaut le site fonctionne en **mode local** : chaque personne a ses données **dans son
+navigateur** (rien n'est partagé). Pour que **tout le monde voie les mêmes données en temps réel**,
+on branche une base **Supabase** (gratuite, sans serveur à coder). Un indicateur en haut à droite
+affiche l'état : **Synchro** (à jour), **…** (en cours) ou **Hors ligne**.
+
+### Mise en place (une seule fois)
+
+1. **Créer un projet gratuit** sur [supabase.com](https://supabase.com) (New project).
+2. Dans **SQL Editor**, exécuter ce script pour créer la table de synchro :
+
+   ```sql
+   create table if not exists flc_state (
+     key text primary key,
+     data jsonb,
+     updated_at timestamptz not null default now()
+   );
+
+   -- met à jour updated_at à chaque écriture
+   create or replace function flc_touch() returns trigger as $$
+   begin new.updated_at = now(); return new; end; $$ language plpgsql;
+   drop trigger if exists flc_touch_trg on flc_state;
+   create trigger flc_touch_trg before insert or update on flc_state
+     for each row execute function flc_touch();
+
+   -- accès via la clé publique "anon" (lecture + écriture)
+   alter table flc_state enable row level security;
+   create policy "flc_all" on flc_state for all
+     to anon using (true) with check (true);
+   ```
+
+3. Dans **Project Settings → API**, copier **Project URL** et la clé **anon public**.
+4. Ouvrir `index.html`, tout en haut du `<script>` (bloc « ⚙️ SYNCHRONISATION »), coller les deux
+   valeurs :
+
+   ```js
+   const SUPABASE_URL      = "https://xxxxxxxx.supabase.co";
+   const SUPABASE_ANON_KEY = "eyJhbGci....";
+   ```
+
+5. **Héberger la page** sur une URL commune (voir plus bas) et la partager à l'équipe. Au premier
+   lancement, les données actuelles (comptes + pôles) sont **envoyées** dans la base ; ensuite tout
+   le monde lit et écrit au même endroit.
+
+> ⚠️ **Niveau de sécurité.** Cette configuration **partage** les données entre tous ceux qui ont
+> l'URL — c'est de la **synchronisation**, pas une sécurité forte : la clé « anon » est visible dans
+> la page et le code PIN reste vérifié **côté navigateur**. C'est adapté à un usage interne de
+> confiance. Pour un vrai contrôle d'accès par rôle **imposé par le serveur** (authentification
+> Supabase + règles RLS par utilisateur), c'est une étape supplémentaire qu'on peut ajouter ensuite.
+
+### Héberger la page (URL commune)
+
+N'importe quel hébergement de fichier statique convient (gratuit) : **Netlify**, **Vercel** ou
+**GitHub Pages**. On dépose `index.html` (avec `flc.png` si le logo est externe) et chacun ouvre la
+même adresse. Dis-moi quand tu veux t'en occuper, je te guide pas à pas.
+
+---
+
 ## Ouvrir le site & se connecter
 
-Double-cliquez sur `index.html`. Connexion par **identifiant + code PIN** (4 à 6 chiffres).
+En local, double-cliquez sur `index.html` ; une fois hébergé, ouvrez l'**URL** partagée.
+Connexion par **identifiant + code PIN** (4 à 6 chiffres).
 Compte par défaut : **`shayex` / PIN `0000`** (Directeur, Admin) — à **changer à la première connexion**.
 
 ## Paramètres (admin)
@@ -52,9 +112,10 @@ CEO, CO-CEO, Directeur, Manager — avec une option **Administrateur** (droit de
 connexion (ou après un reset du PIN par l'admin), la personne doit **définir son propre PIN** avant
 d'accéder au site. Les comptes concernés affichent un repère « PIN à changer » dans la liste.
 
-> ⚠️ **Sécurité** : comptes et données vivent **dans le navigateur** (localStorage). C'est un système
-> fonctionnel de rôles, **pas un contrôle d'accès serveur** — pour un vrai partage sécurisé entre
-> plusieurs personnes, il faut héberger l'application avec une base et une authentification réelles.
+> ⚠️ **Sécurité** : en **mode local**, comptes et données vivent uniquement dans le navigateur. Avec
+> la **synchronisation Supabase** (voir plus haut), ils sont **partagés** entre tous les postes, mais
+> le code PIN reste vérifié côté navigateur — c'est un système fonctionnel de rôles, pas encore un
+> contrôle d'accès **imposé par le serveur**.
 
 ### Sauvegarde (export / import)
 
@@ -66,7 +127,8 @@ données actuelles). Pratique pour sauvegarder ou transférer les données sur u
 
 Un seul fichier : `index.html` (HTML + CSS + JavaScript). Aucune installation.
 Les données sont enregistrées **dans le navigateur** (localStorage : `flc-poles-v1`, `flc-org-v1`,
-`flc-users-v1`).
+`flc-users-v1`) et, si la **synchronisation Supabase** est configurée, **répliquées en ligne** dans
+la table `flc_state` (partagées entre tous les postes, avec le navigateur comme cache/hors-ligne).
 
 ## Onglets
 

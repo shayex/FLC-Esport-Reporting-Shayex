@@ -90,6 +90,12 @@ button{font-family:inherit}
 .user-chip svg{width:15px;height:15px;color:var(--muted)}
 .user-chip .name{font-weight:700;letter-spacing:.04em}
 .user-chip .role{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--gold)}
+.sync-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:12px;font-weight:600;color:var(--muted)}
+.sync-chip svg{width:14px;height:14px}
+.sync-chip[data-state="ok"]{color:#5FD08C;border-color:rgba(95,208,140,.35)}
+.sync-chip[data-state="sync"]{color:var(--gold);border-color:var(--gold-deep)}
+.sync-chip[data-state="off"]{color:var(--crimson);border-color:rgba(229,72,77,.4)}
+@media(max-width:760px){.sync-chip .sync-txt{display:none}}
 
 /* Onglets */
 .tabs{display:flex;gap:4px;padding:0 22px;border-bottom:1px solid var(--line-soft);overflow-x:auto}
@@ -524,6 +530,10 @@ table.matrix tbody tr:last-child td{border-bottom:none}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
         <span class="alerts-dot" id="alerts-badge" style="display:none">0</span>
       </button>
+      <span class="sync-chip" id="sync-chip" data-state="local" style="display:none" title="Local">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+        <span class="sync-txt">Local</span>
+      </span>
       <div class="user-chip">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
         <span class="name" id="chip-name">SHAYEX</span><span class="role" id="chip-role">DIRECTEUR</span>
@@ -754,6 +764,23 @@ table.matrix tbody tr:last-child td{border-bottom:none}
 </div>
 
 <script>
+/* =========================================================================
+   ⚙️  SYNCHRONISATION DES DONNÉES (Supabase) — à configurer
+   -------------------------------------------------------------------------
+   Pour que TOUT LE MONDE partage les mêmes données, colle ici l'URL et la
+   clé « anon public » de ton projet Supabase (Project Settings → API).
+   Tant que ces deux champs sont vides, le site fonctionne en LOCAL (les
+   données restent dans ton navigateur, comme avant).
+
+   Étapes (voir README, section « Synchronisation ») :
+   1. Crée un projet gratuit sur https://supabase.com
+   2. Dans l'éditeur SQL, exécute le script fourni dans le README pour créer
+      la table « flc_state ».
+   3. Copie l'URL du projet et la clé anon ci-dessous, puis héberge la page.
+   ========================================================================= */
+const SUPABASE_URL      = "";   // ex : "https://xxxxxxxx.supabase.co"
+const SUPABASE_ANON_KEY = "";   // ex : "eyJhbGci...."
+
 /* ---------- Portail : connexion par compte (côté navigateur) ---------- */
 const gate = document.getElementById('gate');
 const app = document.getElementById('app');
@@ -860,14 +887,17 @@ function normalizePole(p){
   p.besoins=p.besoins.map(b=>{ if(b&&b.arbitrage==null) b.arbitrage=(b.statut==='traite'?'valide':'a-cadrer'); return b; });
   return p;
 }
-function loadPoles(){
-  let d; try{ d=JSON.parse(localStorage.getItem(POLES_KEY)); }catch(e){}
+function normalizePoles(d){
   d=d||{};
   if(!d.fortnite){ try{ const old=JSON.parse(localStorage.getItem("flc-pole-fortnite-v1")); if(old) d.fortnite=old; }catch(e){} }
   POLE_IDS.forEach(id=>{ d[id]=normalizePole(d[id]); });
   return d;
 }
-function savePoles(){ try{ localStorage.setItem(POLES_KEY, JSON.stringify(POLES)); }catch(e){} }
+function loadPoles(){
+  let d; try{ d=JSON.parse(localStorage.getItem(POLES_KEY)); }catch(e){}
+  return normalizePoles(d);
+}
+function savePoles(){ try{ localStorage.setItem(POLES_KEY, JSON.stringify(POLES)); }catch(e){} SYNC.push('poles',POLES); }
 let POLES=loadPoles();
 try{ localStorage.setItem(POLES_KEY, JSON.stringify(POLES)); }catch(e){}   // persiste la normalisation/migration
 let CUR="fortnite";
@@ -876,11 +906,12 @@ function ftSave(){ savePoles(); }
 
 /* Données transversales (organisation) : pratiques communes + diffusion managers */
 const ORG_KEY="flc-org-v1";
-function loadOrg(){ let d; try{ d=JSON.parse(localStorage.getItem(ORG_KEY)); }catch(e){}
+function normalizeOrg(d){
   d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; d.evenements=Array.isArray(d.evenements)?d.evenements:[]; d.notes=Array.isArray(d.notes)?d.notes:[];
   if(!Array.isArray(d.noteCats)||!d.noteCats.length) d.noteCats=[{id:'procedure',label:'Procédure',color:'#E4B44C'},{id:'info',label:'Info',color:'#8B8B94'},{id:'decision',label:'Décision',color:'#5FD08C'},{id:'lien',label:'Liens utiles',color:'#F5B944'},{id:'autre',label:'Autre',color:'#8B8B94'}];
   return d; }
-function saveOrg(){ try{ localStorage.setItem(ORG_KEY, JSON.stringify(ORG)); }catch(e){} }
+function loadOrg(){ let d; try{ d=JSON.parse(localStorage.getItem(ORG_KEY)); }catch(e){} return normalizeOrg(d); }
+function saveOrg(){ try{ localStorage.setItem(ORG_KEY, JSON.stringify(ORG)); }catch(e){} SYNC.push('org',ORG); }
 let ORG=loadOrg();
 
 /* Alertes masquées (« supprimées » par l'utilisateur) — clés persistées */
@@ -893,13 +924,75 @@ function saveDismissed(){ try{ localStorage.setItem(ALERTS_DISMISS_KEY, JSON.str
 const USERS_KEY="flc-users-v1";
 const ROLES={ceo:"CEO","co-ceo":"CO-CEO",directeur:"Directeur",manager:"Manager"};
 function validPin(p){ return /^\d{4,6}$/.test(p||''); }
-function loadUsers(){ let d; try{ d=JSON.parse(localStorage.getItem(USERS_KEY)); }catch(e){}
+function normalizeUsers(d){
   d=d||{}; if(!Array.isArray(d.users)||!d.users.length){ d.users=[{username:"shayex",password:"0000",nom:"Shayex",role:"directeur",admin:true,mustChangePin:true}]; }
   d.users.forEach(u=>{ if(u.mustChangePin==null) u.mustChangePin=!validPin(u.password); });
   return d; }
-function saveUsers(){ try{ localStorage.setItem(USERS_KEY, JSON.stringify(USERSDB)); }catch(e){} }
+function loadUsers(){ let d; try{ d=JSON.parse(localStorage.getItem(USERS_KEY)); }catch(e){} return normalizeUsers(d); }
+function saveUsers(){ try{ localStorage.setItem(USERS_KEY, JSON.stringify(USERSDB)); }catch(e){} SYNC.push('users',USERSDB); }
 let USERSDB=loadUsers();
 let CURRENT_USER=null;
+
+/* =========================================================================
+   SYNC — synchronisation temps réel via Supabase (REST, sans SDK)
+   Désactivé tant que SUPABASE_URL / SUPABASE_ANON_KEY sont vides → mode local.
+   ========================================================================= */
+const SYNC = {
+  enabled: !!(SUPABASE_URL && SUPABASE_ANON_KEY),
+  base: (SUPABASE_URL||'').replace(/\/+$/,'') + '/rest/v1/flc_state',
+  ver: {},            // dernière version (updated_at) appliquée par clé
+  timers: {},         // debounce d'envoi par clé
+  headers(){ return { apikey:SUPABASE_ANON_KEY, Authorization:'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':'application/json' }; },
+  status(s){ const el=document.getElementById('sync-chip'); if(!el) return;
+    el.style.display=''; el.dataset.state=s;
+    el.title = s==='ok'?'Synchronisé':(s==='sync'?'Synchronisation…':(s==='off'?'Hors ligne — données locales':'Local'));
+    el.querySelector('.sync-txt').textContent = s==='ok'?'Synchro':(s==='sync'?'…':(s==='off'?'Hors ligne':'Local')); },
+  apply(key,data){
+    if(key==='poles'){ POLES=normalizePoles(data); try{localStorage.setItem(POLES_KEY,JSON.stringify(POLES));}catch(e){} if(CUR) FT=POLES[CUR]; }
+    else if(key==='org'){ ORG=normalizeOrg(data); try{localStorage.setItem(ORG_KEY,JSON.stringify(ORG));}catch(e){} }
+    else if(key==='users'){ USERSDB=normalizeUsers(data); try{localStorage.setItem(USERS_KEY,JSON.stringify(USERSDB));}catch(e){}
+      if(CURRENT_USER){ const u=USERSDB.users.find(x=>x.username===CURRENT_USER.username); if(u){ CURRENT_USER=u; if(typeof applyUser==='function') applyUser(); } } }
+  },
+  async pull(){
+    if(!this.enabled) return [];
+    try{
+      this.status('sync');
+      const res=await fetch(this.base+'?select=key,data,updated_at',{headers:this.headers()});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const rows=await res.json(); let changed=false; const present=[];
+      rows.forEach(r=>{ if(!r||!r.key) return; present.push(r.key); if(this.ver[r.key]===r.updated_at) return; this.ver[r.key]=r.updated_at; if(r.data){ this.apply(r.key,r.data); changed=true; } });
+      this.status('ok');
+      if(changed && CURRENT_USER){ if(typeof refreshEverything==='function') refreshEverything(); if(typeof renderComptes==='function') renderComptes(); }
+      return present;
+    }catch(e){ this.status('off'); return []; }
+  },
+  push(key,obj){
+    if(!this.enabled) return;
+    clearTimeout(this.timers[key]);
+    const snapshot=JSON.parse(JSON.stringify(obj));
+    this.timers[key]=setTimeout(async ()=>{
+      try{
+        this.status('sync');
+        const res=await fetch(this.base+'?on_conflict=key',{ method:'POST',
+          headers:Object.assign(this.headers(),{ Prefer:'resolution=merge-duplicates,return=representation' }),
+          body:JSON.stringify([{ key, data:snapshot }]) });
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        const rows=await res.json(); if(rows&&rows[0]&&rows[0].updated_at) this.ver[key]=rows[0].updated_at;
+        this.status('ok');
+      }catch(e){ this.status('off'); }
+    }, 600);
+  },
+  async start(){
+    if(!this.enabled) return;
+    const present=await this.pull();
+    // Amorçage : si la base est vide pour une clé, on y pousse l'état local (comptes/pôles/org par défaut)
+    if(!present.includes('poles')) this.push('poles',POLES);
+    if(!present.includes('org'))   this.push('org',ORG);
+    if(!present.includes('users')) this.push('users',USERSDB);
+    setInterval(()=>this.pull(), 6000);
+    window.addEventListener('online', ()=>this.pull());
+  }
+};
 
 const TYPE_SUIVI={avancee:{l:"Avancée",c:"pos"}, blocage:{l:"Blocage",c:"neg"}, probleme:{l:"Problème",c:"warn"}};
 const STATUT_SUIVI={ouvert:{l:"Ouvert",c:"neg"}, "en-cours":{l:"En cours",c:"warn"}, resolu:{l:"Résolu",c:"pos"}};
@@ -1559,7 +1652,6 @@ function suiviNoteDel(i,j){ if(!confirm('Supprimer cette note ?')) return; FT.su
    EXPORT / IMPORT — sauvegarde complète (pôles + données transversales)
    ========================================================================= */
 function refreshEverything(){ renderDashboard(); renderReunions(); renderFortnite(); renderCalendrier(); updateTabBadges(); updateAlertsBadge(); }
-function normalizeOrg(d){ d=d||{}; d.pratiques=Array.isArray(d.pratiques)?d.pratiques:[]; d.diffusion=Array.isArray(d.diffusion)?d.diffusion:[]; return d; }
 document.getElementById('btn-export').addEventListener('click', ()=>{
   const data={ app:"FLC Esport", version:1, exportedAt:new Date().toISOString(), poles:POLES, org:ORG };
   const blob=new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
@@ -1626,17 +1718,25 @@ function userDel(i){
   USERSDB.users.splice(i,1); saveUsers(); closeModal(); renderComptes();
 }
 
-updateTabBadges();
-renderDashboard();
-renderReunions();
-renderComptes();
-renderCalendrier();
-renderNotes();
-updateAlertsBadge();
-
-const savedUser=sessionStorage.getItem('flc-user');
-const su=savedUser?USERSDB.users.find(x=>x.username===savedUser):null;
-if(su) unlock(su); else document.getElementById('login-user').focus();
+function bootRender(){
+  updateTabBadges();
+  renderDashboard();
+  renderReunions();
+  renderComptes();
+  renderCalendrier();
+  renderNotes();
+  updateAlertsBadge();
+}
+function bootLogin(){
+  const savedUser=sessionStorage.getItem('flc-user');
+  const su=savedUser?USERSDB.users.find(x=>x.username===savedUser):null;
+  if(su) unlock(su); else document.getElementById('login-user').focus();
+}
+(async ()=>{
+  if(SYNC.enabled) await SYNC.start();   // charge les données partagées avant l'affichage puis lance le polling
+  bootRender();
+  bootLogin();
+})();
 </script>
 </body>
 </html>
