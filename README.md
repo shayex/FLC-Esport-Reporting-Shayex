@@ -21,6 +21,13 @@ situation évolue à nouveau (nouvelle échéance, nouveau blocage…), l'alerte
 Cherche dans **tout le site** (staff, besoins, comptes-rendus, résultats, objectifs, suivi,
 évènements). Les résultats sont groupés par type et cliquables.
 
+### Mes tâches (✔)
+
+Panneau **personnel** (à droite de la barre du haut) pour noter tes tâches et les **cocher**.
+Chaque personne a **sa propre liste** (privée à son compte), **synchronisée sur ses appareils**.
+Un badge indique le nombre de tâches **à faire** ; les tâches cochées passent en bas (barrées) et
+un bouton **« Effacer les faites »** nettoie la liste.
+
 ### Calendrier
 
 Agenda **tous pôles** avec deux vues : **Mois** (grille du mois, navigation ‹ › + « Aujourd'hui »,
