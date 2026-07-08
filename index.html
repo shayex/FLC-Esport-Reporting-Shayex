@@ -284,15 +284,18 @@ button{font-family:inherit}
 .alert-main{min-width:0;flex:1;cursor:pointer}
 .alert-x{flex:none;background:none;border:none;color:var(--faint);font-size:13px;cursor:pointer;padding:2px 5px;border-radius:6px;line-height:1;margin-top:2px}
 .alert-x:hover{background:var(--crimson,#c0392b);color:#fff}
-.task-add{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line-soft);position:sticky;top:49px;background:var(--surface);z-index:1}
-.task-add input{flex:1;min-width:0;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 11px;color:var(--text);font-size:13px;font-family:inherit}
+.taches-top{display:flex;justify-content:flex-end;margin:4px 0 4px}
+.task-block{margin-bottom:20px}
+.task-list{border:1px solid var(--line-soft);border-radius:12px;background:var(--surface);overflow:hidden;margin-bottom:8px}
+.task-add{display:flex;gap:8px}
+.task-add input{flex:1;min-width:0;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:10px 12px;color:var(--text);font-size:13px;font-family:inherit}
 .task-add input:focus{outline:none;border-color:var(--gold-deep)}
-.task-add-btn{flex:none;width:36px;border:1px solid var(--gold-deep);background:rgba(228,180,76,.12);color:var(--gold);border-radius:9px;font-size:20px;line-height:1;cursor:pointer}
+.task-add-btn{flex:none;width:40px;border:1px solid var(--gold-deep);background:rgba(228,180,76,.12);color:var(--gold);border-radius:9px;font-size:20px;line-height:1;cursor:pointer}
 .task-add-btn:hover{background:rgba(228,180,76,.22)}
-.task-item{display:flex;gap:11px;align-items:flex-start;padding:11px 16px;border-bottom:1px solid var(--line-soft)}
+.task-item{display:flex;gap:11px;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--line-soft)}
 .task-item:last-child{border-bottom:none}
 .task-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);cursor:pointer;flex:none;margin-top:1px}
-.task-item .t-txt{flex:1;min-width:0;font-size:13px;line-height:1.45;word-break:break-word}
+.task-item .t-txt{flex:1;min-width:0;font-size:13.5px;line-height:1.45;word-break:break-word}
 .task-item.done .t-txt{color:var(--faint);text-decoration:line-through}
 .task-x{flex:none;background:none;border:none;color:var(--faint);font-size:13px;cursor:pointer;padding:2px 5px;border-radius:6px;line-height:1}
 .task-x:hover{background:var(--crimson,#c0392b);color:#fff}
@@ -543,10 +546,6 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <button class="icon-btn" id="btn-search" title="Rechercher" aria-label="Rechercher">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       </button>
-      <button class="icon-btn" id="btn-tasks" title="Mes tâches" aria-label="Mes tâches" style="position:relative">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <span class="alerts-dot" id="tasks-badge" style="display:none">0</span>
-      </button>
       <button class="icon-btn" id="btn-alerts" title="Alertes" aria-label="Alertes" style="position:relative">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
         <span class="alerts-dot" id="alerts-badge" style="display:none">0</span>
@@ -574,6 +573,10 @@ table.matrix tbody tr:last-child td{border-bottom:none}
     <button class="tab" data-view="masemaine">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
       Ma semaine <span class="badge alert" id="badge-masemaine" style="display:none"></span>
+    </button>
+    <button class="tab" data-view="taches">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Tâches <span class="badge alert" id="badge-taches" style="display:none"></span>
     </button>
     <button class="tab" data-pole="fortnite">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59c-.06 1.44.06 2.9.29 4.33.24 1.5.68 3.09 2.11 3.5 1.35.4 2.2-.6 2.98-1.55.55-.68 1.15-1.44 2.06-1.44h1.68c.91 0 1.51.76 2.06 1.44.78.95 1.63 1.95 2.98 1.55 1.43-.41 1.87-2 2.11-3.5.23-1.43.35-2.89.29-4.33A4 4 0 0 0 17.32 5z"/></svg>
@@ -644,6 +647,12 @@ table.matrix tbody tr:last-child td{border-bottom:none}
 
       <div class="section-title"><span class="rail"></span><h3>Besoins à traiter</h3><span class="cnt" id="week-bes-cnt"></span></div>
       <div id="week-besoins"></div>
+    </section>
+
+    <!-- TÂCHES (liste personnelle : générale + sections) -->
+    <section class="view" id="view-taches">
+      <div class="taches-top"><button class="add-btn" onclick="openSection()">+ Nouvelle section</button></div>
+      <div id="taches-body"></div>
     </section>
 
     <!-- RÉUNIONS (comptes-rendus de tous les pôles) -->
@@ -758,17 +767,6 @@ table.matrix tbody tr:last-child td{border-bottom:none}
   <div id="alerts-list"></div>
 </div>
 
-<!-- ===================== MES TÂCHES ===================== -->
-<div class="alerts-panel" id="tasks-panel" style="display:none">
-  <div class="alerts-head"><span>Mes tâches</span>
-    <span class="alerts-head-r"><span class="alerts-count" id="tasks-count"></span>
-    <button class="alerts-clear" id="tasks-clear" onclick="clearDoneTasks()" style="display:none">Effacer les faites</button></span></div>
-  <div class="task-add">
-    <input type="text" id="task-input" placeholder="Nouvelle tâche…" maxlength="200" autocomplete="off" />
-    <button class="task-add-btn" id="task-add-btn" title="Ajouter">+</button>
-  </div>
-  <div id="tasks-list"></div>
-</div>
 
 <!-- ===================== RECHERCHE GLOBALE ===================== -->
 <div class="search-overlay" id="search-overlay" style="display:none">
@@ -827,7 +825,7 @@ function applyUser(){
   document.getElementById('chip-name').textContent=(CURRENT_USER.nom||CURRENT_USER.username||'').toUpperCase();
   document.getElementById('chip-role').textContent=(ROLES[CURRENT_USER.role]||CURRENT_USER.role||'').toUpperCase();
   document.getElementById('tab-parametres').style.display = CURRENT_USER.admin ? '' : 'none';
-  if(typeof updateTasksBadge==='function') updateTasksBadge();
+  if(typeof updateTabBadges==='function') updateTabBadges();
 }
 let PENDING_USER=null;
 function tryUnlock(){
@@ -864,6 +862,7 @@ document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage
 const VIEWS = {
   dashboard:{title:"Tableau de bord", eyebrow:"Organisation", sub:"Vue direction — agrégé de tous les pôles"},
   masemaine:{title:"Ma semaine", eyebrow:"Centre d'action", sub:"Ce que tu dois traiter — points, actions, échéances et besoins"},
+  taches:{title:"Tâches", eyebrow:"Personnel", sub:"Mes tâches — liste générale et par sections"},
   reunion:{title:"Réunions", eyebrow:"Suivi des managers", sub:"Comptes-rendus de réunions de tous les pôles"},
   calendrier:{title:"Calendrier", eyebrow:"Compétitions", sub:"Compétitions à venir et passées"},
   notes:{title:"Notes", eyebrow:"Base de connaissances", sub:"Procédures, infos, décisions et liens utiles"},
@@ -896,6 +895,7 @@ function showPage(v, poleId){
     const m=VIEWS[v]; setHead(m.eyebrow, m.title, m.sub);
     if(v==='dashboard') renderDashboard();
     if(v==='masemaine') renderMaSemaine();
+    if(v==='taches') renderTaches();
     if(v==='reunion') renderReunions();
     if(v==='calendrier') renderCalendrier();
     if(v==='notes') renderNotes();
@@ -1177,6 +1177,8 @@ function updateTabBadges(){
   const w=weekData(), wn=w.points.length+w.actions.length+w.echeances.length+w.besoins.length;
   const wb=document.getElementById('badge-masemaine');
   if(wb){ wb.textContent=wn; wb.style.display=wn>0?'':'none'; }
+  const tn=tasksTodoCount(), tb=document.getElementById('badge-taches');
+  if(tb){ tb.textContent=tn>99?'99+':tn; tb.style.display=tn>0?'':'none'; }
 }
 
 /* =========================================================================
@@ -1502,31 +1504,56 @@ function renderAlerts(){
     </div>`).join('') : `<div class="alerts-empty">Rien à signaler. Tout est à jour 👌</div>`;
 }
 function gotoAlert(id){ document.getElementById('alerts-panel').style.display='none'; if(POLE_IDS.includes(id)) gotoPole(id); else showPage(id, null); }
-function toggleAlerts(){ const el=document.getElementById('alerts-panel'); document.getElementById('tasks-panel').style.display='none'; if(el.style.display==='none'){ renderAlerts(); el.style.display=''; } else el.style.display='none'; }
+function toggleAlerts(){ const el=document.getElementById('alerts-panel'); if(el.style.display==='none'){ renderAlerts(); el.style.display=''; } else el.style.display='none'; }
 
 /* =========================================================================
-   MES TÂCHES — liste personnelle par utilisateur (synchronisée)
+   TÂCHES — onglet personnel par utilisateur (général + sections, synchronisé)
    ========================================================================= */
-function myTasks(){ if(!CURRENT_USER) return []; ORG.tasks=ORG.tasks||{}; const u=CURRENT_USER.username; if(!Array.isArray(ORG.tasks[u])) ORG.tasks[u]=[]; return ORG.tasks[u]; }
-function updateTasksBadge(){ const el=document.getElementById('tasks-badge'); if(!el) return; const n=myTasks().filter(t=>!t.fait).length; el.textContent=n>99?'99+':n; el.style.display=n>0?'':'none'; }
-function renderTasks(){
-  const list=myTasks().map((t,i)=>({t,i})).sort((a,b)=>(a.t.fait-b.t.fait) || String(b.t.date||'').localeCompare(String(a.t.date||'')));
-  const done=myTasks().filter(t=>t.fait).length;
-  document.getElementById('tasks-count').textContent=myTasks().length?`${myTasks().filter(t=>!t.fait).length} à faire`:'';
-  document.getElementById('tasks-clear').style.display=done?'':'none';
-  document.getElementById('tasks-list').innerHTML = list.length ? list.map(({t,i})=>`
-    <div class="task-item ${t.fait?'done':''}">
+function myTasks(){ ORG.tasks=ORG.tasks||{}; if(!CURRENT_USER) return {items:[],sections:[]};
+  const u=CURRENT_USER.username; let d=ORG.tasks[u];
+  if(Array.isArray(d)) d={items:d.map(t=>Object.assign({section:''},t)), sections:[]};   // migration ancien format
+  if(!d||typeof d!=='object') d={items:[],sections:[]};
+  if(!Array.isArray(d.items)) d.items=[];
+  if(!Array.isArray(d.sections)) d.sections=[];
+  ORG.tasks[u]=d; return d;
+}
+function tasksTodoCount(){ return myTasks().items.filter(t=>!t.fait).length; }
+function taskBlock(sid, label, inputSid, secIndex){
+  const d=myTasks();
+  const rows=d.items.map((t,i)=>({t,i})).filter(x=>(x.t.section||'')===sid)
+    .sort((a,b)=>(a.t.fait-b.t.fait)||String(b.t.date||'').localeCompare(String(a.t.date||'')));
+  const isGen=(sid==='');
+  const todo=rows.filter(x=>!x.t.fait).length;
+  const acts=isGen?'':`<span class="acts" style="margin-left:auto"><button class="ic-btn" onclick="openSection(${secIndex})" title="Renommer">✎</button><button class="ic-btn del" onclick="sectionDel(${secIndex})" title="Supprimer">🗑</button></span>`;
+  const head=`<div class="section-title"><span class="rail"></span><h3>${ftEsc(label)}</h3><span class="cnt">${rows.length?todo+' à faire':''}</span>${acts}</div>`;
+  const list=rows.length? rows.map(({t,i})=>`<div class="task-item ${t.fait?'done':''}">
       <input type="checkbox" ${t.fait?'checked':''} onchange="toggleTask(${i})">
       <span class="t-txt">${ftEsc(t.texte)}</span>
-      <button class="task-x" onclick="taskDel(${i})" title="Supprimer">✕</button>
-    </div>`).join('') : `<div class="alerts-empty">Aucune tâche. Note ce que tu as à faire ✍️</div>`;
+      <button class="task-x" onclick="taskDel(${i})" title="Supprimer">✕</button></div>`).join('')
+    : `<div class="empty">Aucune tâche${isGen?'':' dans cette section'}.</div>`;
+  const add=`<div class="task-add"><input type="text" id="taskin-${inputSid}" placeholder="Nouvelle tâche…" maxlength="240" autocomplete="off" onkeydown="if(event.key==='Enter')addTaskFromInput('${inputSid}')"><button class="task-add-btn" onclick="addTaskFromInput('${inputSid}')" title="Ajouter">+</button></div>`;
+  return `<div class="task-block">${head}<div class="task-list">${list}</div>${add}</div>`;
 }
-function addTask(){ const inp=document.getElementById('task-input'); const v=(inp.value||'').trim(); if(!v) return;
-  myTasks().unshift({texte:v, fait:false, date:ftToday()}); saveOrg(); inp.value=''; inp.focus(); renderTasks(); updateTasksBadge(); }
-function toggleTask(i){ const t=myTasks()[i]; if(t){ t.fait=!t.fait; saveOrg(); renderTasks(); updateTasksBadge(); } }
-function taskDel(i){ myTasks().splice(i,1); saveOrg(); renderTasks(); updateTasksBadge(); }
-function clearDoneTasks(){ const arr=myTasks(); for(let i=arr.length-1;i>=0;i--){ if(arr[i].fait) arr.splice(i,1); } saveOrg(); renderTasks(); updateTasksBadge(); }
-function toggleTasks(){ const el=document.getElementById('tasks-panel'); document.getElementById('alerts-panel').style.display='none'; if(el.style.display==='none'){ renderTasks(); el.style.display=''; document.getElementById('task-input').focus(); } else el.style.display='none'; }
+function renderTaches(){
+  const d=myTasks();
+  let html=taskBlock('', 'Général', '__gen');
+  d.sections.forEach((s,si)=>{ html+=taskBlock(s.id, s.label, s.id, si); });
+  document.getElementById('taches-body').innerHTML=html;
+}
+function addTaskFromInput(inputSid){ const inp=document.getElementById('taskin-'+inputSid); if(!inp) return; const v=(inp.value||'').trim(); if(!v) return;
+  const section=(inputSid==='__gen')?'':inputSid;
+  myTasks().items.unshift({texte:v, fait:false, date:ftToday(), section}); saveOrg(); renderTaches(); updateTabBadges();
+  const el=document.getElementById('taskin-'+inputSid); if(el) el.focus(); }
+function toggleTask(i){ const t=myTasks().items[i]; if(t){ t.fait=!t.fait; saveOrg(); renderTaches(); updateTabBadges(); } }
+function taskDel(i){ myTasks().items.splice(i,1); saveOrg(); renderTaches(); updateTabBadges(); }
+const SECTION_FIELDS=[{k:'label',l:'Nom de la section',t:'text',req:true,ph:'ex. Recrutement, Partenariats…'}];
+function openSection(i){ const d=myTasks(), isNew=(i==null);
+  openModal(isNew?'Nouvelle section':'Renommer la section', SECTION_FIELDS, isNew?{}:{label:d.sections[i].label},
+    ()=>{ const v=readForm(SECTION_FIELDS); if(isNew) d.sections.push({id:'s'+Date.now().toString(36), label:v.label}); else d.sections[i].label=v.label; saveOrg(); closeModal(); renderTaches(); updateTabBadges(); },
+    isNew?null:()=>sectionDel(i)); }
+function sectionDel(i){ const d=myTasks(), sec=d.sections[i]; if(!sec) return;
+  if(!confirm(`Supprimer la section « ${sec.label} » ? Ses tâches seront déplacées dans Général.`)) return;
+  d.items.forEach(t=>{ if((t.section||'')===sec.id) t.section=''; }); d.sections.splice(i,1); saveOrg(); closeModal(); renderTaches(); updateTabBadges(); }
 
 /* =========================================================================
    CALENDRIER — agenda tous pôles
@@ -1698,16 +1725,12 @@ function gotoSearchView(v){ closeSearch(); showPage(v,null); }
 
 /* Câblage barre du haut : alertes + recherche */
 document.getElementById('btn-alerts').addEventListener('click',e=>{ e.stopPropagation(); toggleAlerts(); });
-document.getElementById('btn-tasks').addEventListener('click',e=>{ e.stopPropagation(); toggleTasks(); });
-document.getElementById('task-add-btn').addEventListener('click',e=>{ e.stopPropagation(); addTask(); });
-document.getElementById('task-input').addEventListener('keydown',e=>{ if(e.key==='Enter') addTask(); });
 document.getElementById('btn-search').addEventListener('click',openSearch);
 document.getElementById('search-close').addEventListener('click',closeSearch);
 document.getElementById('search-input').addEventListener('input',doSearch);
 document.getElementById('search-overlay').addEventListener('click',e=>{ if(e.target.id==='search-overlay') closeSearch(); });
-document.addEventListener('click',e=>{ const pan=document.getElementById('alerts-panel'); if(pan.style.display!=='none' && !pan.contains(e.target) && !document.getElementById('btn-alerts').contains(e.target)) pan.style.display='none';
-  const tp=document.getElementById('tasks-panel'); if(tp.style.display!=='none' && !tp.contains(e.target) && !document.getElementById('btn-tasks').contains(e.target)) tp.style.display='none'; });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSearch(); const pan=document.getElementById('alerts-panel'); if(pan) pan.style.display='none'; const tp=document.getElementById('tasks-panel'); if(tp) tp.style.display='none'; } });
+document.addEventListener('click',e=>{ const pan=document.getElementById('alerts-panel'); if(pan.style.display!=='none' && !pan.contains(e.target) && !document.getElementById('btn-alerts').contains(e.target)) pan.style.display='none'; });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSearch(); const pan=document.getElementById('alerts-panel'); if(pan) pan.style.display='none'; } });
 
 
 /* Paramètres du pôle (manager, contact, rythme) */
@@ -1732,7 +1755,7 @@ function suiviNoteDel(i,j){ if(!confirm('Supprimer cette note ?')) return; FT.su
 /* =========================================================================
    EXPORT / IMPORT — sauvegarde complète (pôles + données transversales)
    ========================================================================= */
-function refreshEverything(){ renderDashboard(); renderReunions(); renderFortnite(); renderCalendrier(); updateTabBadges(); updateAlertsBadge(); updateTasksBadge(); if(document.getElementById('tasks-panel').style.display!=='none') renderTasks(); }
+function refreshEverything(){ renderDashboard(); renderReunions(); renderFortnite(); renderCalendrier(); updateTabBadges(); updateAlertsBadge(); if(document.getElementById('view-taches').classList.contains('active')) renderTaches(); }
 document.getElementById('btn-export').addEventListener('click', ()=>{
   const data={ app:"FLC Esport", version:1, exportedAt:new Date().toISOString(), poles:POLES, org:ORG };
   const blob=new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
@@ -1807,7 +1830,6 @@ function bootRender(){
   renderCalendrier();
   renderNotes();
   updateAlertsBadge();
-  updateTasksBadge();
 }
 function bootLogin(){
   const savedUser=sessionStorage.getItem('flc-user');

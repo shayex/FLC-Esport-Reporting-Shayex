@@ -3,7 +3,7 @@
 Espace interne (privé) pour donner à la **direction** une lecture claire de l'activité esport.
 
 Design **sombre avec accent doré**, navigation en **barre supérieure** :
-`Dashboard · Ma semaine · Fortnite · FIFA · Delta Force · Réunions · Calendrier · Notes · Paramètres` (admin).
+`Dashboard · Ma semaine · Tâches · Fortnite · FIFA · Delta Force · Réunions · Calendrier · Notes · Paramètres` (admin).
 
 Dans la barre du haut : **recherche globale** (🔍), **centre d'alertes** (🔔) et déconnexion.
 
@@ -20,13 +20,6 @@ situation évolue à nouveau (nouvelle échéance, nouveau blocage…), l'alerte
 
 Cherche dans **tout le site** (staff, besoins, comptes-rendus, résultats, objectifs, suivi,
 évènements). Les résultats sont groupés par type et cliquables.
-
-### Mes tâches (✔)
-
-Panneau **personnel** (à droite de la barre du haut) pour noter tes tâches et les **cocher**.
-Chaque personne a **sa propre liste** (privée à son compte), **synchronisée sur ses appareils**.
-Un badge indique le nombre de tâches **à faire** ; les tâches cochées passent en bas (barrées) et
-un bouton **« Effacer les faites »** nettoie la liste.
 
 ### Calendrier
 
@@ -170,6 +163,15 @@ Consolide, en un seul écran, **tout ce que le directeur doit traiter**, tous p�
 - **Besoins à traiter** : besoins à cadrer ou à remonter.
 
 Une pastille sur l'onglet indique le nombre total d'éléments à traiter.
+
+### Tâches — liste personnelle (générale + sections)
+
+Onglet **personnel** : chaque personne a **sa propre liste** (privée à son compte),
+**synchronisée sur ses appareils**. On y trouve une liste **Général** plus autant de **sections**
+que l'on veut créer (**« + Nouvelle section »**, renommables et supprimables). Dans chaque bloc :
+saisie rapide (Entrée ou **+**), **coche** pour marquer fait (barré, remonté en bas), suppression.
+Supprimer une section **déplace ses tâches dans Général** (aucune perte). Une pastille sur l'onglet
+indique le nombre total de tâches **à faire**.
 
 ### Dashboard — vue direction
 
