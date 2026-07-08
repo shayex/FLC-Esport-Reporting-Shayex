@@ -83,11 +83,26 @@ affiche l'état : **Synchro** (à jour), **…** (en cours) ou **Hors ligne**.
 > confiance. Pour un vrai contrôle d'accès par rôle **imposé par le serveur** (authentification
 > Supabase + règles RLS par utilisateur), c'est une étape supplémentaire qu'on peut ajouter ensuite.
 
-### Héberger la page (URL commune)
+### Héberger la page (URL commune) — GitHub Pages
 
-N'importe quel hébergement de fichier statique convient (gratuit) : **Netlify**, **Vercel** ou
-**GitHub Pages**. On dépose `index.html` (avec `flc.png` si le logo est externe) et chacun ouvre la
-même adresse. Dis-moi quand tu veux t'en occuper, je te guide pas à pas.
+Le site est **100 % autonome** (le logo est intégré dans le fichier), donc `index.html` seul suffit ;
+aucun build. Le plus simple ici : **GitHub Pages**, puisque le dépôt est déjà sur GitHub.
+
+1. Sur GitHub, ouvrir le dépôt → **Settings** → **Pages**.
+2. Section **Build and deployment** → **Source : Deploy from a branch**.
+3. **Branch : `claude/flc-esport-internal-site-1ul2or`** (la branche par défaut) et dossier **`/ (root)`**, puis **Save**.
+4. Patienter ~1 minute : l'URL publique s'affiche en haut de la page Pages, du type
+   **`https://shayex.github.io/FLC-Esport-Reporting-Shayex/`**. C'est l'adresse à partager à l'équipe.
+
+Le fichier `.nojekyll` à la racine garantit que la page est servie **telle quelle** (sans traitement
+Jekyll qui pourrait casser le JavaScript). À chaque `git push`, GitHub Pages **redéploie** tout seul.
+
+> 🔐 **À savoir sur une page publique.** Le site étant statique, la clé **anon** de Supabase est
+> visible par toute personne qui a l'**URL** (dans le code de la page). Avec la règle d'accès simple
+> fournie plus haut, cela signifie que **quiconque connaît l'adresse peut lire/écrire** les données.
+> Pour un usage interne où l'on partage l'URL à une équipe de confiance, c'est acceptable. Pour
+> verrouiller vraiment (accès réservé à des comptes, imposé côté serveur), l'étape suivante est
+> d'ajouter l'**authentification Supabase + RLS par utilisateur** — dis-moi quand tu veux la faire.
 
 ---
 
