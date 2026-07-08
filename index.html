@@ -1020,6 +1020,11 @@ function chip(c,l){ return `<span class="chip ${c}">${ftEsc(l)}</span>`; }
 function initiales(nom){ const p=String(nom||'').trim().split(/\s+/).filter(Boolean); if(!p.length) return '?'; return (p.length===1?p[0].slice(0,2):p[0][0]+p[p.length-1][0]).toUpperCase(); }
 function ftAddDays(iso,n){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
 function joursEntre(a,b){ return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000); }
+/* Échéance effective d'un objectif : la fin de période si définie, sinon la date simple */
+function objDeadline(o){ return (o&&o.echeanceFin)?o.echeanceFin:(o?o.echeance:''); }
+function objHasEcheance(o){ return !!(o && o.echeance); }
+function objEcheanceLabel(o){ if(!o||!o.echeance) return '';
+  return (o.echeanceFin&&o.echeanceFin!==o.echeance) ? `Période : ${ftDate(o.echeance)} → ${ftDate(o.echeanceFin)}` : `Échéance : ${ftDate(o.echeance)}`; }
 function dernierPoint(p){ const ds=p.reunions.map(r=>r.date).filter(Boolean).sort(); return ds.length?ds[ds.length-1]:''; }
 const FT_RYTHME={7:"Hebdo",14:"2 semaines",21:"3 semaines",30:"Mensuel",0:"Ponctuel"};
 function ftRythmeLabel(r){ return FT_RYTHME[Number(r)]!=null?FT_RYTHME[Number(r)]:"Ponctuel"; }
@@ -1091,7 +1096,7 @@ function renderFortnite(){
     const st=STATUT_OBJ[o.statut]||STATUT_OBJ['en-cours'];
     return `<div class="sv ${o.statut==='atteint'?'atteint':(o.statut==='abandonne'?'abandonne':'')}">
       <div class="sv-main"><div class="sv-txt">${ftEsc(o.texte)}</div>
-        <div class="sv-meta">${chip(st.c,st.l)}${o.echeance?`<span>Échéance : ${ftDate(o.echeance)}</span>`:''}</div></div>
+        <div class="sv-meta">${chip(st.c,st.l)}${o.echeance?`<span>${objEcheanceLabel(o)}</span>`:''}</div></div>
       <span class="acts"><button class="ic-btn" onclick="openObjectif(${i})" title="Modifier">✎</button><button class="ic-btn del" onclick="objectifDel(${i})" title="Supprimer">🗑</button></span>
     </div>`;
   }).join('') : `<div class="empty">Aucun objectif. Fixe un cap pour le pôle (ex. « Top 8 FNCS »).</div>`;
@@ -1196,8 +1201,8 @@ function weekData(){
   const actions=[];
   POLE_IDS.forEach(id=>POLES[id].reunions.forEach((r,ri)=>(r.actions||[]).forEach((a,ai)=>{ if(!a.fait) actions.push({id,ri,ai,a,r}); })));
   const echeances=[];
-  POLE_IDS.forEach(id=>POLES[id].objectifs.forEach(o=>{ if(o.statut==='en-cours'&&o.echeance&&o.echeance<=soon) echeances.push({id,o,j:joursEntre(t,o.echeance)}); }));
-  echeances.sort((a,b)=>a.o.echeance.localeCompare(b.o.echeance));
+  POLE_IDS.forEach(id=>POLES[id].objectifs.forEach(o=>{ if(o.statut==='en-cours'&&o.echeance){ const dl=objDeadline(o); if(dl<=soon) echeances.push({id,o,dl,j:joursEntre(t,dl)}); } }));
+  echeances.sort((a,b)=>a.dl.localeCompare(b.dl));
   const besoins=[];
   POLE_IDS.forEach(id=>POLES[id].besoins.forEach(b=>{ if(b.arbitrage==='a-cadrer'||(b.aRemonter==='oui'&&besoinEnAttente(b))) besoins.push({id,b}); }));
   return {points,actions,echeances,besoins};
@@ -1232,11 +1237,11 @@ function renderMaSemaine(){
     : `<div class="empty">Aucune action en attente. Coche les actions dans les comptes-rendus des pôles.</div>`;
 
   document.getElementById('week-ech-cnt').textContent=echeances.length?`(${echeances.length})`:'';
-  document.getElementById('week-echeances').innerHTML=echeances.length? echeances.map(({id,o,j})=>{
+  document.getElementById('week-echeances').innerHTML=echeances.length? echeances.map(({id,o,dl,j})=>{
     const late=j<0;
     return `<div class="sv wk-click" onclick="gotoPole('${id}')">
       <div class="sv-main"><div class="sv-txt">${ftEsc(o.texte)}</div>
-        <div class="sv-meta">${chip('gold',POLE_NAMES[id])}${chip(late?'neg':'warn', late?`Dépassé (${ftDate(o.echeance)})`:(j===0?"Aujourd'hui":`Dans ${j} j`))}</div></div>
+        <div class="sv-meta">${chip('gold',POLE_NAMES[id])}${chip(late?'neg':'warn', late?`Dépassé (${ftDate(dl)})`:(j===0?"Aujourd'hui":`Dans ${j} j`))}${(o.echeanceFin&&o.echeanceFin!==o.echeance)?`<span>Période dès le ${ftDate(o.echeance)}</span>`:''}</div></div>
       <span class="wk-go">Ouvrir ›</span></div>`;
   }).join('') : `<div class="empty">Aucune échéance dans les 7 jours.</div>`;
 
@@ -1379,7 +1384,8 @@ document.addEventListener('click',e=>{
 /* Objectifs du pôle */
 const OBJ_FIELDS=[
   {k:'texte',l:'Objectif',t:'text',req:true},
-  {k:'echeance',l:'Échéance (optionnel)',t:'date'},
+  {k:'echeance',l:'Date d\'échéance (ou début de période)',t:'date'},
+  {k:'echeanceFin',l:'Fin de période (optionnel, laisser vide pour une date unique)',t:'date'},
   {k:'statut',l:'Statut',t:'select',opts:[['en-cours','En cours'],['atteint','Atteint'],['abandonne','Abandonné']]}
 ];
 function openObjectif(i){ const isNew=(i==null); openModal(isNew?'Ajouter un objectif':"Modifier l'objectif",OBJ_FIELDS,isNew?{statut:'en-cours'}:FT.objectifs[i],
@@ -1428,8 +1434,8 @@ function computeAlerts(){
   POLE_IDS.forEach(id=>{ const p=POLES[id], nm=POLE_NAMES[id];
     const cad=cadenceOf(p);
     if(cad.label==='En retard') A.push({key:`retard|${id}`,sev:'high',txt:`Point en retard — ${nm}`,sub:`Prochain point prévu le ${ftDate(cad.prochain)}`,pole:id});
-    p.objectifs.forEach(o=>{ if(o.statut==='en-cours'&&o.echeance){ const j=joursEntre(t,o.echeance);
-      if(j<0) A.push({key:`obj|${id}|${o.texte}`,sev:'high',txt:`Objectif dépassé — ${nm}`,sub:`${o.texte} (échéance ${ftDate(o.echeance)})`,pole:id});
+    p.objectifs.forEach(o=>{ if(o.statut==='en-cours'&&o.echeance){ const dl=objDeadline(o), j=joursEntre(t,dl);
+      if(j<0) A.push({key:`obj|${id}|${o.texte}`,sev:'high',txt:`Objectif dépassé — ${nm}`,sub:`${o.texte} (échéance ${ftDate(dl)})`,pole:id});
       else if(j<=7) A.push({key:`obj|${id}|${o.texte}`,sev:'med',txt:`Objectif à échéance — ${nm}`,sub:`${o.texte} (dans ${j} j)`,pole:id}); } });
     p.suivi.forEach(s=>{ if((s.type==='blocage'||s.type==='probleme')&&s.statut!=='resolu'){ const j=s.date?joursEntre(s.date,t):0;
       if(j>10) A.push({key:`suivi|${id}|${s.texte}`,sev:'high',txt:`${s.type==='blocage'?'Blocage':'Problème'} ancien — ${nm}`,sub:`${s.texte} (ouvert depuis ${j} j)`,pole:id}); } });
@@ -1469,10 +1475,6 @@ function toggleAlerts(){ const el=document.getElementById('alerts-panel'); if(el
 const EVENT_TYPE={
   competition:{l:"Compétition",color:"#E4B44C",ic:"🏆"},
   reunion:{l:"Réunion",color:"#38BDF8",ic:"👥"},
-  "debut-contrat":{l:"Début contrat",color:"#3FD98B",ic:"🟢"},
-  "fin-contrat":{l:"Fin contrat",color:"#E8935B",ic:"⌛"},
-  renouvellement:{l:"Alerte renouvellement",color:"#F5B944",ic:"⚠"},
-  anniversaire:{l:"Anniversaire",color:"#F472B6",ic:"🎂"},
   absence:{l:"Absence",color:"#8B8B94",ic:"🌴"},
   rappel:{l:"Rappel",color:"#A78BFA",ic:"📌"},
   bootcamp:{l:"Bootcamp",color:"#5FD08C",ic:"🏕"},
@@ -1484,7 +1486,7 @@ const EVENT_FIELDS=[
   {k:'date',l:'Date (ou début)',t:'date',req:true},
   {k:'dateFin',l:'Date de fin (si sur plusieurs jours)',t:'date'},
   {k:'titre',l:'Intitulé',t:'text',req:true},
-  {k:'type',l:'Type',t:'select',opts:[['competition','Compétition'],['reunion','Réunion'],['debut-contrat','Début contrat'],['fin-contrat','Fin contrat'],['renouvellement','Alerte renouvellement'],['anniversaire','Anniversaire'],['absence','Absence'],['rappel','Rappel'],['bootcamp','Bootcamp'],['echeance','Échéance'],['autre','Autre']]},
+  {k:'type',l:'Type',t:'select',opts:[['competition','Compétition'],['reunion','Réunion'],['absence','Absence'],['rappel','Rappel'],['bootcamp','Bootcamp'],['echeance','Échéance'],['autre','Autre']]},
   {k:'pole',l:'Pôle',t:'select',opts:[['tous','Tous les pôles'],['fortnite','Fortnite'],['fifa','FIFA'],['deltaforce','Delta Force']]},
   {k:'note',l:'Note (optionnel)',t:'textarea'}
 ];
@@ -1495,7 +1497,7 @@ function calInitMonth(){ const t=new Date(); calY=t.getFullYear(); calM=t.getMon
 function isoOf(dt){ return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); }
 /* Évènements dérivés : échéances des objectifs de pôle (non stockés, calculés en direct) */
 function objectiveEvents(){ const out=[];
-  POLE_IDS.forEach(id=>POLES[id].objectifs.forEach(o=>{ if(o.echeance && o.statut!=='abandonne') out.push({date:o.echeance, titre:o.texte, type:'obj-echeance', pole:id, __virtual:true, __pole:id, __statut:o.statut}); }));
+  POLE_IDS.forEach(id=>POLES[id].objectifs.forEach(o=>{ if(o.echeance && o.statut!=='abandonne'){ const fin=(o.echeanceFin&&o.echeanceFin>=o.echeance)?o.echeanceFin:null; out.push({date:o.echeance, dateFin:fin, titre:o.texte, type:'obj-echeance', pole:id, __virtual:true, __pole:id, __statut:o.statut}); } }));
   return out;
 }
 function allCalEvents(){ return ORG.evenements.concat(objectiveEvents()); }

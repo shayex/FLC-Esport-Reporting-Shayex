@@ -25,15 +25,15 @@ Cherche dans **tout le site** (staff, besoins, comptes-rendus, résultats, objec
 
 Agenda **tous pôles** avec deux vues : **Mois** (grille du mois, navigation ‹ › + « Aujourd'hui »,
 jour du jour encadré) et **Liste** (À venir / Passés). Chaque évènement a un **type** (compétition,
-réunion, début/fin de contrat, alerte renouvellement, anniversaire, absence, rappel, bootcamp,
-échéance, autre — chacun sa couleur), un **pôle** (ou « tous ») et, en option, une **date de fin**
-pour les évènements sur **plusieurs jours** (vacances, absences…). Cliquer un jour crée un évènement
-à cette date ; cliquer un évènement l'ouvre.
+réunion, absence, rappel, bootcamp, échéance, autre — chacun sa couleur), un **pôle** (ou « tous »)
+et, en option, une **date de fin** pour les évènements sur **plusieurs jours** (vacances, absences…).
+Cliquer un jour crée un évènement à cette date ; cliquer un évènement l'ouvre.
 
 Les **échéances des objectifs de pôle** (celles qui portent une date) apparaissent **automatiquement**
-dans le calendrier, avec une pastille dédiée « 🎯 Échéance objectif ». Elles se mettent à jour toutes
-seules quand tu modifies un objectif (elles ne sont pas saisies dans le calendrier) ; cliquer dessus
-ouvre le pôle concerné. Les objectifs **sans date** ou **abandonnés** n'y figurent pas.
+dans le calendrier, avec une pastille dédiée « 🎯 Échéance objectif ». Un objectif défini sur une
+**période (début → fin)** s'affiche comme un évènement **sur plusieurs jours**. Elles se mettent à
+jour toutes seules quand tu modifies un objectif (elles ne sont pas saisies dans le calendrier) ;
+cliquer dessus ouvre le pôle concerné. Les objectifs **sans date** ou **abandonnés** n'y figurent pas.
 
 ---
 
@@ -191,7 +191,8 @@ Les actions non cochées alimentent l'onglet **Ma semaine** et le **centre d'ale
 Les trois pôles partagent le **même moteur**. Chaque pôle contient, tout éditable directement :
 - **En-tête récap** — manager & contact, rythme des points, dernier point, **prochain point calculé**
   avec badge de cadence, compteurs blocages/avancées. Bouton **Paramètres** (manager, contact, rythme) ;
-- **Objectifs du pôle** — intitulé, échéance, statut (En cours / Atteint / Abandonné) ;
+- **Objectifs du pôle** — intitulé, **échéance** (une date unique **ou** une période début → fin),
+  statut (En cours / Atteint / Abandonné) ; les objectifs datés remontent dans le calendrier ;
 - **Résultats récents** — résultats de compétition (date, compétition, classement, issue) ;
 - **Staff de la section** — membres (nom, rôle, notes) + champ **Avis / appréciation** ;
 - **Avancées, blocages & problèmes** — type + statut (Ouvert / En cours / Résolu), filtrables,
