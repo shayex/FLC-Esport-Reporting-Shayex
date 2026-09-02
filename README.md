@@ -3,7 +3,7 @@
 Espace interne (privé) pour donner à la **direction** une lecture claire de l'activité esport.
 
 Design **sombre avec accent doré**, navigation en **barre supérieure** :
-`Dashboard · Ma semaine · Tâches · Fortnite · FIFA · Delta Force · Réunions · Calendrier · Notes · Paramètres` (admin).
+`Dashboard · Tâches · Fortnite · FIFA · Delta Force · Réunions · Calendrier · Notes · Paramètres` (admin).
 
 Dans la barre du haut : **recherche globale** (🔍), **centre d'alertes** (🔔) et déconnexion.
 
@@ -151,18 +151,6 @@ Les données sont enregistrées **dans le navigateur** (localStorage : `flc-pole
 la table `flc_state` (partagées entre tous les postes, avec le navigateur comme cache/hors-ligne).
 
 ## Onglets
-
-### Ma semaine — centre d'action du directeur
-
-Consolide, en un seul écran, **tout ce que le directeur doit traiter**, tous pôles confondus :
-- **Points managers à tenir** : les pôles dont le prochain point est en retard ou prévu sous 7 jours
-  (ou sans rythme défini, « à planifier ») — cliquables pour ouvrir le pôle ;
-- **Actions à suivre** : toutes les actions de comptes-rendus non faites, **cochables directement**
-  (la case coche l'action dans le pôle et la retire de la liste) ;
-- **Échéances à venir** : objectifs en cours arrivant à échéance sous 7 jours (ou dépassés) ;
-- **Besoins à traiter** : besoins à cadrer ou à remonter.
-
-Une pastille sur l'onglet indique le nombre total d'éléments à traiter.
 
 ### Tâches — liste personnelle (générale + sections)
 

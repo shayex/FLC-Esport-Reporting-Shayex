@@ -294,7 +294,13 @@ button{font-family:inherit}
 .task-add-btn:hover{background:rgba(228,180,76,.22)}
 .task-item{display:flex;gap:11px;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--line-soft)}
 .task-item:last-child{border-bottom:none}
-.task-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);cursor:pointer;flex:none;margin-top:1px}
+.task-item input[type=checkbox]{appearance:none;-webkit-appearance:none;width:18px;height:18px;flex:none;margin-top:1px;cursor:pointer;
+  border:1.5px solid var(--gold-deep);border-radius:5px;background:#0b0b0e;display:grid;place-content:center;transition:background .12s,border-color .12s}
+.task-item input[type=checkbox]::after{content:"";width:10px;height:10px;transform:scale(0);transition:transform .12s;background:#0b0b0e;
+  clip-path:polygon(14% 44%,0 65%,50% 100%,100% 16%,80% 0,43% 62%)}
+.task-item input[type=checkbox]:hover{border-color:var(--gold)}
+.task-item input[type=checkbox]:checked{background:var(--gold);border-color:var(--gold)}
+.task-item input[type=checkbox]:checked::after{transform:scale(1)}
 .task-item .t-txt{flex:1;min-width:0;font-size:13.5px;line-height:1.45;word-break:break-word}
 .task-item.done .t-txt{color:var(--faint);text-decoration:line-through}
 .task-x{flex:none;background:none;border:none;color:var(--faint);font-size:13px;cursor:pointer;padding:2px 5px;border-radius:6px;line-height:1}
@@ -570,10 +576,6 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
       Dashboard
     </button>
-    <button class="tab" data-view="masemaine">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
-      Ma semaine <span class="badge alert" id="badge-masemaine" style="display:none"></span>
-    </button>
     <button class="tab" data-view="taches">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       Tâches <span class="badge alert" id="badge-taches" style="display:none"></span>
@@ -630,23 +632,6 @@ table.matrix tbody tr:last-child td{border-bottom:none}
       <div class="section-title"><span class="rail"></span><h3>Diffusion aux managers</h3><span class="cnt" id="dash-diff-cnt"></span>
         <button class="add-btn" onclick="openDiffusion()">+ Nouvelle diffusion</button></div>
       <div id="dash-diffusion"></div>
-    </section>
-
-    <!-- MA SEMAINE (centre d'action du directeur) -->
-    <section class="view" id="view-masemaine">
-      <div class="week-summary" id="week-summary"></div>
-
-      <div class="section-title" style="margin-top:4px"><span class="rail"></span><h3>Points managers à tenir</h3><span class="cnt" id="week-pts-cnt"></span></div>
-      <div id="week-points"></div>
-
-      <div class="section-title"><span class="rail"></span><h3>Actions à suivre</h3><span class="cnt" id="week-act-cnt"></span></div>
-      <div id="week-actions"></div>
-
-      <div class="section-title"><span class="rail"></span><h3>Échéances à venir</h3><span class="cnt" id="week-ech-cnt"></span></div>
-      <div id="week-echeances"></div>
-
-      <div class="section-title"><span class="rail"></span><h3>Besoins à traiter</h3><span class="cnt" id="week-bes-cnt"></span></div>
-      <div id="week-besoins"></div>
     </section>
 
     <!-- TÂCHES (liste personnelle : générale + sections) -->
@@ -861,7 +846,6 @@ document.getElementById('logout').addEventListener('click', ()=>{ sessionStorage
 /* ---------- Navigation par onglets ---------- */
 const VIEWS = {
   dashboard:{title:"Tableau de bord", eyebrow:"Organisation", sub:"Vue direction — agrégé de tous les pôles"},
-  masemaine:{title:"Ma semaine", eyebrow:"Centre d'action", sub:"Ce que tu dois traiter — points, actions, échéances et besoins"},
   taches:{title:"Tâches", eyebrow:"Personnel", sub:"Mes tâches — liste générale et par sections"},
   reunion:{title:"Réunions", eyebrow:"Suivi des managers", sub:"Comptes-rendus de réunions de tous les pôles"},
   calendrier:{title:"Calendrier", eyebrow:"Compétitions", sub:"Compétitions à venir et passées"},
@@ -894,7 +878,6 @@ function showPage(v, poleId){
     const tab=document.querySelector(`.tab[data-view="${v}"]`); if(tab) tab.classList.add('active');
     const m=VIEWS[v]; setHead(m.eyebrow, m.title, m.sub);
     if(v==='dashboard') renderDashboard();
-    if(v==='masemaine') renderMaSemaine();
     if(v==='taches') renderTaches();
     if(v==='reunion') renderReunions();
     if(v==='calendrier') renderCalendrier();
@@ -1174,9 +1157,6 @@ function updateTabBadges(){
     const el=document.getElementById('badge-'+id);
     if(el){ el.textContent=n; el.style.display=n>0?'':'none'; }
   });
-  const w=weekData(), wn=w.points.length+w.actions.length+w.echeances.length+w.besoins.length;
-  const wb=document.getElementById('badge-masemaine');
-  if(wb){ wb.textContent=wn; wb.style.display=wn>0?'':'none'; }
   const tn=tasksTodoCount(), tb=document.getElementById('badge-taches');
   if(tb){ tb.textContent=tn>99?'99+':tn; tb.style.display=tn>0?'':'none'; }
 }
@@ -1222,74 +1202,6 @@ function renderDashboard(){
   renderDiffusion();
   updateTabBadges();
   updateAlertsBadge();
-}
-
-/* =========================================================================
-   MA SEMAINE — centre d'action consolidé du directeur
-   ========================================================================= */
-function weekData(){
-  const t=ftToday(), soon=ftAddDays(t,7);
-  const points=[];
-  POLE_IDS.forEach(id=>{ const cad=cadenceOf(POLES[id]);
-    if(!cad.prochain) points.push({id,cad,order:1});            // à planifier
-    else if(cad.prochain<=soon) points.push({id,cad,order:cad.prochain<t?0:1}); // en retard / à venir ≤7j
-  });
-  points.sort((a,b)=>(a.cad.prochain||'9999-99-99').localeCompare(b.cad.prochain||'9999-99-99'));
-  const actions=[];
-  POLE_IDS.forEach(id=>POLES[id].reunions.forEach((r,ri)=>(r.actions||[]).forEach((a,ai)=>{ if(!a.fait) actions.push({id,ri,ai,a,r}); })));
-  const echeances=[];
-  POLE_IDS.forEach(id=>POLES[id].objectifs.forEach(o=>{ if(o.statut==='en-cours'&&o.echeance){ const dl=objDeadline(o); if(dl<=soon) echeances.push({id,o,dl,j:joursEntre(t,dl)}); } }));
-  echeances.sort((a,b)=>a.dl.localeCompare(b.dl));
-  const besoins=[];
-  POLE_IDS.forEach(id=>POLES[id].besoins.forEach(b=>{ if(b.arbitrage==='a-cadrer'||(b.aRemonter==='oui'&&besoinEnAttente(b))) besoins.push({id,b}); }));
-  return {points,actions,echeances,besoins};
-}
-function weekActionToggle(id,ri,ai){ const a=POLES[id].reunions[ri].actions[ai]; if(a){ a.fait=!a.fait; savePoles(); } renderMaSemaine(); renderFortnite(); updateAlertsBadge(); }
-function renderMaSemaine(){
-  const t=ftToday(), {points,actions,echeances,besoins}=weekData();
-  const total=points.length+actions.length+echeances.length+besoins.length;
-  document.getElementById('week-summary').innerHTML=
-    `<div class="ws-lead">${total? `Tu as <b>${total}</b> élément(s) à traiter.` : 'Tout est à jour 👌'}</div>
-     <div class="ws-tiles">
-       <div class="ws-tile"><span class="ws-n">${points.length}</span><span class="ws-l">Points à tenir</span></div>
-       <div class="ws-tile"><span class="ws-n">${actions.length}</span><span class="ws-l">Actions à suivre</span></div>
-       <div class="ws-tile"><span class="ws-n">${echeances.length}</span><span class="ws-l">Échéances ≤ 7j</span></div>
-       <div class="ws-tile"><span class="ws-n">${besoins.length}</span><span class="ws-l">Besoins à traiter</span></div>
-     </div>`;
-
-  document.getElementById('week-pts-cnt').textContent=points.length?`(${points.length})`:'';
-  document.getElementById('week-points').innerHTML=points.length? points.map(({id,cad})=>{
-    const p=POLES[id];
-    return `<div class="sv wk-click" onclick="gotoPole('${id}')">
-      <div class="sv-main"><div class="sv-txt">${POLE_NAMES[id]}${p.meta.manager?` <span class="wk-mgr">· ${ftEsc(p.meta.manager)}</span>`:''}</div>
-        <div class="sv-meta">${chip(cad.c,cad.label)}<span>${cad.prochain?`Point prévu le ${ftDate(cad.prochain)}`:'Aucun rythme défini — à planifier'}</span></div></div>
-      <span class="wk-go">Ouvrir ›</span></div>`;
-  }).join('') : `<div class="empty">Aucun point à tenir cette semaine.</div>`;
-
-  document.getElementById('week-act-cnt').textContent=actions.length?`(${actions.length})`:'';
-  document.getElementById('week-actions').innerHTML=actions.length? actions.map(({id,ri,ai,a,r})=>`
-    <label class="wk-act"><input type="checkbox" onchange="weekActionToggle('${id}',${ri},${ai})">
-      <span class="wk-act-main"><span class="wk-act-txt">${ftEsc(a.texte)}</span>
-        <span class="sv-meta">${chip('gold',POLE_NAMES[id])}${r.titre?`<span>${ftEsc(r.titre)}</span>`:''}${r.date?`<span>${ftDate(r.date)}</span>`:''}</span></span></label>`).join('')
-    : `<div class="empty">Aucune action en attente. Coche les actions dans les comptes-rendus des pôles.</div>`;
-
-  document.getElementById('week-ech-cnt').textContent=echeances.length?`(${echeances.length})`:'';
-  document.getElementById('week-echeances').innerHTML=echeances.length? echeances.map(({id,o,dl,j})=>{
-    const late=j<0;
-    return `<div class="sv wk-click" onclick="gotoPole('${id}')">
-      <div class="sv-main"><div class="sv-txt">${ftEsc(o.texte)}</div>
-        <div class="sv-meta">${chip('gold',POLE_NAMES[id])}${chip(late?'neg':'warn', late?`Dépassé (${ftDate(dl)})`:(j===0?"Aujourd'hui":`Dans ${j} j`))}${(o.echeanceFin&&o.echeanceFin!==o.echeance)?`<span>Période dès le ${ftDate(o.echeance)}</span>`:''}</div></div>
-      <span class="wk-go">Ouvrir ›</span></div>`;
-  }).join('') : `<div class="empty">Aucune échéance dans les 7 jours.</div>`;
-
-  document.getElementById('week-bes-cnt').textContent=besoins.length?`(${besoins.length})`:'';
-  document.getElementById('week-besoins').innerHTML=besoins.length? besoins.map(({id,b})=>{
-    const tb=TYPE_BESOIN[b.type]||TYPE_BESOIN.materiel, arb=ARBITRAGE[b.arbitrage]||ARBITRAGE['a-cadrer'];
-    return `<div class="sv wk-click" onclick="gotoPole('${id}')">
-      <div class="sv-main"><div class="sv-txt">${tb.ic} ${ftEsc(b.libelle)}</div>
-        <div class="sv-meta">${chip('gold',POLE_NAMES[id])}${chip(arb.c,arb.l)}${b.aRemonter==='oui'?chip('neutral','À remonter'):''}</div></div>
-      <span class="wk-go">Ouvrir ›</span></div>`;
-  }).join('') : `<div class="empty">Aucun besoin à cadrer ou à remonter.</div>`;
 }
 
 /* Harmonisation des pratiques entre jeux — matrice pratiques × pôles */
